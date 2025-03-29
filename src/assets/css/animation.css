@@ -1,0 +1,179 @@
+.fadeOut {
+  animation: fadeOut 0.3s forwards;
+}
+.fadeIn {
+  animation: fadeIn 0.3s forwards;
+}
+.fadeIn-6 {
+  animation: fadeIn 0.6s forwards;
+}
+.fadeIn-10 {
+  animation: fadeIn 1.5s forwards;
+}
+.fadeIn-up {
+  animation: slideIn 0.6s forwards;
+}
+.fadeIn-down {
+  animation: slideIntop 0.6s forwards;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes fadeInfinite {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(120px);
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes slideIn1 {
+  from {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(150px);
+    opacity: 0;
+  }
+}
+@keyframes slideIn_mini {
+  from {
+    opacity: 0.5;
+    transform: translateY(20px);
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideIntop {
+  from {
+    opacity: 0.5;
+    transform: translateY(-20px);
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes fadeInOut {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slideIn {
+  from {
+    opacity: 0.5;
+    transform: translateY(20px);
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes slideIntop {
+  from {
+    opacity: 0.5;
+    transform: translateY(-20px);
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(150px);
+    opacity: 0;
+  }
+}
