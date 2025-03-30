@@ -206,4 +206,5 @@ export default {
   post: debouncePost,
   patch: debouncePatch,
   delete: debounceDelete,
+  key,
 };
