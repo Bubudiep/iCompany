@@ -20,7 +20,7 @@ const Login = () => {
       console.log(token);
       if (token) {
         api.get("/user/", token).then((res) => {
-          navigate("/electron/?fromLogin=true");
+          navigate("/app/?from=login");
         });
       } else {
         // Kiểm tra localStorage
@@ -62,7 +62,7 @@ const Login = () => {
             expirationTime.getTime() + 7 * 24 * 60 * 60 * 1000
           );
           document.cookie = `token=${token}; expires=${expirationTime.toUTCString()}; path=/`;
-          navigate("/electron/?fromLogin=true");
+          navigate("/app/?from=login");
         })
         .catch((err) => {
           notification.error({
@@ -156,7 +156,7 @@ const Login = () => {
             </button>
           </div>
           <div className="fc g4">
-            <div className="flex register hover:underline mt-6 flex justify-between text-sm text-blue-600 cursor-pointer">
+            <div className="flex register hover:underline mt-6 justify-between text-sm text-blue-600 cursor-pointer">
               Đăng ký tài khoản mới
             </div>
             <div
