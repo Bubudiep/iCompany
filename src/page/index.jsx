@@ -4,6 +4,7 @@ import api from "../components/api";
 import app from "../components/app";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useUser } from "../components/context/userContext";
+import { io } from "socket.io-client";
 
 const Homepage = () => {
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ const Homepage = () => {
       })
       .catch((err) => {
         console.log(err);
-        navigate("/app/login");
+        navigate("/login");
       })
       .finally(() => {
         setTimeout(() => {
@@ -60,6 +61,19 @@ const Homepage = () => {
     if (token) {
       console.log("Có token:", token);
       checkUser(token);
+      window.socket = io("http://localhost:5000", {
+        extraHeaders: {
+          ApplicationKey: api.key,
+          Authorization: "Bearer " + token,
+        },
+      });
+      socket.on("online_users", (data) => {
+        console.log(data);
+      });
+      socket.on("message", (data) => {
+        console.log(data);
+      });
+      socket.emit("user_online");
     } else {
       console.log("Không tìm thấy token!");
       navigate("/login");
