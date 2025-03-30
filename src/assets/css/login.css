@@ -1,0 +1,21 @@
+.login-page{
+    /* background-image: url(https://noithatduckhang.com/wp-content/uploads/2021/12/1-18.jpg); */
+    background-size: cover; /* Đảm bảo ảnh nền phủ kín container */
+    background-position: center; /* Căn giữa ảnh nền */
+    background-repeat: no-repeat; /* Ngăn lặp lại ảnh nền */
+}
+.password-login{
+    outline: none !important; 
+    border: none !important;
+}
+
+.input-login{
+    outline: none !important; 
+    border: none !important;
+}
+#login-btn{
+    font-size: medium;
+    background-color: #3803FF;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
