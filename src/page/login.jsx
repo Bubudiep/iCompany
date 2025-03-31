@@ -8,7 +8,6 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const author = import.meta.env.VITE_AUTHOR;
@@ -80,35 +79,27 @@ const Login = () => {
   };
 
   return (
-    <div className="login-page h-screen flex items-center justify-center">
+    <div className="login-page">
       {/* Left Section */}
-      <div className="video-container hidden md:block w-1/2 p-2 bg-gray-50">
+      <div className="video-container">
         <img
           src="https://noithatduckhang.com/wp-content/uploads/2021/12/1-18.jpg"
           alt="Dashboard"
-          className="w-full h-full object-cover"
         />
       </div>
 
       {/* Right Section */}
-      <div className="login-container w-full md:w-1/2 p-8">
+      <div className="login-container">
         <div className="login-box">
-          <div className="header text-2xl font-bold text-blue-600 mb-2">
-            Xin chào,
-          </div>
-          <div className="hi text-blue-500 mb-6">
-            Chào mừng bạn quay trở lại!
-          </div>
+          <div className="header">Xin chào,</div>
+          <div className="hi">Chào mừng bạn quay trở lại!</div>
           <div className="form">
             <div className="items mb-4">
-              <div className="name block text-sm font-medium text-gray-700">
-                Tài khoản
-              </div>
-              <div className="value mt-1 block w-70 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-gray-500 sm:text-sm">
+              <div className="name">Tài khoản</div>
+              <div className="value">
                 <Input
                   type="text"
                   id="username"
-                  className="input-login outline-none"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required
@@ -120,14 +111,11 @@ const Login = () => {
               </div>
             </div>
             <div className="items mb-4">
-              <div className="name block text-sm font-medium text-gray-700">
-                Mật khẩu
-              </div>
-              <div className="value w-70 border-2 border-gray-300 rounded-md">
+              <div className="name">Mật khẩu</div>
+              <div className="value">
                 <Input.Password
                   type="password"
                   id="password"
-                  className="password-login block w-70"
                   value={password}
                   ref={passwordRef}
                   onChange={(e) => setPassword(e.target.value)}
@@ -140,20 +128,15 @@ const Login = () => {
               </div>
             </div>
           </div>
-          <div className="login-btn">
+          <div className="flex flex-col gap-2 w-70">
             <Button
-              className="w-70 bg-blue-700 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md border-2 border-black-700 transition duration-200"
-              id="login-btn"
+              className="login-btn"
               onClick={handleLogin}
               loading={loading}
             >
               Đăng nhập
             </Button>
-          </div>
-          <div className="with-zalo">
-            <button className="w-70 mt-4 bg-white border-1 border-blue-500  hover:bg-blue-200 hover:text-white-700 text-blue-600 font-medium text-1xl py-2 px-4 rounded-md transition duration-200 cursor-pointer">
-              Đăng nhập bằng Zalo
-            </button>
+            <Button>Đăng nhập bằng Zalo</Button>
           </div>
           <div className="fc g4">
             <div className="flex register hover:underline mt-6 justify-between text-sm text-blue-600 cursor-pointer">
@@ -173,9 +156,7 @@ const Login = () => {
                   api.send("exit");
                 }}
               >
-                <div className="exit mt-1 text-sm text-gray-600 hover:underline cursor-pointer">
-                  Thoát
-                </div>
+                <div className="exit">Thoát</div>
               </Popconfirm>
             </div>
           </div>
