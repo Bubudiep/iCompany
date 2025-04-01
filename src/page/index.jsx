@@ -5,6 +5,7 @@ import app from "../components/app";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useUser } from "../components/context/userContext";
 import { io } from "socket.io-client";
+import Chat from "./chat";
 
 const Homepage = () => {
   const navigate = useNavigate();
@@ -102,19 +103,22 @@ const Homepage = () => {
     }
   }, []);
   return (
-    <div className="flex flex-col">
-      <div className="flex gap-2 p-2">
-        <Input
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Nhập tin nhắn..."
-          onPressEnter={handleSend}
-        />
-        <Button type="primary" onClick={handleSend}>
-          Gửi
-        </Button>
-      </div>
-    </div>
+    <>
+      {/* <div className="flex flex-col">
+        <div className="flex gap-2 p-2">
+          <Input
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Nhập tin nhắn..."
+            onPressEnter={handleSend}
+          />
+          <Button type="primary" onClick={handleSend}>
+            Gửi
+          </Button>
+        </div>
+      </div> */}
+      <Chat />
+    </>
   );
 };
 

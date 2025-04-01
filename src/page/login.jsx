@@ -82,6 +82,7 @@ const Login = () => {
     <div className="login-page">
       {/* Left Section */}
       <div className="video-container">
+        {/* <img src="../assets/image/landingPage/dashboard.png" alt="Dashboard" /> */}
         <img
           src="https://noithatduckhang.com/wp-content/uploads/2021/12/1-18.jpg"
           alt="Dashboard"

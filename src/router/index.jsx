@@ -3,6 +3,7 @@ import Homepage from "../page";
 import { UserProvider } from "../components/context/userContext";
 import LandingPage from "../page/landing";
 import Login from "../page/login";
+import NotFoundPage from "../page/404";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route path="/app" element={<Homepage />}></Route>
           <Route path="/login" element={<Login />} />
           <Route path="*" element={<LandingPage />} />
+          <Route path="/404" element={<NotFoundPage />} />
         </Routes>
       </Router>
     </UserProvider>
