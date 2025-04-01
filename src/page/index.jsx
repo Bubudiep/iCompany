@@ -1,11 +1,10 @@
-import { Button, Input, message, notification } from "antd";
+import { Button, Input, message, notification, Select } from "antd";
 import React, { useEffect, useState } from "react";
 import api from "../components/api";
 import app from "../components/app";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useUser } from "../components/context/userContext";
 import { io } from "socket.io-client";
-import Chat from "./chat";
 
 const Homepage = () => {
   const navigate = useNavigate();
@@ -15,16 +14,20 @@ const Homepage = () => {
   const [loadOut, setLoadOut] = useState(false);
   const [loadShow, setLoadShow] = useState(false);
   const key = import.meta.env.VITE_KEY;
-  const author = import.meta.env.VITE_AUTHOR;
-  const version = import.meta.env.VITE_VERSION;
   const socketServer = import.meta.env.VITE_SOCKET;
-  const [message, setMessage] = useState("");
+  const [listOnline, setListOnline] = useState([]);
+  const [sendto, setSendto] = useState(false);
+  const [messages, setMessage] = useState("");
   const handleSend = () => {
-    if (message.trim() === "") return;
+    if (!sendto) {
+      message.info("Chưa chọn người nhận!");
+      return;
+    }
+    if (messages.trim() === "") return;
     window.socket.emit("message", {
       type: "user",
-      to: 1, // bạn có thể thay bằng userId hoặc chọn từ danh sách
-      message: message.trim(),
+      to: sendto, // bạn có thể thay bằng userId hoặc chọn từ danh sách
+      message: messages.trim(),
     });
     setMessage(""); // clear sau khi gửi
   };
@@ -80,7 +83,17 @@ const Homepage = () => {
         },
       });
       socket.on("online_users", (data) => {
-        console.log(data);
+        const seenIds = new Set();
+        const uniqueUsers = [];
+        for (const item of data) {
+          const id = item.user.id;
+          if (!seenIds.has(id)) {
+            seenIds.add(id);
+            uniqueUsers.push(item);
+          }
+        }
+        if (user)
+          setListOnline(uniqueUsers.filter((item) => item.user.id !== user.id));
       });
       socket.on("message", (data) => {
         console.log(data);
@@ -103,22 +116,31 @@ const Homepage = () => {
     }
   }, []);
   return (
-    <>
-      {/* <div className="flex flex-col">
-        <div className="flex gap-2 p-2">
-          <Input
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Nhập tin nhắn..."
-            onPressEnter={handleSend}
-          />
-          <Button type="primary" onClick={handleSend}>
-            Gửi
-          </Button>
-        </div>
-      </div> */}
-      <Chat />
-    </>
+    <div className="flex flex-col">
+      <div className="flex gap-2 p-2">
+        <Select
+          placeholder="Chọn người dùng"
+          options={listOnline.map((user, idx) => ({
+            key: idx,
+            label: user.user.full_name,
+            value: user.user.id,
+          }))}
+          onChange={(value) => {
+            setSendto(value);
+          }}
+          className="min-w-[180px]"
+        />
+        <Input
+          value={messages}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Nhập tin nhắn..."
+          onPressEnter={handleSend}
+        />
+        <Button type="primary" onClick={handleSend}>
+          Gửi
+        </Button>
+      </div>
+    </div>
   );
 };
 
