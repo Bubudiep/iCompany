@@ -3,4 +3,9 @@ import { createRoot } from "react-dom/client";
 import "./assets/css/app.css";
 import "./assets/css/animation.css";
 import App from "./router";
-createRoot(document.getElementById("root")).render(<App />);
+import { CookiesProvider } from "react-cookie";
+createRoot(document.getElementById("root")).render(
+  <CookiesProvider>
+    <App />
+  </CookiesProvider>
+);

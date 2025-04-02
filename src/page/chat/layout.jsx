@@ -23,9 +23,8 @@ import { useRef } from "react";
 const Chat_layout = () => {
   const nav = useNavigate();
   return (
-    <>
-      {/*left side  */}
-      <div className="left-side w-1/5  flex flex-col">
+    <div className="flex flex-1 gap-1 pb-1">
+      <div className="left-side w-1/5 whitebox fadeInRight flex flex-col">
         <div className="flex items-center p-4">
           <img
             alt="User Avatar"
@@ -93,10 +92,111 @@ const Chat_layout = () => {
           </div>
         </div>
       </div>
-      {/* Main Chat Area  */}
-      <div className="flex-1 flex flex-col">
-        <div className="flex items-center justify-between p-4 border-b">
-          <div className="flex items-center">
+      <div className="flex flex-1 fadeInTop whitebox !p-0">
+        <div className="flex-1 flex flex-col">
+          <div className="flex items-center h-[60px] justify-between p-4 border-b border-[#c5c5c5]">
+            <div className="flex items-center">
+              <img
+                alt="DEV Team"
+                className="rounded-full"
+                height="40"
+                src="https://storage.googleapis.com/a1aa/image/wOjPVEQgLVtFaveS0SUzjGnh8G_YRxK6ETzmMOSPuN4.jpg"
+                width="40"
+              />
+              <div className="ml-2">
+                <div className="font-bold">Duck Team</div>
+                <div className="text-sm text-gray-500">5 thành viên</div>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4 cursor:pointer ">
+              <FaPhone />
+              <FaVideo />
+              <FaSearch />
+              <FaEllipsisH />
+            </div>
+          </div>
+          <div className="flex-1 overflow-y-auto p-4 bg-gray-100">
+            <div className="flex items-start mb-4">
+              <img
+                alt="User Avatar"
+                className="rounded-full"
+                height="40"
+                src="https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
+                width="40"
+              />
+              <div className="ml-2">
+                <div className="bg-white p-2 rounded shadow">
+                  <div className="font-bold">Mr A</div>
+                  <div className="text-sm">
+                    <p>Chào mọi người</p>
+                  </div>
+                </div>
+                <div className="text-sm text-gray-500 mt-1">10:35 Hôm nay</div>
+              </div>
+            </div>
+
+            <div className="flex items-start mb-4">
+              <img
+                alt="User Avatar"
+                className="rounded-full"
+                height="40"
+                src="https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
+                width="40"
+              />
+              <div className="ml-2">
+                <div className="bg-white p-2 rounded shadow">
+                  <div className="font-bold">Nguyễn Huy</div>
+                  <div className="text-sm">nice to meet you today</div>
+                </div>
+                <div className="text-sm text-gray-500 mt-1">10:36</div>
+              </div>
+            </div>
+
+            <div className="flex items-start mb-4">
+              <img
+                alt="User Avatar"
+                className="rounded-full"
+                height="40"
+                src="https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
+                width="40"
+              />
+              <div className="ml-2">
+                <div className="bg-white p-2 rounded shadow">
+                  <div className="font-bold">Ms B</div>
+
+                  <div className="text-sm">me too</div>
+                </div>
+                <div className="text-sm text-gray-500 mt-1">11:39</div>
+              </div>
+              {/* myself message in right*/}
+              <div className="ml-auto">
+                <div className="bg-blue-100 p-2 mt-10 rounded shadow">
+                  <div className="text-sm">hello everyone</div>
+                  <div className="text-sm text-gray-500 mt-1">11:40</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="p-4 border-t">
+            <div className="flex items-center">
+              <input
+                className="flex-1 p-2 rounded border"
+                placeholder="Nhập @, tin nhắn tới Duck Team"
+                type="text"
+              />
+              <div className="flex items-center space-x-2 ml-2 cursor-pointer">
+                <i className="fas fa-smile">Send</i>
+                <FaSmile />
+                <FaPaperclip />
+                <FaMicrophone />
+                <FaImage />
+                <FaEllipsisH />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="w-1/5 border-l border-[#c5c5c5]">
+          <div className="flex items-center px-3 h-[60px] border-[#c5c5c5] border-b-1">
             <img
               alt="DEV Team"
               className="rounded-full"
@@ -106,165 +206,65 @@ const Chat_layout = () => {
             />
             <div className="ml-2">
               <div className="font-bold">Duck Team</div>
-              <div className="text-sm text-gray-500">5 thành viên</div>
             </div>
           </div>
-          <div className="flex items-center space-x-4 cursor:pointer ">
-            <FaPhone />
-            <FaVideo />
-            <FaSearch />
-            <FaEllipsisH />
-          </div>
-        </div>
-
-        <div className="flex-1 overflow-y-auto p-4 bg-gray-100">
-          <div className="flex items-start mb-4">
-            <img
-              alt="User Avatar"
-              className="rounded-full"
-              height="40"
-              src="https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
-              width="40"
-            />
-            <div className="ml-2">
-              <div className="bg-white p-2 rounded shadow">
-                <div className="font-bold">Mr A</div>
-                <div className="text-sm">
-                  <p>Chào mọi người</p>
-                </div>
+          <div className="cursor-pointer flex justify-between">
+            <div className="flex flex-1 items-center justify-between">
+              <div className="flex flex-col items-center">
+                <span className="text-sm">
+                  <FaBell />
+                  {/* Tắt thông báo */}
+                </span>
               </div>
-              <div className="text-sm text-gray-500 mt-1">10:35 Hôm nay</div>
-            </div>
-          </div>
-
-          <div className="flex items-start mb-4">
-            <img
-              alt="User Avatar"
-              className="rounded-full"
-              height="40"
-              src="https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
-              width="40"
-            />
-            <div className="ml-2">
-              <div className="bg-white p-2 rounded shadow">
-                <div className="font-bold">Nguyễn Huy</div>
-                <div className="text-sm">nice to meet you today</div>
+              <div className="flex flex-col items-center ">
+                <span className="text-sm">
+                  <FaThumbtack />
+                  {/* Ghim hội thoại */}
+                </span>
               </div>
-              <div className="text-sm text-gray-500 mt-1">10:36</div>
-            </div>
-          </div>
-
-          <div className="flex items-start mb-4">
-            <img
-              alt="User Avatar"
-              className="rounded-full"
-              height="40"
-              src="https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
-              width="40"
-            />
-            <div className="ml-2">
-              <div className="bg-white p-2 rounded shadow">
-                <div className="font-bold">Ms B</div>
-
-                <div className="text-sm">me too</div>
+              <div className="flex flex-col ">
+                <span className="text-sm">
+                  <FaUserPlus />
+                  {/* Thêm thành viên */}
+                </span>
               </div>
-              <div className="text-sm text-gray-500 mt-1">11:39</div>
-            </div>
-            {/* myself message in right*/}
-            <div className="ml-auto">
-              <div className="bg-blue-100 p-2 mt-10 rounded shadow">
-                <div className="text-sm">hello everyone</div>
-                <div className="text-sm text-gray-500 mt-1">11:40</div>
+              <div className="flex flex-col items-center">
+                <span className="text-sm">
+                  <FaCog />
+                  {/* Quản lý nhóm */}
+                </span>
               </div>
             </div>
           </div>
-        </div>
-        <div className="p-4 border-t">
-          <div className="flex items-center">
-            <input
-              className="flex-1 p-2 rounded border"
-              placeholder="Nhập @, tin nhắn tới Duck Team"
-              type="text"
-            />
-            <div className="flex items-center space-x-2 ml-2 cursor-pointer">
-              <i className="fas fa-smile">Send</i>
-              <FaSmile />
-              <FaPaperclip />
-              <FaMicrophone />
-              <FaImage />
-              <FaEllipsisH />
+          <div className="flex flex-col gap-1 px-2">
+            <div className="item">
+              <div className="font-bold">Thành viên nhóm</div>
+              <div className="text-sm">5 thành viên</div>
+            </div>
+            <div className="item">
+              <div className="font-bold">Bảng tin nhóm</div>
+              <div className="text-sm">Danh sách nhắc hẹn</div>
+              <div className="text-sm">Ghi chú, ghim, bình chọn</div>
+            </div>
+            <div className="item">
+              <div className="font-bold">Ảnh/Video</div>
+              <div className="text-sm">
+                Chưa có Ảnh/Video được chia sẻ trong hội thoại này
+              </div>
+            </div>
+            <div className="item">
+              <div className="font-bold">File</div>
+              <div className="flex items-center space-x-2">
+                <i className="fas fa-file-alt"></i>
+                <div className="text-sm">.env</div>
+                <div className="text-sm">153 B</div>
+                <div className="text-sm">29/03/2025</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      {/* right side */}
-      <div className="w-1/5 bg-white border-l p-4">
-        <div className="flex items-center">
-          <img
-            alt="DEV Team"
-            className="rounded-full"
-            height="40"
-            src="https://storage.googleapis.com/a1aa/image/wOjPVEQgLVtFaveS0SUzjGnh8G_YRxK6ETzmMOSPuN4.jpg"
-            width="40"
-          />
-          <div className="ml-2">
-            <div className="font-bold">Duck Team</div>
-          </div>
-        </div>
-        <div className="mt-4 cursor-pointer">
-          <div className="flex items-center space-x-4">
-            <div className="flex flex-col items-center">
-              <span className="text-sm">
-                <FaBell />
-                {/* Tắt thông báo */}
-              </span>
-            </div>
-            <div className="flex flex-col items-center ">
-              <span className="text-sm">
-                <FaThumbtack />
-                {/* Ghim hội thoại */}
-              </span>
-            </div>
-            <div className="flex flex-col ">
-              <span className="text-sm">
-                <FaUserPlus />
-                {/* Thêm thành viên */}
-              </span>
-            </div>
-            <div className="flex flex-col items-center">
-              <span className="text-sm">
-                <FaCog />
-                {/* Quản lý nhóm */}
-              </span>
-            </div>
-          </div>
-        </div>
-        <div className="mt-4">
-          <div className="font-bold">Thành viên nhóm</div>
-          <div className="text-sm">5 thành viên</div>
-        </div>
-        <div className="mt-4">
-          <div className="font-bold">Bảng tin nhóm</div>
-          <div className="text-sm">Danh sách nhắc hẹn</div>
-          <div className="text-sm">Ghi chú, ghim, bình chọn</div>
-        </div>
-        <div className="mt-4">
-          <div className="font-bold">Ảnh/Video</div>
-          <div className="text-sm">
-            Chưa có Ảnh/Video được chia sẻ trong hội thoại này
-          </div>
-        </div>
-        <div className="mt-4">
-          <div className="font-bold">File</div>
-          <div className="flex items-center space-x-2">
-            <i className="fas fa-file-alt"></i>
-            <div className="text-sm">.env</div>
-            <div className="text-sm">153 B</div>
-            <div className="text-sm">29/03/2025</div>
-          </div>
-        </div>
-      </div>
-    </>
+    </div>
   );
 };
 
