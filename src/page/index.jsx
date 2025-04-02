@@ -5,6 +5,7 @@ import app from "../components/app";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useUser } from "../components/context/userContext";
 import { io } from "socket.io-client";
+import Chat_layout from "./chat/layout";
 
 const Homepage = () => {
   const navigate = useNavigate();
@@ -82,7 +83,8 @@ const Homepage = () => {
           Authorization: "Bearer " + token,
         },
       });
-      socket.on("online_users", (data) => {
+      window.socket.on("online_users", (data) => {
+        console.log(data);
         const seenIds = new Set();
         const uniqueUsers = [];
         for (const item of data) {
@@ -95,7 +97,7 @@ const Homepage = () => {
         if (user)
           setListOnline(uniqueUsers.filter((item) => item.user.id !== user.id));
       });
-      socket.on("message", (data) => {
+      window.socket.on("message", (data) => {
         console.log(data);
         if (data.type === "message") {
           notification.open({
@@ -105,10 +107,10 @@ const Homepage = () => {
           });
         }
       });
-      socket.emit("user_online");
+      window.socket.emit("user_online");
       return () => {
         console.log("👋 Disconnect socket");
-        socket.disconnect();
+        window.socket.disconnect();
       };
     } else {
       console.log("Không tìm thấy token!");
@@ -116,8 +118,8 @@ const Homepage = () => {
     }
   }, []);
   return (
-    <div className="flex flex-col">
-      <div className="flex gap-2 p-2">
+    <div className="flex w-full">
+      {/* <div className="flex gap-2 p-2">
         <Select
           placeholder="Chọn người dùng"
           options={listOnline.map((user, idx) => ({
@@ -139,7 +141,8 @@ const Homepage = () => {
         <Button type="primary" onClick={handleSend}>
           Gửi
         </Button>
-      </div>
+      </div> */}
+      <Chat_layout />
     </div>
   );
 };
