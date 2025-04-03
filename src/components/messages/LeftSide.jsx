@@ -9,16 +9,18 @@ import {
 } from "react-icons/fa";
 import { Badge } from "antd";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../api";
+import { useUser } from "../context/userContext";
 // import api from "../components/api";
 
 const LeftSide = () => {
   const nav = useNavigate();
+  const { user, setUser } = useUser();
   const [chatList, setChatList] = useState([]);
 
   useEffect(() => {
-    axios
-      .get("http://192.168.1.50:8008/api/chatbox/") // Test
+    api
+      .get("/chatbox/", user.token)
       .then((data) => setChatList(data))
       .catch((error) => console.error("Error fetching chats:", error));
     console.log("chat++", chatList);

@@ -6,7 +6,7 @@ import NotFoundPage from "../page/404";
 import Chat_layout from "../page/chat/layout";
 import Homepage_layout from "../page/app_layout";
 import LoginModal from "../page/app_login";
-import Profile from "../page/profile";
+// import Profile from "../page/profile";
 
 function App() {
   return (
