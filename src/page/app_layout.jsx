@@ -11,15 +11,14 @@ import App_lists from "./layout/app-list";
 const Homepage_layout = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { setUser } = useUser();
+  const { user, setUser } = useUser();
   const [cookies] = useCookies(["newversion_token"]);
   const [breadcrumbs, setBreadcrumbs] = useState([]);
   const [checkauthfade, setCheckauthfade] = useState(false);
   const [checkauth, setCheckauth] = useState(true);
   const SOCKET_SERVER_URL = import.meta.env.VITE_SOCKET;
-  const checkUserAuth = async () => {
-    const token = cookies.newversion_token;
-    console.log(token);
+  const [listOnline, setListOnline] = useState([]);
+  const checkUserAuth = async (token) => {
     if (!token) {
       setTimeout(() => {
         navigate("/login/");
@@ -64,29 +63,50 @@ const Homepage_layout = () => {
     setBreadcrumbs(newBreadcrumbs);
   }, [location.pathname]);
   useEffect(() => {
-    checkUserAuth();
-    window.socket = io(SOCKET_SERVER_URL, {
-      transports: ["websocket"],
-    });
-    window.socket.on("room_data", (data) => {
-      console.log("room_data", data);
-    });
-    window.socket.on("user online", (data) => {
-      console.log("User Online:", data);
-    });
-    window.socket.on("chat message", (data) => {
-      const { message, sender } = data;
-      console.log(`${sender}: ${message}`);
-    });
-    window.socket.on("user joined", (userId) => {
-      console.log("User joined:", userId);
-    });
-    window.socket.on("user left", (userId) => {
-      console.log("User left:", userId);
-    });
-    window.socket.on("user disconnected", (userId) => {
-      console.log("User disconnected:", userId);
-    });
+    const token = cookies.newversion_token;
+    // setAppLoading(true);
+    if (token) {
+      console.log("Có token:", token);
+      checkUserAuth(token);
+      window.socket = io(SOCKET_SERVER_URL, {
+        extraHeaders: {
+          ApplicationKey: api.key,
+          Authorization: "Bearer " + token,
+        },
+      });
+      window.socket.on("online_users", (data) => {
+        console.log(data);
+        const seenIds = new Set();
+        const uniqueUsers = [];
+        for (const item of data) {
+          const id = item.user.id;
+          if (!seenIds.has(id)) {
+            seenIds.add(id);
+            uniqueUsers.push(item);
+          }
+        }
+        if (user)
+          setListOnline(uniqueUsers.filter((item) => item.user.id !== user.id));
+      });
+      window.socket.on("message", (data) => {
+        console.log(data);
+        if (data.type === "message") {
+          notification.open({
+            message: data?.user?.full_name,
+            description: data?.data?.message,
+            duration: 3,
+          });
+        }
+      });
+      window.socket.emit("user_online");
+      return () => {
+        console.log("👋 Disconnect socket");
+        window.socket.disconnect();
+      };
+    } else {
+      console.log("Không tìm thấy token!");
+      navigate("/login");
+    }
   }, []);
   return (
     <div className="app">
