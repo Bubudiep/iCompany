@@ -6,6 +6,7 @@ import NotFoundPage from "../page/404";
 import Chat_layout from "../page/chat/layout";
 import Homepage_layout from "../page/app_layout";
 import LoginModal from "../page/app_login";
+import Profile from "../page/profile";
 
 function App() {
   return (
@@ -20,7 +21,8 @@ function App() {
           <Route path="/login" element={<LoginModal />} />
           <Route path="*" element={<LandingPage />} />
           <Route path="/404" element={<NotFoundPage />} />
-          <Route path="chat" element={<Chat_layout />} />
+          <Route path="/chat" element={<Chat_layout />} />
+          {/* <Route path="/settings" element={<Profile />} /> */}
         </Routes>
       </Router>
     </UserProvider>

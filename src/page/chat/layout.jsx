@@ -1,27 +1,10 @@
 import React from "react";
 import "../../assets/css/chat.css";
-import { useNavigate } from "react-router-dom";
-import {
-  FaCog,
-  FaUserFriends,
-  FaCommentDots,
-  FaBell,
-  FaEllipsisH,
-  FaPhone,
-  FaVideo,
-  FaSearch,
-  FaSmile,
-  FaHome,
-  FaPaperclip,
-  FaMicrophone,
-  FaImage,
-  FaThumbtack,
-  FaUserPlus,
-} from "react-icons/fa";
-import { useRef } from "react";
 
+import RightSide from "../../components/messages/RightSide";
+import MainChatArea from "../../components/messages/MainChatArea";
+import LeftSide from "../../components/messages/LeftSide";
 const Chat_layout = () => {
-  const nav = useNavigate();
   return (
     <div className="flex flex-1 gap-1 pb-1">
       <div className="left-side w-1/5 whitebox fadeInRight flex flex-col">
@@ -265,6 +248,15 @@ const Chat_layout = () => {
         </div>
       </div>
     </div>
+    <>
+      {/*left side  */}
+      <LeftSide />
+      {/* Main Chat Area  */}
+      <MainChatArea />
+
+      {/* right side */}
+      <RightSide />
+    </>
   );
 };
 
