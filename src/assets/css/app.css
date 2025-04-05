@@ -226,14 +226,101 @@ body,
     }
   }
 }
-
+.whiteTitle {
+  @apply bg-white flex justify-between h-[60px] border-b-1 border-[#0003] items-center;
+  padding: 0px 16px;
+  font-size: 16px;
+}
 .main-list {
-  @apply flex flex-col flex-1 w-full overflow-hidden bg-gray-200 gap-1 pl-1;
+  @apply flex flex-col flex-1 w-full overflow-hidden bg-gray-200 z-10;
   .main-container {
     @apply flex flex-col flex-1 overflow-hidden;
     -webkit-app-region: no-drag;
     div {
       -webkit-app-region: no-drag;
+    }
+    .left-menu {
+      background-color: #fff;
+      display: flex;
+      flex-direction: column;
+      width: 300px;
+      height: 100%;
+      border-right: 1px solid #0003;
+      animation: fadeInRight 0.4s ease-in-out;
+      .top-nav {
+        height: 60px;
+        border-bottom: 1px solid #0003;
+        display: flex;
+        .search {
+          display: flex;
+          justify-content: space-between;
+          padding: 12px;
+          .searchbox {
+            background-color: #e6e6e6;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            padding: 4px 6px 4px 8px;
+            gap: 6px;
+            border: 1px solid #e4e4e4;
+            transition: all 0.3s;
+            .icon {
+              color: #727272;
+            }
+            &:focus-within {
+              border: 1px solid #0099ff;
+              .icon {
+                color: #0099ff;
+              }
+            }
+            input {
+              outline: none;
+            }
+          }
+        }
+      }
+      .items {
+        display: flex;
+        flex-direction: column;
+        .item {
+          display: flex;
+          align-items: center;
+          font-size: 16px;
+          cursor: pointer;
+          transition: all 0.3s;
+          color: #555;
+          .icon {
+            color: #999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 52px;
+            font-size: 22px;
+            transition: all 0.3s;
+          }
+          .name {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: 50px;
+          }
+          &:hover {
+            color: #000;
+            background-color: #eee;
+            .icon {
+              color: #000;
+            }
+          }
+          &.active {
+            color: #0f82d5;
+            background-color: #eaf4ff;
+            .icon {
+              color: #0f82d5;
+            }
+          }
+        }
+      }
     }
     .left-tabs {
       z-index: 1;
@@ -946,9 +1033,9 @@ body,
     }
   }
   .top-container {
-    @apply flex justify-between z-10;
+    @apply flex justify-between z-10 bg-white border-b-1 border-[#0003];
     .router {
-      @apply flex p-1;
+      @apply flex p-1 px-2;
       .view {
         @apply flex items-center gap-1;
         .breadcrumb {
@@ -990,7 +1077,7 @@ body,
         }
       }
       .user-tools {
-        @apply flex gap-1 p-1 bg-white rounded-bl-lg shadow-md shadow-black/10 items-center;
+        @apply flex gap-1 p-1 bg-white rounded-bl-lg items-center;
         .lock {
           @apply w-7 text-[14px] text-center text-gray-500 cursor-pointer transition-all duration-300 hover:text-gray-700;
           -webkit-app-region: no-drag;
@@ -1005,9 +1092,7 @@ body,
 }
 
 .app-list {
-  @apply flex flex-col gap-1 w-[66px];
-  box-shadow: 2px 2px 4px #0002;
-  z-index: 1;
+  @apply flex flex-col gap-1 w-[66px] z-[100] border-r-1 border-[#0003];
   .logo {
     @apply flex items-center justify-center py-2 border-b border-black/20;
     .box {
@@ -1378,6 +1463,9 @@ body,
 .fadeInTop {
   animation: fadeInTop 0.4s ease-in-out;
 }
+.fadeInBot {
+  animation: fadeInBot 0.4s ease-in-out;
+}
 
 .fadeInRight {
   animation: fadeInRight 0.4s ease-in-out;
@@ -1389,6 +1477,14 @@ body,
   }
   to {
     opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes inRight {
+  from {
+    transform: translateX(-10px);
+  }
+  to {
     transform: translateY(0);
   }
 }

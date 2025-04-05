@@ -46,6 +46,12 @@ const Homepage_layout = () => {
   const mapLinks = {
     app: "Trang chủ",
     chat: "Trò chuyện",
+    contacts: "Danh bạ",
+    settings: "Cài đặt",
+    all: "Tất cả",
+    group: "Nhóm",
+    department: "Bộ phận",
+    chatted: "Đã nhắn tin",
   };
   useEffect(() => {
     const basePath = "/app";
