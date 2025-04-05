@@ -3,7 +3,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css"; // Import Font Awesome
 import { UserProvider } from "../components/context/userContext";
 import LandingPage from "../page/landing";
 import NotFoundPage from "../page/404";
-import Chat_layout from "../page/chat/layout";
+import Chat_layout from "../page/chat/layouts/layout";
 import Homepage_layout from "../page/app_layout";
 import LoginModal from "../page/app_login";
 import Profile from "../page/profile";
@@ -22,7 +22,7 @@ function App() {
           <Route path="*" element={<LandingPage />} />
           <Route path="/404" element={<NotFoundPage />} />
           <Route path="/chat" element={<Chat_layout />} />
-          {/* <Route path="/settings" element={<Profile />} /> */}
+          <Route path="/settings" element={<Profile />} />
         </Routes>
       </Router>
     </UserProvider>

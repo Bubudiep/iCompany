@@ -1,6 +1,5 @@
 import React from "react";
-import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
-import { ChevronDownIcon } from "@heroicons/react/16/solid";
+
 const Profile = () => {
   return (
     <>
@@ -66,10 +65,10 @@ const Profile = () => {
                   Photo
                 </label>
                 <div className="mt-2 flex items-center gap-x-3">
-                  <UserCircleIcon
+                  {/* <UserCircleIcon
                     aria-hidden="true"
                     className="size-12 text-gray-300"
-                  />
+                  /> */}
                   <button
                     type="button"
                     className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50"
@@ -88,10 +87,10 @@ const Profile = () => {
                 </label>
                 <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
                   <div className="text-center">
-                    <PhotoIcon
+                    {/* <PhotoIcon
                       aria-hidden="true"
                       className="mx-auto size-12 text-gray-300"
-                    />
+                    /> */}
                     <div className="mt-4 flex text-sm/6 text-gray-600">
                       <label
                         htmlFor="file-upload"
@@ -197,10 +196,6 @@ const Profile = () => {
                     <option>Canada</option>
                     <option>Mexico</option>
                   </select>
-                  <ChevronDownIcon
-                    aria-hidden="true"
-                    className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
-                  />
                 </div>
               </div>
 
