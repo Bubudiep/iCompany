@@ -11,8 +11,8 @@ const Contacts_list = () => {
   return (
     <div className="flex flex-1 overflow-hidden flex-col">
       <div key={activeFilter.id} className="whiteTitle fadeInBot">
-        <div className="flex items-center gap-2">
-          {activeFilter.icon}
+        <div className="flex items-center gap-2.5">
+          <div className="icon text-[20px]">{activeFilter.icon}</div>
           {activeFilter.label}
         </div>
       </div>
