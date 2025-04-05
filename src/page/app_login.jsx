@@ -40,7 +40,7 @@ const LoginModal = ({ onClose }) => {
             maxAge: response.expires_in, // Thời gian sống của cookie (giây)
             sameSite: "Strict", // Chống CSRF
           });
-          navigate("/electron/?f=1");
+          navigate("/app/?f=1");
         }
       })
       .finally(() => {

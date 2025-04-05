@@ -6,7 +6,9 @@ import NotFoundPage from "../page/404";
 import Chat_layout from "../page/chat/layouts/layout";
 import Homepage_layout from "../page/app_layout";
 import LoginModal from "../page/app_login";
-import Profile from "../page/profile";
+import Contacts_layout from "../page/contacts/layout";
+import Contacts_list from "../page/contacts/list_contacts";
+// import Profile from "../page/profile";
 
 function App() {
   return (
@@ -16,6 +18,10 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/app" element={<Homepage_layout />}>
             <Route path="chat" element={<Chat_layout />} />
+            <Route path="contacts" element={<Contacts_layout />}>
+              <Route index element={<Contacts_list />} />
+              <Route path=":filter" element={<Contacts_list />} />
+            </Route>
             <Route path="*" element={<NotFoundPage />} />
           </Route>
           <Route path="/login" element={<LoginModal />} />

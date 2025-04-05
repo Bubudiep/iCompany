@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import logo from "../../assets/icon/icon.png";
 import { FaGear, FaUser } from "react-icons/fa6";
 import chat_icon from "../../assets/icon/chat_app.png";
+import contacts_icon from "../../assets/icon/contacts_app.png";
 
 const menuItems = [
   {
@@ -11,6 +12,13 @@ const menuItems = [
     name: "Chat",
     icon: chat_icon,
     link: "/app/chat",
+  },
+  {
+    id: 2,
+    show: true,
+    name: "Danh bạ",
+    icon: contacts_icon,
+    link: "/app/contacts",
   },
 ];
 const userItems = [
