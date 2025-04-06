@@ -8,6 +8,7 @@ import Homepage_layout from "../page/app_layout";
 import LoginModal from "../page/app_login";
 import Contacts_layout from "../page/contacts/layout";
 import Contacts_list from "../page/contacts/list_contacts";
+import Company_layout from "../page/company/layout";
 // import Profile from "../page/profile";
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/app" element={<Homepage_layout />}>
             <Route path="chat" element={<Chat_layout />} />
+            <Route path="companys" element={<Company_layout />}></Route>
             <Route path="contacts" element={<Contacts_layout />}>
               <Route index element={<Contacts_list />} />
               <Route path=":filter" element={<Contacts_list />} />
@@ -28,7 +30,7 @@ function App() {
           <Route path="*" element={<LandingPage />} />
           <Route path="/404" element={<NotFoundPage />} />
           <Route path="/chat" element={<Chat_layout />} />
-          <Route path="/settings" element={<Profile />} />
+          {/* <Route path="/settings" element={<Profile />} /> */}
         </Routes>
       </Router>
     </UserProvider>

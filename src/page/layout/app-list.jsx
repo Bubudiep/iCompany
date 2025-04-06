@@ -4,6 +4,7 @@ import logo from "../../assets/icon/icon.png";
 import { FaGear, FaUser } from "react-icons/fa6";
 import chat_icon from "../../assets/icon/chat_app.png";
 import contacts_icon from "../../assets/icon/contacts_app.png";
+import company_icon from "../../assets/icon/company_app.png";
 
 const menuItems = [
   {
@@ -19,6 +20,13 @@ const menuItems = [
     name: "Danh bạ",
     icon: contacts_icon,
     link: "/app/contacts",
+  },
+  {
+    id: 3,
+    show: true,
+    name: "Công ty",
+    icon: company_icon,
+    link: "/app/companys",
   },
 ];
 const userItems = [
