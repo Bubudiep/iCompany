@@ -9,7 +9,7 @@ import {
 
 const MessageInput = ({ value, onChange, onSend, onKeyDown }) => {
   return (
-    <div className="p-4 border-t">
+    <div className="bg-white p-4 border-t">
       <div className="flex items-center">
         <input
           className="flex-1 p-2 rounded border"

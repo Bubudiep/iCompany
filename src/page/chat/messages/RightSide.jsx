@@ -16,7 +16,7 @@ const RightSide = () => {
       <div className="text-center">
         <Avatar
           size={64}
-          src="https://via.placeholder.com/64"
+          src="img"
           className="mx-auto mb-2"
         />
         <div className="font-bold text-lg">DEV Team</div>
