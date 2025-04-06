@@ -30,7 +30,7 @@ const Chat_room = () => {
         messages !== null ? (
           <>
             <MainChatArea messages={messages} />
-            {/* <RightSide /> */}
+            <RightSide />
           </>
         ) : (
           <div className="flex-1 flex justify-center items-center">
