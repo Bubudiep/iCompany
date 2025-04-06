@@ -7,50 +7,53 @@ import {
   FaEllipsisH,
   FaHome,
 } from "react-icons/fa";
-import { Badge } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Avatar, Badge, Input, message } from "antd";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../../../components/api";
+import { useUser } from "../../../components/context/userContext";
+import app from "../../../components/app";
 
 const LeftSide = () => {
   const nav = useNavigate();
   const [chatList, setChatList] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const { user } = useUser();
 
+  // Lấy danh sách cuộc trò chuyện từ API
   useEffect(() => {
-    const fetchChatList = async () => {
-      try {
-        const response = await api.get("/api/chatbox/", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // Thêm token
-          },
+    // Kiểm tra xem có token hay không
+    if (!user.token) {
+      console.error("No token found now. Redirect to login or show an error.");
+      // Chuyển hướng đến trang đăng nhập hoặc hiển thị thông báo
+      return;
+    }
+    const getChatList = () => {
+      api
+        .get("/chatbox/", user.token)
+        .then((res) => {
+          setChatList(res.results);
+        })
+        .catch((error) => {
+          message.error("Error fetching chat list!");
+          console.error("Error fetching chat list:", error);
         });
-        setChatList(response.data); // Giả sử API trả về array trực tiếp
-      } catch (error) {
-        console.error("Error fetching chats:", error);
-        // Xử lý lỗi (hiển thị thông báo)
-      }
     };
 
-    fetchChatList();
-  }, []);
+    getChatList();
+  }, [user.token, nav]); // Thêm token vào dependency array
 
-  const filteredChats = chatList.filter((chat) =>
-    chat.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const formatTime = (timestamp) => {
-    // Hàm format thời gian
-    const date = new Date(timestamp);
-    const hours = date.getHours();
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-    return `${hours} giờ ${minutes}`;
-  };
+  // const formatTime = (timestamp) => {
+  //   // Hàm format thời gian
+  //   const date = new Date(timestamp);
+  //   const hours = date.getHours();
+  //   const minutes = date.getMinutes().toString().padStart(2, "0");
+  //   return `${hours} giờ ${minutes}`;
+  // };
 
   return (
-    <div className="left-side w-1/5 flex flex-col">
+    <div className="left-side bg-white w-1/5 flex flex-col border-r-1 border-gray-400 rounded-r-xl">
       {/*  header */}
       <div className="flex items-center p-4">
-        <img
+        <Avatar
           alt="User Avatar"
           className="rounded-full"
           height="40"
@@ -63,17 +66,24 @@ const LeftSide = () => {
         </span>
       </div>
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto border border-t border-gray-400 rounded-xl">
         {/* Search */}
         <div className="flex p-2">
-          <input
-            className="w-full p-2 rounded"
-            placeholder="Tìm kiếm"
-            type="text"
-            onChange={(e) => setSearchTerm(e.target.value)}
+          <Input
+            className="bg-gray-600 rounded"
+            placeholder="Tìm kiếm cuộc trò chuyện"
+            allowClear
+            // onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-
+        {/* Chat list */}
+        <h2 className="p-2 text-xxl font-medium text-center">
+          Danh sách cuộc trò chuyện: {chatList.length}
+        </h2>
+        <h1>
+          {chatList === 0 &&
+            "Không tìm thấy cuộc trò chuyện. Hãy bắt đầu 1 cuộc trò chuyện."}
+        </h1>
         <div className="p-2">
           <div className="flex items-center justify-between">
             <span className="font-bold">Ưu tiên</span>
@@ -81,57 +91,54 @@ const LeftSide = () => {
           </div>
 
           <div className="mt-2">
-            {filteredChats.map((chat) => (
-              <div
+            {chatList.map((chat) => (
+              <Link
                 key={chat.id}
-                className="flex items-center p-2 hover:bg-gray-500 rounded cursor-pointer"
-                onClick={() => nav(`/chat/${chat.id}`)} // Thêm navigate
+                className="flex items-center p-2 hover:bg-gray-500 rounded cursor-pointer relative"
+                to={`/app/chat/${chat.id}`}
               >
-                <img
-                  alt={chat.name}
-                  className="rounded-full"
-                  height="40"
-                  src={chat.avatar || "https://via.placeholder.com/40"}
-                  width="40"
-                />
-
+                <Avatar size={40} src={chat.avatar} />
+                {/* Nội dung */}
                 <div className="ml-2 flex-1">
-                  <div className="font-bold">{chat.name}</div>
-                  <div className="text-sm text-ellipsis overflow-hidden">
-                    {chat.lastMessage?.sender === "you" && "Bạn: "}
-                    {chat.lastMessage?.content || "Chưa có tin nhắn"}
+                  <div className="font-bold">
+                    {
+                      chat.members.find((member) => member.id !== user.id)
+                        .username
+                    }
+                  </div>
+                  <div className="text-sm overflow-hidden text-nowrap text-ellipsis">
+                    {chat.last_message?.sender === user.id && "Bạn: "}
+                    {chat.last_message?.message || "Chưa có tin nhắn"}
                   </div>
                 </div>
-
-                <div className="ml-auto text-right">
+                {/* Thời gian và Badge */}
+                <div className="absolute top-0 right-0">
                   <div className="text-sm">
-                    {chat.lastMessage?.timestamp
-                      ? formatTime(chat.lastMessage.timestamp)
-                      : ""}
+                    {app.timeSince(chat?.last_message?.created_at)}
                   </div>
                   {chat.not_read > 0 && (
                     <Badge
                       count={chat.not_read}
-                      offset={[10, 10]}
-                      style={{ backgroundColor: "#1890ff" }}
+                      offset={[30, 5]}
+                      // style={{ backgroundColor: "#1890ff" }}
                     />
                   )}
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Phần footer giữ nguyên */}
+      {/* Phần footer*/}
       <div className="p-2">
         <div className="flex items-center justify-between cursor-pointer text-xl">
           <FaHome onClick={() => nav("/")} />
           <FaCog onClick={() => nav("/settings")} />
-          <FaUserFriends />
-          <FaCommentDots />
-          <FaBell />
-          <FaEllipsisH />
+          <FaUserFriends onClick={() => nav("/friends")} />
+          {/* <FaCommentDots onClick={() => nav("/messages")} /> */}
+          <FaBell onClick={() => nav("/notifications")} />
+          <FaEllipsisH onClick={() => nav("/more")} />
         </div>
       </div>
     </div>

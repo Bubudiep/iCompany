@@ -7,15 +7,14 @@
 }
 ::-webkit-scrollbar-track {
   border-radius: 5px; /* Bo tròn góc thumb */
-  background: #ffffff; /* Màu nền của track */
 }
 ::-webkit-scrollbar-thumb {
   border-radius: 2px; /* Bo tròn góc thumb */
   transition: all 0.3s;
-  background: #c8def1; /* Màu của thumb */
+  background: #5c7891; /* Màu của thumb */
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #8acaff; /* Màu khi hover lên thumb */
+  background: #134268; /* Màu khi hover lên thumb */
 }
 body,
 #root {
