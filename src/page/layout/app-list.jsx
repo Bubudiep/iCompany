@@ -5,6 +5,8 @@ import { FaGear, FaUser } from "react-icons/fa6";
 import chat_icon from "../../assets/icon/chat_app.png";
 import contacts_icon from "../../assets/icon/contacts_app.png";
 import company_icon from "../../assets/icon/company_app.png";
+import users_app from "../../assets/icon/user_report.png";
+import user_pers from "../../assets/icon/user_pers.png";
 
 const menuItems = [
   {
@@ -17,16 +19,30 @@ const menuItems = [
   {
     id: 2,
     show: true,
+    name: "Nhân lực",
+    icon: users_app,
+    link: "/app/operators",
+  },
+  {
+    id: 3,
+    show: true,
     name: "Danh bạ",
     icon: contacts_icon,
     link: "/app/contacts",
   },
   {
-    id: 3,
+    id: 4,
     show: true,
     name: "Công ty",
     icon: company_icon,
     link: "/app/companys",
+  },
+  {
+    id: 5,
+    show: true,
+    name: "Phân quyền",
+    icon: user_pers,
+    link: "/app/permission",
   },
 ];
 const userItems = [

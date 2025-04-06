@@ -9,6 +9,10 @@ import LoginModal from "../page/app_login";
 import Contacts_layout from "../page/contacts/layout";
 import Contacts_list from "../page/contacts/list_contacts";
 import Company_layout from "../page/company/layout";
+import Operators_layout from "../page/operators/layouts";
+import Operator_list from "../page/operators/tools/list_op";
+import Operator_news from "../page/operators/tools/new_op";
+import Operator_work_report from "../page/operators/tools/report_op";
 // import Profile from "../page/profile";
 
 function App() {
@@ -20,6 +24,12 @@ function App() {
           <Route path="/app" element={<Homepage_layout />}>
             <Route path="chat" element={<Chat_layout />} />
             <Route path="companys" element={<Company_layout />}></Route>
+            <Route path="operators" element={<Operators_layout />}>
+              <Route index element={<Operator_list />} />
+              <Route path="all" element={<Operator_list />} />
+              <Route path="add" element={<Operator_news />} />
+              <Route path="work_report" element={<Operator_work_report />} />
+            </Route>
             <Route path="contacts" element={<Contacts_layout />}>
               <Route index element={<Contacts_list />} />
               <Route path=":filter" element={<Contacts_list />} />
