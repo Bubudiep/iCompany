@@ -1100,7 +1100,7 @@ body,
       -webkit-app-region: no-drag;
     }
     img {
-      @apply w-[90%] h-[90%] p-2;
+      @apply w-[90%] h-[90%] p-1;
     }
   }
   .app-lists {

@@ -23,6 +23,12 @@ function App() {
               <Route path=":id_room" element={<Chat_room />} />
             </Route>
             <Route path="companys" element={<Company_layout />}></Route>
+            <Route path="operators" element={<Operators_layout />}>
+              <Route index element={<Operator_list />} />
+              <Route path="all" element={<Operator_list />} />
+              <Route path="add" element={<Operator_news />} />
+              <Route path="work_report" element={<Operator_work_report />} />
+            </Route>
             <Route path="contacts" element={<Contacts_layout />}>
               <Route index element={<Contacts_list />} />
               <Route path=":filter" element={<Contacts_list />} />
