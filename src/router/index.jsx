@@ -10,6 +10,10 @@ import Contacts_layout from "../page/contacts/layout";
 import Contacts_list from "../page/contacts/list_contacts";
 import Company_layout from "../page/company/layout";
 import Chat_room from "../page/chat/messages/chatroom";
+import Operators_layout from "../page/operators/layouts";
+import Operator_list from "../page/operators/tools/list_op";
+import Operator_news from "../page/operators/tools/new_op";
+import Operator_work_report from "../page/operators/tools/report_op";
 
 function App() {
   return (
