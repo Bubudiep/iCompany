@@ -1607,3 +1607,109 @@ body,
     transform: rotate(-360deg);
   }
 }
+
+.loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 40px;
+  height: 40px;
+  /* animation: spin2 2s linear infinite; */
+  animation: l7 1s infinite;
+  .square {
+    width: 20px;
+    height: 20px;
+    background-color: #2d9cdb;
+    position: absolute;
+    border-radius: 4px;
+    &:nth-child(1) {
+      top: -1px;
+      left: -1px;
+      background-color: #55ccf2;
+      border-top-right-radius: 10px;
+      border-bottom-left-radius: 10px;
+      animation-delay: 0s;
+      animation: bloom 2s ease-in-out infinite;
+    }
+    &:nth-child(2) {
+      top: -1px;
+      right: -1px;
+      border-top-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+      animation-delay: 0.1s;
+      animation: bloom2 2s ease-in-out infinite;
+    }
+    &:nth-child(3) {
+      border-top-right-radius: 10px;
+      border-bottom-left-radius: 10px;
+      bottom: -1px;
+      right: -1px;
+      animation-delay: 0.2s;
+      animation: bloom3 2s ease-in-out infinite;
+    }
+    &:nth-child(4) {
+      border-top-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+      bottom: -1px;
+      left: -1px;
+      background-color: #55ccf2;
+      animation-delay: 0.3s;
+      animation: bloom4 2s ease-in-out infinite;
+    }
+  }
+}
+
+/* @keyframes spin2 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+} */
+
+@keyframes bloom {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-3px, -3px) scale(1.2); /* nở ra */
+  }
+}
+
+@keyframes bloom2 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(3px, -3px) scale(1.2); /* nở ra */
+  }
+}
+
+@keyframes bloom3 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(3px, 3px) scale(1.2); /* nở ra */
+  }
+}
+
+@keyframes bloom4 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-3px, 3px) scale(1.2); /* nở ra */
+  }
+}
+@keyframes l7 {
+  to {
+    transform: rotate(1turn);
+  }
+}
