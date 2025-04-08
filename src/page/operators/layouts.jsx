@@ -1,8 +1,11 @@
+import { Tooltip } from "antd";
 import React, { useState } from "react";
 import { BsPersonFillAdd } from "react-icons/bs";
-import { FaUserClock } from "react-icons/fa";
+import { FaUserCheck, FaUserClock, FaUserTimes } from "react-icons/fa";
 import { HiOutlineSearch } from "react-icons/hi";
 import { HiMiniUserGroup } from "react-icons/hi2";
+import { LuNotebookText } from "react-icons/lu";
+import { RiBookletFill } from "react-icons/ri";
 import { TiGroup } from "react-icons/ti";
 import { Link, Outlet } from "react-router-dom";
 
@@ -24,21 +27,35 @@ const Operators_layout = () => {
     {
       id: "work",
       label: "Báo cáo đi làm",
-      icon: <FaUserClock />,
+      icon: <FaUserCheck />,
       link: "/app/operators/work_report",
+    },
+    {
+      id: "off",
+      label: "Báo cáo nghỉ làm",
+      icon: <FaUserTimes />,
+      link: "/app/operators/work_off",
     },
   ];
   return (
-    <div className="flex flex-1">
+    <div className="flex flex-1 overflow-hidden">
       <div className="left-menu">
         <div className="top-nav">
-          <div className="search">
-            <div className="searchbox">
+          <div className="search w-full">
+            <div className="searchbox w-full">
               <div className="icon">
                 <HiOutlineSearch />
               </div>
               <input type="text" placeholder="Tìm kiếm..." />
             </div>
+            <Tooltip title="Hướng dẫn">
+              <div
+                className="w-16 cursor-pointer flex items-center justify-center text-[#999] 
+                transition-all duration-300 hover:text-[#1677ff]"
+              >
+                <LuNotebookText size={20} />
+              </div>
+            </Tooltip>
           </div>
         </div>
         <div className="items">

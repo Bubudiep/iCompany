@@ -11,10 +11,10 @@
 ::-webkit-scrollbar-thumb {
   border-radius: 2px; /* Bo tròn góc thumb */
   transition: all 0.3s;
-  background: #5c7891; /* Màu của thumb */
+  background: #b5c6d4; /* Màu của thumb */
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #134268; /* Màu khi hover lên thumb */
+  background: #8ba6bb; /* Màu khi hover lên thumb */
 }
 body,
 #root {
@@ -260,6 +260,7 @@ body,
 }
 .main-list {
   @apply flex flex-col flex-1 w-full overflow-hidden bg-gray-200 z-10;
+  height: 100%;
   .main-container {
     @apply flex flex-col flex-1 overflow-hidden;
     -webkit-app-region: no-drag;
@@ -1033,7 +1034,7 @@ body,
     }
   }
   .top-container {
-    @apply flex justify-between z-10 bg-white border-b-1 border-[#0003];
+    @apply flex justify-between z-10 bg-white border-b-1 border-[#0003] h-[60px];
     .router {
       @apply flex p-1 px-2;
       .view {
@@ -1502,6 +1503,16 @@ body,
   &:hover {
     color: #333;
     background-color: #d6d6d6;
+  }
+}
+.ant-btn-delete {
+  width: 34px;
+  height: 34px;
+  padding: 0px;
+  color: #bb1b1b;
+  &:hover {
+    color: #ffffff;
+    background-color: #ff3f3f;
   }
 }
 

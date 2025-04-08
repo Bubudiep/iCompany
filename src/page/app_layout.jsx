@@ -120,11 +120,11 @@ const Homepage_layout = () => {
     <div className="app">
       {checkauth && (
         <div className={`loading_box ${checkauthfade ? "fadeOut" : ""}`}>
-          <div class="loader">
-            <div class="square"></div>
-            <div class="square"></div>
-            <div class="square"></div>
-            <div class="square"></div>
+          <div className="loader">
+            <div className="square"></div>
+            <div className="square"></div>
+            <div className="square"></div>
+            <div className="square"></div>
           </div>
         </div>
         // <div className={`loading_box ${checkauthfade ? "fadeOut" : ""}`}>
