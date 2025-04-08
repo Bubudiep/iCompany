@@ -4,6 +4,7 @@ import { HiOutlineSearch, HiOutlineUserGroup } from "react-icons/hi";
 import { MdOutlineContacts } from "react-icons/md";
 import { RiContactsBook3Line } from "react-icons/ri";
 import { Link, Outlet } from "react-router-dom";
+import LeftNav from "../../components/layout/LeftNav";
 
 const Contacts_layout = () => {
   const [activeFilter, setActiveFilter] = useState("all");
@@ -35,7 +36,7 @@ const Contacts_layout = () => {
   ];
   return (
     <div className="flex flex-1">
-      <div className="left-menu">
+      <LeftNav>
         <div className="top-nav">
           <div className="search">
             <div className="searchbox">
@@ -59,7 +60,7 @@ const Contacts_layout = () => {
             </Link>
           ))}
         </div>
-      </div>
+      </LeftNav>
       <Outlet
         context={{
           activeFilter: filterList.find((item) => item.id === activeFilter),

@@ -8,6 +8,7 @@ import { LuNotebookText } from "react-icons/lu";
 import { RiBookletFill } from "react-icons/ri";
 import { TiGroup } from "react-icons/ti";
 import { Link, Outlet } from "react-router-dom";
+import LeftNav from "../../components/layout/LeftNav";
 
 const Operators_layout = () => {
   const [activeFilter, setActiveFilter] = useState("all");
@@ -39,7 +40,7 @@ const Operators_layout = () => {
   ];
   return (
     <div className="flex flex-1 overflow-hidden">
-      <div className="left-menu">
+      <LeftNav>
         <div className="top-nav">
           <div className="search w-full">
             <div className="searchbox w-full">
@@ -50,7 +51,7 @@ const Operators_layout = () => {
             </div>
             <Tooltip title="Hướng dẫn">
               <div
-                className="w-16 cursor-pointer flex items-center justify-center text-[#999] 
+                className="w-16 ml-2 cursor-pointer flex items-center justify-center text-[#999] 
                 transition-all duration-300 hover:text-[#1677ff]"
               >
                 <LuNotebookText size={20} />
@@ -71,7 +72,7 @@ const Operators_layout = () => {
             </Link>
           ))}
         </div>
-      </div>
+      </LeftNav>
       <Outlet context={{}} />
     </div>
   );

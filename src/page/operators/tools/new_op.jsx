@@ -1,9 +1,10 @@
-import { Button, Input, InputNumber, Select, Tooltip } from "antd";
+import { Button, DatePicker, Input, InputNumber, Select, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { BsPersonFillAdd } from "react-icons/bs";
 import { FaPlus, FaSave } from "react-icons/fa";
 import { FaXmark } from "react-icons/fa6";
 import { GoAlertFill } from "react-icons/go";
+import dayjs from "dayjs";
 
 const Operator_news = () => {
   const [listUser, setListUser] = useState([]);
@@ -104,7 +105,10 @@ const Operator_news = () => {
                 className="flex gap-2 items-center p-2 not-first:border-t-1 duration-300
                 not-first:border-[#6a80ad33] relative hover:bg-[#f4f7fd] transition-all"
               >
-                <div className="min-w-16.5 w-16.5 h-16.5 relative">
+                <Tooltip
+                  title="Ảnh đại diện"
+                  className="min-w-16.5 w-16.5 h-16.5 relative"
+                >
                   {user.avatar ? (
                     <img
                       src={user.avatar}
@@ -124,8 +128,9 @@ const Operator_news = () => {
                     }
                     className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
                   />
-                </div>
-                <div
+                </Tooltip>
+                <Tooltip
+                  title="Mặt trước của căn cước công dân"
                   className="min-w-16.5 w-16.5 h-16.5 flex items-center justify-center relative bg-gray-200 
                   rounded-2xl text-gray-500"
                 >
@@ -144,11 +149,12 @@ const Operator_news = () => {
                     onChange={(e) => handleImageCCCD(index, e.target.files[0])}
                     className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
                   />
-                </div>
+                </Tooltip>
                 <div className="flex flex-col gap-1 min-w-[160px]">
                   <Input
                     placeholder="Họ tên"
                     value={user.fullname}
+                    className="require"
                     onChange={(e) =>
                       handleChange(index, "fullname", e.target.value)
                     }
@@ -161,12 +167,18 @@ const Operator_news = () => {
                     }
                   />
                 </div>
-                <div className="flex flex-col gap-1 min-w-[90px]">
-                  <InputNumber
-                    placeholder="Tuổi"
-                    value={user.old}
-                    onChange={(e) => handleChange(index, "old", e.target.value)}
-                    className="w-[90px]"
+                <div className="flex flex-col gap-1 min-w-[120px]">
+                  <DatePicker
+                    placeholder="Ngày sinh"
+                    className="w-[120px]"
+                    format="DD/MM/YYYY"
+                    value={user.old ? dayjs(user.old, "DD/MM/YYYY") : null}
+                    onChange={(date, dateString) =>
+                      handleChange(index, "old", dateString)
+                    }
+                    disabledDate={(current) => {
+                      return current && current > dayjs().endOf("day");
+                    }}
                   />
                   <Select
                     placeholder="Giới tính"
@@ -176,7 +188,7 @@ const Operator_news = () => {
                       value: cc,
                       label: cc,
                     }))}
-                    className="w-[90px]"
+                    className="w-[120px]"
                   />
                 </div>
                 <div className="flex flex-col gap-1 min-w-[160px]">
@@ -231,22 +243,26 @@ const Operator_news = () => {
                     }
                   />
                 </div>
-                {user.fullname === null && (
-                  <Tooltip
-                    title="Chưa nhập họ tên"
-                    className="absolute right-16 cursor-pointer text-[#ee1c00]"
-                  >
-                    <GoAlertFill />
-                  </Tooltip>
-                )}
-                <div className="absolute right-4">
-                  <Tooltip title={<div className="px-2">Xóa</div>}>
-                    <Button
-                      onClick={() => handleDeleteRow(index)}
-                      type="delete"
-                      icon={<FaXmark />}
-                    ></Button>
-                  </Tooltip>
+                <div className="ml-auto flex items-center gap-3">
+                  {user.fullname === null && (
+                    <Tooltip
+                      title="Chưa nhập họ tên"
+                      className="cursor-pointer text-[#ee1c00]"
+                    >
+                      <div className="p4">
+                        <GoAlertFill />
+                      </div>
+                    </Tooltip>
+                  )}
+                  <div className="ml-1">
+                    <Tooltip title={<div className="px-2">Xóa</div>}>
+                      <Button
+                        onClick={() => handleDeleteRow(index)}
+                        type="delete"
+                        icon={<FaXmark />}
+                      ></Button>
+                    </Tooltip>
+                  </div>
                 </div>
               </div>
             ))}

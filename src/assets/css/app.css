@@ -271,10 +271,31 @@ body,
       background-color: #fff;
       display: flex;
       flex-direction: column;
-      width: 300px;
+      width: 280px;
       height: 100%;
       border-right: 1px solid #0003;
       animation: fadeInRight 0.4s ease-in-out;
+      position: relative;
+      transition: all 0.3s;
+      z-index: 1;
+      .show-btn {
+        position: absolute;
+        right: -10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #fff;
+        border-radius: 50%;
+        border: 1px solid #0003;
+        height: 26px;
+        color: #999;
+        width: 26px;
+        top: calc(50% - 10px);
+        cursor: pointer;
+        font-size: 14px;
+        padding-right: 2px;
+        transition: all 0.3s;
+      }
       .top-nav {
         height: 60px;
         border-bottom: 1px solid #0003;
@@ -305,6 +326,7 @@ body,
             align-items: center;
             width: 100%;
             height: 50px;
+            white-space: nowrap;
           }
           &:hover {
             color: #000;
@@ -318,6 +340,42 @@ body,
             background-color: #eaf4ff;
             .icon {
               color: #0f82d5;
+            }
+          }
+        }
+      }
+      &.mini {
+        width: 90px;
+        .show-btn {
+          transform: rotate(180deg);
+        }
+        .searchbox {
+          width: 0px;
+          padding: 0px;
+          overflow: hidden;
+          border: none;
+        }
+        .items {
+          .item {
+            justify-content: center;
+            position: relative;
+            .name {
+              display: none;
+            }
+            &:hover {
+              .name {
+                display: flex;
+                position: absolute;
+                white-space: nowrap;
+                left: calc(100% + 1px);
+                background-color: #fff;
+                padding-left: 8px;
+                padding-right: 8px;
+                width: unset;
+                border-radius: 0px 8px 8px 0px;
+                z-index: 1;
+                box-shadow: 2px 2px 4px #0001;
+              }
             }
           }
         }
@@ -1722,5 +1780,21 @@ body,
 @keyframes l7 {
   to {
     transform: rotate(1turn);
+  }
+}
+input {
+  &.require {
+    position: relative;
+    &::before {
+      content: "*dsadsa";
+      width: 100px;
+      height: 100px;
+      color: red;
+      font-size: 12px;
+      margin-left: 5px;
+      position: absolute;
+      right: 0;
+      z-index: 1;
+    }
   }
 }
