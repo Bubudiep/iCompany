@@ -41,17 +41,8 @@ const LeftSide = () => {
     getChatList();
   }, [user.token, nav]); // Thêm token vào dependency array
 
-  // const formatTime = (timestamp) => {
-  //   // Hàm format thời gian
-  //   const date = new Date(timestamp);
-  //   const hours = date.getHours();
-  //   const minutes = date.getMinutes().toString().padStart(2, "0");
-  //   return `${hours} giờ ${minutes}`;
-  // };
-
   return (
     <div className="left-side bg-white w-1/5 flex flex-col border-r-1 border-gray-400 rounded-r-xl">
-      {/*  header */}
       <div className="flex items-center p-4">
         <Avatar
           alt="User Avatar"
@@ -60,14 +51,12 @@ const LeftSide = () => {
           src="https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
           width="40"
         />
-        {/* user name of current user get from localstorage */}
         <span className="ml-2 text-xl font-bold">
           {localStorage.getItem("username")}
         </span>
       </div>
 
       <div className="flex-1 overflow-y-auto border border-t border-gray-400 rounded-xl">
-        {/* Search */}
         <div className="flex p-2">
           <Input
             className="bg-gray-600 rounded"
@@ -76,7 +65,6 @@ const LeftSide = () => {
             // onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        {/* Chat list */}
         <h2 className="p-2 text-xxl font-medium text-center">
           Danh sách cuộc trò chuyện: {chatList.length}
         </h2>
@@ -108,7 +96,9 @@ const LeftSide = () => {
                   </div>
                   <div className="text-sm overflow-hidden text-nowrap text-ellipsis">
                     {chat.last_message?.sender === user.id && "Bạn: "}
-                    {chat.last_message?.message || "Chưa có tin nhắn"}
+                    {chat.last_message?.message.length > 14
+                      ? chat.last_message?.message.slice(0, 15) + "..."
+                      : chat.last_message?.message || "Chưa có tin nhắn"}
                   </div>
                 </div>
                 {/* Thời gian và Badge */}
@@ -117,11 +107,7 @@ const LeftSide = () => {
                     {app.timeSince(chat?.last_message?.created_at)}
                   </div>
                   {chat.not_read > 0 && (
-                    <Badge
-                      count={chat.not_read}
-                      offset={[30, 5]}
-                      // style={{ backgroundColor: "#1890ff" }}
-                    />
+                    <Badge count={chat.not_read} offset={[30, 5]} />
                   )}
                 </div>
               </Link>

@@ -1,17 +1,25 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MessageInput from "./MessageInput";
-import { FaPhone, FaVideo, FaSearch, FaEllipsisH } from "react-icons/fa";
+import { FaPhone, FaVideo } from "react-icons/fa";
 import { Avatar, Button, Input, message } from "antd";
 import { useUser } from "../../../components/context/userContext";
 import app from "../../../components/app";
-import { all } from "axios";
+import { IoInformationSharp } from "react-icons/io5";
+import api from "../../../components/api";
 
-const MainChatArea = ({ messages }) => {
+const MainChatArea = ({
+  messages,
+  sendMessage,
+  newMessage,
+  setNewMessage,
+  toggleRightSide,
+}) => {
   const { user } = useUser();
   const all_message = messages?.message?.data || [];
   const chatEndRef = useRef(null); // Ref để cuộn xuống cuối
 
   console.log(all_message);
+  // console.log(setNewMessage);
 
   // Cuộn xuống cuối khi có tin nhắn mới
   useEffect(() => {
@@ -20,16 +28,16 @@ const MainChatArea = ({ messages }) => {
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
-      handleSend();
+      sendMessage();
     }
   };
-  const handleSend = () => {};
+
   return (
     <div className="flex-1 flex flex-col bg-gray-300 overflow-hidden">
       <div className="flex items-center justify-between bg-white !h-[60px] p-4 border-b">
         <div className="flex items-center">
           <Avatar
-            alt={messages.sender}
+            // alt={messages.name}
             className="rounded-full"
             height="40"
             src={message.avatar || "img"}
@@ -37,61 +45,72 @@ const MainChatArea = ({ messages }) => {
           />
           <div className="ml-2">
             <h1 className="font-bold text-lg">
-              {localStorage.getItem("username")}
+              {/* {localStorage.getItem("username")} */}
+              User: {user.id}
             </h1>
-            <div className="text-sm text-gray-500">
-              {all_message.length} tin nhắn
-            </div>
+            <div className="text-sm text-gray-500">Đang hoạt động</div>
+            {/* {receiver.isOnline ? "Đang hoạt động" : "Offline"} */}
           </div>
         </div>
-        {/* Action buttons */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4 cursor-pointer">
           <FaPhone className="icon-hover" />
           <FaVideo className="icon-hover" />
-          <FaSearch className="icon-hover" />
-          <FaEllipsisH className="icon-hover" />
+          <IoInformationSharp
+            size={24}
+            className="icon-hover"
+            onClick={toggleRightSide}
+          />
         </div>
       </div>
+      {/* Chat area */}
       <div className="flex flex-1 p-1 h-[80px] overflow-hidden">
         <div className="flex-1 overflow-y-auto p-2">
-          {all_message.map((message, index) => (
-            <div
-              key={index}
-              className={`flex mb-4 ${
-                message.sender === 1 ? "justify-end" : "justify-start"
-              }`}
-            >
-              <p>{message.sender === 1 ? "" : "Other"}</p>
-              {message.sender !== 1 && (
-                <Avatar
-                  alt={message.sender_name}
-                  src={message.sender_avatar || "img"}
-                  className="mr-4"
-                />
-              )}
+          {all_message
+            .slice() // Tạo một bản sao của mảng để tránh thay đổi trực tiếp
+            .reverse() // Đảo ngược thứ tự tin nhắn
+            .map((message, index) => (
               <div
-                className={`p-3 rounded-lg max-w-xs ${
-                  message.sender === 1
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-100 text-black"
+                key={index}
+                className={`flex mb-4 ${
+                  message.sender === user.id ? "justify-end" : "justify-start"
                 }`}
               >
-                <p>{message.message}</p>
-                <span className="text-xs text-gray-500">
-                  {app.timeSince(message.created_at)}
-                </span>
+                {message.sender !== user.id && (
+                  <Avatar
+                    alt={message.sender}
+                    src={message.sender_avatar || "img"}
+                    className="mr-2"
+                  />
+                )}
+                <div
+                  className={`p-2 mx-2 rounded-lg max-w-xs relative group ${
+                    message.sender === user.id
+                      ? "bg-blue-500 text-white" // Style cho tin nhắn của mình
+                      : "bg-gray-200 text-black" // Style cho tin nhắn người khác
+                  }`}
+                >
+                  <p>{message.message}</p>
+                  {/* {index === all_message.length - 1 ? ( */}
+                  <span className="text-xs">
+                    {app.timeSince(message.created_at)}
+                  </span>
+                  {/* ) : (
+                    <span className="text-xs opacity-0 group-hover:opacity-100 transition-opacity">
+                      {app.timeSince(message.created_at)}
+                    </span>
+                  )} */}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
           <div ref={chatEndRef} />
         </div>
       </div>
 
       <MessageInput
-      // value={newMessage}
-      // onChange={(e) => setNewMessage(e.target.value)}
-      // onSend={sendMessage}
-      // onKeyDown={handleKeyDown}
+        value={newMessage}
+        onChange={(e) => setNewMessage(e.target.value)}
+        onSend={sendMessage}
+        onKeyDown={handleKeyDown}
       />
     </div>
   );

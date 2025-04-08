@@ -16,12 +16,12 @@ const MessageInput = ({ value, onChange, onSend, onKeyDown }) => {
           placeholder="Nhập tin nhắn..."
           type="text"
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => onChange(e)}
           onKeyDown={onKeyDown}
         />
         <button
           onClick={onSend}
-          className="ml-2 p-2 bg-blue-500 text-white rounded"
+          className="ml-2 p-2 bg-blue-500 text-white rounded cursor-pointer"
         >
           Gửi
         </button>
