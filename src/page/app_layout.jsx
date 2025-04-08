@@ -73,7 +73,6 @@ const Homepage_layout = () => {
   }, [location.pathname]);
   useEffect(() => {
     const token = cookies.newversion_token;
-    // setAppLoading(true);
     if (token) {
       console.log("Có token:", token);
       checkUserAuth(token);
@@ -121,11 +120,19 @@ const Homepage_layout = () => {
     <div className="app">
       {checkauth && (
         <div className={`loading_box ${checkauthfade ? "fadeOut" : ""}`}>
-          <div className="box">
-            <img src={logo} />
-            <div className="loader"></div>
+          <div className="loader">
+            <div className="square"></div>
+            <div className="square"></div>
+            <div className="square"></div>
+            <div className="square"></div>
           </div>
         </div>
+        // <div className={`loading_box ${checkauthfade ? "fadeOut" : ""}`}>
+        //   <div className="box">
+        //     <img src={logo} />
+        //     <div className="loader"></div>
+        //   </div>
+        // </div>
       )}
       {checkauthfade && (
         <>
