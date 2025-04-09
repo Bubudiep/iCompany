@@ -8,10 +8,8 @@ const LeftNav = ({ children, className }) => {
   return (
     <div className={clsx("left-menu", miniSize ? "mini" : "normal", className)}>
       {children}
-
       <div className="show-btn" onClick={() => setMiniSize(!miniSize)}>
-        {/* Icon đổi chiều khi thu gọn */}
-        {miniSize ? <FaCaretRight /> : <FaChevronLeft />}
+        <FaChevronLeft />
       </div>
     </div>
   );

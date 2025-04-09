@@ -280,21 +280,26 @@ body,
       z-index: 1;
       .show-btn {
         position: absolute;
-        right: -10px;
+        right: -8px;
         display: flex;
         align-items: center;
         justify-content: center;
         background-color: #fff;
-        border-radius: 50%;
+        border-radius: 0px 4px 4px 0px;
         border: 1px solid #0003;
-        height: 26px;
+        border-left: hidden;
+        height: 54px;
         color: #999;
-        width: 26px;
-        top: calc(50% - 10px);
+        width: 8px;
+        top: calc(50% - 27px);
         cursor: pointer;
-        font-size: 14px;
-        padding-right: 2px;
-        transition: all 0.3s;
+        font-size: 11px;
+        z-index: 10;
+        svg {
+          right: 1px;
+          position: absolute;
+          transition: all 0.3s;
+        }
       }
       .top-nav {
         height: 60px;
@@ -347,7 +352,9 @@ body,
       &.mini {
         width: 90px;
         .show-btn {
-          transform: rotate(180deg);
+          svg {
+            transform: rotate(180deg);
+          }
         }
         .searchbox {
           width: 0px;

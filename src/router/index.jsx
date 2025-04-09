@@ -15,6 +15,10 @@ import Operator_list from "../page/operators/tools/list_op";
 import Operator_news from "../page/operators/tools/new_op";
 import Operator_work_report from "../page/operators/tools/report_op";
 import Operator_offwork_report from "../page/operators/tools/offwork_op";
+import Company_info from "../page/company/company_info";
+import Company_setup from "./../page/company/company_setup";
+import Company_accounts from "./../page/company/company_accounts";
+import Company_roles from "./../page/company/company_roles";
 
 function App() {
   return (
@@ -27,7 +31,13 @@ function App() {
               <Route index element={<Chat_room />} />
               <Route path=":id_room" element={<Chat_room />} />
             </Route>
-            <Route path="companys" element={<Company_layout />}></Route>
+            <Route path="companys" element={<Company_layout />}>
+              <Route index element={<Company_info />} />
+              <Route path="infomation" element={<Company_info />} />
+              <Route path="configurations" element={<Company_setup />} />
+              <Route path="accounts" element={<Company_accounts />} />
+              <Route path="roles" element={<Company_roles />} />
+            </Route>
             <Route path="operators" element={<Operators_layout />}>
               <Route index element={<Operator_list />} />
               <Route path="all" element={<Operator_list />} />
