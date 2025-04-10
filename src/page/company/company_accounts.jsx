@@ -1,13 +1,35 @@
-import { Empty, Select } from "antd";
-import React from "react";
+import { Button, Empty, Select, Tooltip } from "antd";
+import React, { useEffect, useState } from "react";
 import { GoAlertFill } from "react-icons/go";
 import { useOutletContext } from "react-router-dom";
 import { useUser } from "../../components/context/userContext";
 import Locked from "../../components/layout/Locked";
+import api from "../../components/api";
+import { FaLock } from "react-icons/fa";
+import { MdLockReset } from "react-icons/md";
+import { TbAlertSquareRoundedFilled, TbLockPause } from "react-icons/tb";
+import app from "../../components/app";
 
 const Company_accounts = () => {
   const { menu } = useOutletContext();
   const { user } = useUser();
+  const [locked, setLocked] = useState(true);
+  const [accounts, setAccounts] = useState([]);
+  const loadAccounts = () => {
+    api
+      .get("/accounts/", user.token)
+      .then((res) => {
+        if (res.results) {
+          setLocked(false);
+          setAccounts(res.results);
+        }
+      })
+      .catch((e) => {})
+      .finally(() => {});
+  };
+  useEffect(() => {
+    loadAccounts();
+  }, []);
   return (
     <div className="flex flex-1 overflow-hidden flex-col contacts-page">
       <div className="whiteTitle fadeInBot">
@@ -26,33 +48,114 @@ const Company_accounts = () => {
           </div>
         </div>
         <div className="whitebox h-full flex flex-col !p-0">
-          {!user?.info?.isAdmin ? (
-            <div className="flex p-2 border-b-1 border-[#0002] gap-2">
-              <Select
-                defaultValue="all"
-                placeholder="Phân loại tài khoản"
-                className="min-w-[150px]"
-              >
-                <Select.Option value="all">Tất cả tài khoản</Select.Option>
-                <Select.Option value="SuperAdmin">SuperAdmin</Select.Option>
-                <Select.Option value="Admin">Admin</Select.Option>
-                <Select.Option value="User">User</Select.Option>
-              </Select>
-              <Select
-                defaultValue="all"
-                placeholder="Phòng ban"
-                className="min-w-[160px]"
-              >
-                <Select.Option value="all">Tất cả phòng ban</Select.Option>
-              </Select>
-              <Select
-                defaultValue="all"
-                placeholder="Chức vụ"
-                className="min-w-[160px]"
-              >
-                <Select.Option value="all">Tất cả chức vụ</Select.Option>
-              </Select>
-            </div>
+          {!locked ? (
+            <>
+              <div className="flex p-2 border-b-1 border-[#0002] gap-2">
+                <Select
+                  defaultValue="all"
+                  placeholder="Phân loại tài khoản"
+                  className="min-w-[150px]"
+                >
+                  <Select.Option value="all">Tất cả tài khoản</Select.Option>
+                  <Select.Option value="SuperAdmin">SuperAdmin</Select.Option>
+                  <Select.Option value="Admin">Admin</Select.Option>
+                  <Select.Option value="User">User</Select.Option>
+                </Select>
+                <Select
+                  defaultValue="all"
+                  placeholder="Phòng ban"
+                  className="min-w-[160px]"
+                >
+                  <Select.Option value="all">Tất cả phòng ban</Select.Option>
+                </Select>
+                <Select
+                  defaultValue="all"
+                  placeholder="Chức vụ"
+                  className="min-w-[160px]"
+                >
+                  <Select.Option value="all">Tất cả chức vụ</Select.Option>
+                </Select>
+              </div>
+              <div className="mr-0.5 my-0.5 flex flex-col overflow-y-auto px-1">
+                {accounts.map((acc) => (
+                  <div
+                    key={acc.id}
+                    className="flex gap-2 items-center p-2 py-1 border-b-1 duration-300
+                  border-[#6a80ad33] relative hover:bg-[#f4f7fd] transition-all text-[13px]"
+                  >
+                    <div className="flex flex-col w-[200px]">
+                      <div className="flex name">{acc.cardID}</div>
+                      <div className="flex name">Tài khoản: {acc.username}</div>
+                    </div>
+                    <div className="flex flex-col w-[200px]">
+                      <div className="flex name">
+                        {acc.Ban
+                          ? "Đã ban"
+                          : acc.isSuperAdmin
+                          ? "Giám đốc"
+                          : acc.isAdmin
+                          ? "Admin"
+                          : "Nhân viên"}
+                      </div>
+                      <div className="flex name">
+                        Trạng thái:
+                        {acc.isActive ? " Hoạt đông" : " Đã tắt"}
+                      </div>
+                    </div>
+                    <div className="flex flex-col w-[200px]">
+                      <div className="flex name">
+                        Sửa: {app.timeSince(acc.updated_at)}
+                      </div>
+                      <div className="flex name">
+                        Tạo: {app.timeSince(acc.created_at)}
+                      </div>
+                    </div>
+                    <div className="tools flex gap-2 ml-auto mr-2">
+                      {user.info.isSuperAdmin && !acc.isSuperAdmin ? (
+                        <>
+                          <Tooltip title="Lock: Chặn đăng nhập">
+                            <Button
+                              className="!text-[#0003] hover:!text-[#6c8eff]"
+                              icon={<FaLock />}
+                            />
+                          </Tooltip>
+                          <Tooltip title="Reset: Đặt lại mật khẩu">
+                            <Button
+                              className="!text-[#0003] hover:!text-[#6c8eff]"
+                              icon={<TbLockPause />}
+                            />
+                          </Tooltip>
+                        </>
+                      ) : !acc.isAdmin &&
+                        !acc.isSuperAdmin &&
+                        user.info.isAdmin ? (
+                        <>
+                          <Tooltip title="Lock: Chặn đăng nhập">
+                            <Button
+                              className="!text-[#0003] hover:!text-[#6c8eff]"
+                              icon={<FaLock />}
+                            />
+                          </Tooltip>
+                          <Tooltip title="Reset: Đặt lại mật khẩu">
+                            <Button
+                              className="!text-[#0003] hover:!text-[#6c8eff]"
+                              icon={<TbLockPause />}
+                            />
+                          </Tooltip>
+                        </>
+                      ) : (
+                        <Tooltip
+                          title="Bị hạn chế do là tài khoản admin hoặc giám đốc"
+                          className="text-[#999] flex gap-1 items-center text-[12px] font-[500]"
+                        >
+                          <TbAlertSquareRoundedFilled size={18} /> Hạn chế
+                        </Tooltip>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           ) : (
             <div className="flex flex-1 items-center justify-center">
               <Locked description="Bạn không có quyền truy cập" />

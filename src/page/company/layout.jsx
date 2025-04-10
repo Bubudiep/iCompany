@@ -1,11 +1,10 @@
-import React, { useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import LeftNav from "../../components/layout/LeftNav";
 import { BsBuildingsFill, BsFillDiagram2Fill } from "react-icons/bs";
 import { FaUsersCog } from "react-icons/fa";
 import { TbManualGearbox } from "react-icons/tb";
 import { FaGears, FaUsersGear } from "react-icons/fa6";
-
 const menus = [
   {
     id: 0,
@@ -33,7 +32,13 @@ const menus = [
   },
 ];
 const Company_layout = () => {
+  const location = useLocation();
   const [activeMenu, setActiveMenu] = useState(menus[0]);
+  useEffect(() => {
+    menus.forEach(
+      (items) => location.pathname.includes(items.link) && setActiveMenu(items)
+    );
+  }, []);
   return (
     <div className="flex flex-1 overflow-hidden">
       <LeftNav>
