@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import MessageInput from "./MessageInput";
 import { FaPhone, FaVideo } from "react-icons/fa";
-import { Avatar, Button, Input, message } from "antd";
+import { Avatar } from "antd";
 import { useUser } from "../../../components/context/userContext";
 import app from "../../../components/app";
 import { IoInformationSharp } from "react-icons/io5";
-import api from "../../../components/api";
 
 const MainChatArea = ({
   messages,
@@ -16,14 +15,16 @@ const MainChatArea = ({
 }) => {
   const { user } = useUser();
   const all_message = messages?.message?.data || [];
-  const chatEndRef = useRef(null); // Ref để cuộn xuống cuối
+  const chatEndRef = useRef(null);
 
-  console.log(all_message);
-  // console.log(setNewMessage);
+  const receiver = messages?.members?.find((member) => member.id !== user.id);
 
-  // Cuộn xuống cuối khi có tin nhắn mới
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    console.log("All messages in MainChatArea:", all_message);
+    console.log("Last message:", all_message[all_message.length - 1]);
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   }, [all_message]);
 
   const handleKeyDown = (event) => {
@@ -37,19 +38,15 @@ const MainChatArea = ({
       <div className="flex items-center justify-between bg-white !h-[60px] p-4 border-b">
         <div className="flex items-center">
           <Avatar
-            // alt={messages.name}
             className="rounded-full"
-            height="40"
-            src={message.avatar || "img"}
-            width="40"
+            size={40}
+            src="https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
           />
           <div className="ml-2">
             <h1 className="font-bold text-lg">
-              {/* {localStorage.getItem("username")} */}
-              User: {user.id}
+              {receiver?.username || "User"}
             </h1>
             <div className="text-sm text-gray-500">Đang hoạt động</div>
-            {/* {receiver.isOnline ? "Đang hoạt động" : "Offline"} */}
           </div>
         </div>
         <div className="flex items-center space-x-4 cursor-pointer">
@@ -62,46 +59,52 @@ const MainChatArea = ({
           />
         </div>
       </div>
-      {/* Chat area */}
       <div className="flex flex-1 p-1 h-[80px] overflow-hidden">
         <div className="flex-1 overflow-y-auto p-2">
           {all_message
-            .slice() // Tạo một bản sao của mảng để tránh thay đổi trực tiếp
-            .reverse() // Đảo ngược thứ tự tin nhắn
-            .map((message, index) => (
-              <div
-                key={index}
-                className={`flex mb-4 ${
-                  message.sender === user.id ? "justify-end" : "justify-start"
-                }`}
-              >
-                {message.sender !== user.id && (
-                  <Avatar
-                    alt={message.sender}
-                    src={message.sender_avatar || "img"}
-                    className="mr-2"
-                  />
-                )}
+            .sort((a, b) => a.id - b.id)
+            .filter(
+              (message) =>
+                message && typeof message === "object" && "sender" in message
+            )
+            .map(
+              (
+                message,
+                index // Bỏ .slice().reverse()
+              ) => (
                 <div
-                  className={`p-2 mx-2 rounded-lg max-w-xs relative group ${
-                    message.sender === user.id
-                      ? "bg-blue-500 text-white" // Style cho tin nhắn của mình
-                      : "bg-gray-200 text-black" // Style cho tin nhắn người khác
+                  key={message.id || index}
+                  className={`flex mb-4 ${
+                    message.sender === user.id ? "justify-end" : "justify-start"
                   }`}
                 >
-                  <p>{message.message}</p>
-                  {/* {index === all_message.length - 1 ? ( */}
-                  <span className="text-xs">
-                    {app.timeSince(message.created_at)}
-                  </span>
-                  {/* ) : (
-                    <span className="text-xs opacity-0 group-hover:opacity-100 transition-opacity">
-                      {app.timeSince(message.created_at)}
+                  {message.sender !== user.id && (
+                    <Avatar
+                      alt={message.sender.toString()}
+                      src={
+                        message.sender_avatar ||
+                        "https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
+                      }
+                      className="mr-2"
+                    />
+                  )}
+                  <div
+                    className={`p-2 mx-2 rounded-lg max-w-xs relative group ${
+                      message.sender === user.id
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-200 text-black"
+                    }`}
+                  >
+                    <p>{message.message}</p>
+                    <span className="text-xs">
+                      {app.timeSince(
+                        message.created_at || new Date().toISOString()
+                      )}
                     </span>
-                  )} */}
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            )}
           <div ref={chatEndRef} />
         </div>
       </div>

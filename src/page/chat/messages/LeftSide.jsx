@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   FaCog,
   FaUserFriends,
@@ -7,40 +7,15 @@ import {
   FaEllipsisH,
   FaHome,
 } from "react-icons/fa";
-import { Avatar, Badge, Input, message } from "antd";
+import { Avatar, Badge, Input } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../../../components/api";
-import { useUser } from "../../../components/context/userContext";
 import app from "../../../components/app";
 
-const LeftSide = () => {
+const LeftSide = ({ chatList, user }) => {
   const nav = useNavigate();
-  const [chatList, setChatList] = useState([]);
-  const { user } = useUser();
-
-  // Lấy danh sách cuộc trò chuyện từ API
   useEffect(() => {
-    // Kiểm tra xem có token hay không
-    if (!user.token) {
-      console.error("No token found now. Redirect to login or show an error.");
-      // Chuyển hướng đến trang đăng nhập hoặc hiển thị thông báo
-      return;
-    }
-    const getChatList = () => {
-      api
-        .get("/chatbox/", user.token)
-        .then((res) => {
-          setChatList(res.results);
-        })
-        .catch((error) => {
-          message.error("Error fetching chat list!");
-          console.error("Error fetching chat list:", error);
-        });
-    };
-
-    getChatList();
-  }, [user.token, nav]); // Thêm token vào dependency array
-
+    console.log("Chat list updated:", chatList);
+  }, [chatList]);
   return (
     <div className="left-side bg-white w-1/5 flex flex-col border-r-1 border-gray-400 rounded-r-xl">
       <div className="flex items-center p-4">
