@@ -5,7 +5,7 @@ import { useOutletContext } from "react-router-dom";
 import { useUser } from "../../components/context/userContext";
 import Locked from "../../components/layout/Locked";
 import api from "../../components/api";
-import { FaLock } from "react-icons/fa";
+import { FaLock, FaPlus } from "react-icons/fa";
 import { MdLockReset } from "react-icons/md";
 import { TbAlertSquareRoundedFilled, TbLockPause } from "react-icons/tb";
 import app from "../../components/app";
@@ -27,6 +27,7 @@ const Company_accounts = () => {
       .catch((e) => {})
       .finally(() => {});
   };
+  const addAccount = () => {};
   useEffect(() => {
     loadAccounts();
   }, []);
@@ -75,19 +76,30 @@ const Company_accounts = () => {
                 >
                   <Select.Option value="all">Tất cả chức vụ</Select.Option>
                 </Select>
+                <Button
+                  type="primary"
+                  className="ml-auto"
+                  icon={<FaPlus />}
+                  onClick={addAccount}
+                >
+                  Thêm tài khoản
+                </Button>
               </div>
               <div className="mr-0.5 my-0.5 flex flex-col overflow-y-auto px-1">
                 {accounts.map((acc) => (
                   <div
                     key={acc.id}
-                    className="flex gap-2 items-center p-2 py-1 border-b-1 duration-300
+                    className="flex gap-2 items-center p-2 py-1.5 border-b-1 duration-300
                   border-[#6a80ad33] relative hover:bg-[#f4f7fd] transition-all text-[13px]"
                   >
-                    <div className="flex flex-col w-[200px]">
-                      <div className="flex name">{acc.cardID}</div>
+                    <div className="flex flex-col w-[50px] items-center">
+                      <div className="avatar w-[40px] h-[40px] bg-[#0003] rounded-xl"></div>
+                    </div>
+                    <div className="flex flex-col w-[160px]">
+                      <div className="flex name">Mã NV: {acc.cardID}</div>
                       <div className="flex name">Tài khoản: {acc.username}</div>
                     </div>
-                    <div className="flex flex-col w-[200px]">
+                    <div className="flex flex-col w-[180px]">
                       <div className="flex name">
                         {acc.Ban
                           ? "Đã ban"
@@ -102,7 +114,7 @@ const Company_accounts = () => {
                         {acc.isActive ? " Hoạt đông" : " Đã tắt"}
                       </div>
                     </div>
-                    <div className="flex flex-col w-[200px]">
+                    <div className="flex flex-col w-[120px]">
                       <div className="flex name">
                         Sửa: {app.timeSince(acc.updated_at)}
                       </div>
@@ -146,7 +158,7 @@ const Company_accounts = () => {
                       ) : (
                         <Tooltip
                           title="Bị hạn chế do là tài khoản admin hoặc giám đốc"
-                          className="text-[#999] flex gap-1 items-center text-[12px] font-[500]"
+                          className="text-[#f59d4b] flex gap-1 items-center text-[12px] font-[500]"
                         >
                           <TbAlertSquareRoundedFilled size={18} /> Hạn chế
                         </Tooltip>
