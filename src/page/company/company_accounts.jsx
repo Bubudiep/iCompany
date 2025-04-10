@@ -13,11 +13,13 @@ const Company_accounts = () => {
         </div>
       </div>
       <div className="flex flex-col flex-1 p-2 gap-2 fadeInTop">
-        <div className="flex whitebox !p-0">
-          <div className="flex icon p-3 border-r-1 border-[#0003] text">
+        <div className="flex whitebox !p-0 text-[#f77001] border-[#f77001] border-1">
+          <div className="flex icon p-3 border-r-1">
             <GoAlertFill />
           </div>
-          <div className="text">Chỉ admin mới được thêm mới tài khoản</div>
+          <div className="flex items-center ml-2">
+            Chỉ admin mới được thêm mới tài khoản
+          </div>
         </div>
         <div className="whitebox h-full flex flex-col"></div>
       </div>
