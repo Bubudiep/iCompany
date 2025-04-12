@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MessageInput from "./MessageInput";
 import { FaPhone, FaVideo } from "react-icons/fa";
-import { Avatar } from "antd";
+import { Avatar, Spin } from "antd";
 import { useUser } from "../../../components/context/userContext";
 import app from "../../../components/app";
 import { IoInformationSharp } from "react-icons/io5";
@@ -9,6 +9,8 @@ import { IoInformationSharp } from "react-icons/io5";
 const MainChatArea = ({
   messages,
   sendMessage,
+  fetchOlderMessages,
+  loadingOlder,
   newMessage,
   setNewMessage,
   toggleRightSide,
@@ -16,6 +18,8 @@ const MainChatArea = ({
   const { user } = useUser();
   const all_message = messages?.message?.data || [];
   const chatEndRef = useRef(null);
+  const chatContainerRef = useRef(null);
+  const [lastScrollHeight, setLastScrollHeight] = useState(0);
 
   const receiver = messages?.members?.find((member) => member.id !== user.id);
 
@@ -25,12 +29,44 @@ const MainChatArea = ({
     if (chatEndRef.current) {
       chatEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [all_message]);
+  }, [all_message.length]);
+
+  const handleScroll = () => {
+    const container = chatContainerRef.current;
+    if (container.scrollTop === 0 && !loadingOlder && all_message.length > 0) {
+      const minId = Math.min(...all_message.map((msg) => msg.id));
+      setLastScrollHeight(container.scrollHeight);
+      fetchOlderMessages(minId);
+    }
+  };
+
+  useEffect(() => {
+    if (loadingOlder) return;
+
+    const container = chatContainerRef.current;
+    if (container && lastScrollHeight) {
+      const newScrollHeight = container.scrollHeight;
+      container.scrollTop = newScrollHeight - lastScrollHeight;
+      setLastScrollHeight(0);
+    }
+  }, [all_message, loadingOlder]);
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       sendMessage();
     }
+  };
+
+  const getTimeDisplay = (timestamp) => {
+    const now = new Date();
+    const messageDate = new Date(timestamp);
+    const diffInSeconds = Math.floor((now - messageDate) / 1000);
+
+    if (diffInSeconds < 10) {
+      return "vừa xong";
+    }
+
+    return app.timeSince(timestamp);
   };
 
   return (
@@ -59,52 +95,56 @@ const MainChatArea = ({
           />
         </div>
       </div>
-      <div className="flex flex-1 p-1 h-[80px] overflow-hidden">
-        <div className="flex-1 overflow-y-auto p-2">
+      <div className="flex flex-1 p-1 overflow-hidden">
+        <div
+          className="flex-1 overflow-y-auto p-2"
+          ref={chatContainerRef}
+          onScroll={handleScroll}
+        >
+          {loadingOlder && (
+            <div className="flex justify-center py-2">
+              <Spin />
+            </div>
+          )}
           {all_message
             .sort((a, b) => a.id - b.id)
             .filter(
               (message) =>
                 message && typeof message === "object" && "sender" in message
             )
-            .map(
-              (
-                message,
-                index // Bỏ .slice().reverse()
-              ) => (
+            .map((message, index) => (
+              <div
+                key={message.id || index}
+                className={`flex mb-4 ${
+                  message.sender === user.id ? "justify-end" : "justify-start"
+                }`}
+              >
+                {message.sender !== user.id && (
+                  <Avatar
+                    alt={message.sender.toString()}
+                    src={
+                      message.sender_avatar ||
+                      "https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
+                    }
+                    className="mr-2"
+                  />
+                )}
                 <div
-                  key={message.id || index}
-                  className={`flex mb-4 ${
-                    message.sender === user.id ? "justify-end" : "justify-start"
+                  className={`p-2 mx-2 rounded-lg max-w-xs relative group ${
+                    message.sender === user.id
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200 text-black"
                   }`}
                 >
-                  {message.sender !== user.id && (
-                    <Avatar
-                      alt={message.sender.toString()}
-                      src={
-                        message.sender_avatar ||
-                        "https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
-                      }
-                      className="mr-2"
-                    />
-                  )}
-                  <div
-                    className={`p-2 mx-2 rounded-lg max-w-xs relative group ${
-                      message.sender === user.id
-                        ? "bg-blue-500 text-white"
-                        : "bg-gray-200 text-black"
-                    }`}
-                  >
-                    <p>{message.message}</p>
-                    <span className="text-xs">
-                      {app.timeSince(
-                        message.created_at || new Date().toISOString()
-                      )}
-                    </span>
-                  </div>
+                  <p>{message.message}</p>
+                  <span className="text-xs">
+                    {getTimeDisplay(
+                      message.created_at || new Date().toISOString()
+                    )}
+                  </span>
                 </div>
-              )
-            )}
+              </div>
+            ))}
           <div ref={chatEndRef} />
         </div>
       </div>

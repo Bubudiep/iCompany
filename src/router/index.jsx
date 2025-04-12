@@ -19,6 +19,7 @@ import Company_info from "../page/company/company_info";
 import Company_setup from "./../page/company/company_setup";
 import Company_accounts from "./../page/company/company_accounts";
 import Company_roles from "./../page/company/company_roles";
+import Profile from "../page/profile";
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
               <Route path=":filter" element={<Contacts_list />} />
             </Route>
             <Route path="*" element={<NotFoundPage />} />
+            <Route path="user" element={<Profile />} />
           </Route>
           <Route path="/login" element={<LoginModal />} />
           <Route path="*" element={<LandingPage />} />
