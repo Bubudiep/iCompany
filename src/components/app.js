@@ -1,5 +1,6 @@
 import axios from "axios";
 import dayjs from "dayjs";
+import jsQR from "jsqr";
 
 const random = (length) => {
   const characters =
@@ -56,7 +57,6 @@ const getAddress = async (latitude, longitude) => {
 function resizeImage(img, maxSize, outputFormat = "image/jpeg", quality = 0.8) {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
-  console.log(img);
   let width = img.width;
   let height = img.height;
   if (width > height) {
@@ -162,10 +162,10 @@ function parseCCCDString(cccdString) {
   const ngay_het_han_str = fields[6].trim();
   // Chuyển ngày từ "DDMMYYYY" sang format Date hoặc dayjs
   const ngay_sinh = dayjs(ngay_sinh_str, "DDMMYYYY").isValid()
-    ? dayjs(ngay_sinh_str, "DDMMYYYY")
+    ? dayjs(ngay_sinh_str, "DDMMYYYY").format("YYYY-MM-DD")
     : null;
   const ngay_het_han = dayjs(ngay_het_han_str, "DDMMYYYY").isValid()
-    ? dayjs(ngay_het_han_str, "DDMMYYYY")
+    ? dayjs(ngay_het_han_str, "DDMMYYYY").format("YYYY-MM-DD")
     : null;
   // Trả về một object JSON chứa thông tin
   return {
@@ -200,7 +200,54 @@ const zoomAndCrop = (canvas, context) => {
   );
   return tempCanvas;
 };
+const handleReadQR = (file) => {
+  return new Promise((resolve, reject) => {
+    if (!file) return resolve(null);
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const img = new Image();
+      img.onload = function () {
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        context.drawImage(img, 0, 0, img.width, img.height);
+        const processImage = (canvas, context) => {
+          const imageData = context.getImageData(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+          );
+          return jsQR(imageData.data, canvas.width, canvas.height);
+        };
+        let code = processImage(canvas, context);
+        if (code) {
+          resolve(parseCCCDString(code.data));
+        } else {
+          const zoomedCanvas = zoomAndCrop(canvas, context); // bạn cần đảm bảo hàm này tồn tại
+          const zoomedContext = zoomedCanvas.getContext("2d");
+          code = processImage(zoomedCanvas, zoomedContext);
+          if (code) {
+            resolve(parseCCCDString(code.data));
+          } else {
+            resolve(null); // Không đọc được QR
+          }
+        }
+      };
+      img.onerror = (err) => {
+        reject(err);
+      };
+      img.src = e.target.result;
+    };
+    reader.onerror = (err) => {
+      reject(err);
+    };
+    reader.readAsDataURL(file);
+  });
+};
 export default {
+  handleReadQR,
   zoomAndCrop,
   convertToBase64,
   parseCCCDString,

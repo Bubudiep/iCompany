@@ -1822,3 +1822,15 @@ input {
     }
   }
 }
+label {
+  &.btn {
+    @apply flex items-center gap-2 border-1 px-3 border-[#0003] rounded-[6px];
+    cursor: pointer;
+    transition: all 0.3s;
+    &:hover {
+      color: #4096ff;
+      border-color: #4096ff;
+      background: #ffffff;
+    }
+  }
+}
