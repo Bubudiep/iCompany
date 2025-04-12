@@ -163,7 +163,7 @@ export const debouncePatch = (url, data, token, delay = DEFAULT_DELAY) => {
           signal: controller.signal,
           headers: buildHeaders(token),
         });
-        resolve(response);
+        resolve(response.data);
       } catch (error) {
         console.error("Error patching data", error);
         reject(error);

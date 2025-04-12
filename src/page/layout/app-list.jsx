@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/icon/icon.png";
 import { FaGear, FaUser } from "react-icons/fa6";
 import chat_icon from "../../assets/icon/chat_app.png";
@@ -7,6 +7,10 @@ import contacts_icon from "../../assets/icon/contacts_app.png";
 import company_icon from "../../assets/icon/company_app.png";
 import users_app from "../../assets/icon/user_report.png";
 import user_pers from "../../assets/icon/user_pers.png";
+import logout from "../../assets/icon/logout.png";
+import { Tooltip } from "antd";
+import { useCookies } from "react-cookie";
+import { useUser } from "../../components/context/userContext";
 
 const menuItems = [
   {
@@ -15,6 +19,7 @@ const menuItems = [
     name: "Chat",
     icon: chat_icon,
     link: "/app/chat",
+    unread_field: "chat_not_read",
   },
   {
     id: 2,
@@ -51,7 +56,10 @@ const userItems = [
 ];
 
 const App_lists = () => {
+  const navigate = useNavigate();
+  const [cookies, setCookie] = useCookies();
   const location = useLocation();
+  const { user } = useUser();
   const [activeItemId, setActiveItemId] = useState(null);
   const [indicatorStyle, setIndicatorStyle] = useState({ top: 0 });
   const itemsRef = useRef({}); // Lưu tham chiếu của các item theo id
@@ -73,8 +81,14 @@ const App_lists = () => {
       const { offsetTop } = itemsRef.current[activeItemId];
       setIndicatorStyle({ top: `${offsetTop}px` });
     }
-  }, [activeItemId]);
-
+  }, [activeItemId, user]);
+  const handleLogout = () => {
+    setCookie("newversion_token", null, {
+      path: "/",
+      sameSite: "Strict", // Chống CSRF
+    });
+    navigate("/login");
+  };
   return (
     <div className="app-list">
       <div className="logo">
@@ -108,6 +122,12 @@ const App_lists = () => {
                 className={`item ${activeItemId === item.id ? "active" : ""}`}
                 onClick={() => setActiveItemId(item.id)}
               >
+                {item?.unread_field &&
+                  user?.app_config?.[item?.unread_field] > 0 && (
+                    <div className="unread">
+                      {user?.app_config?.[item?.unread_field]}
+                    </div>
+                  )}
                 <div className="icon">
                   <img src={item.icon} alt={item.name} />
                 </div>
@@ -128,6 +148,12 @@ const App_lists = () => {
               <div className="name">{item.name}</div>
             </Link>
           ))}
+          <Tooltip title="Đăng xuất" onClick={handleLogout} className="item">
+            <div className="icon">
+              <img src={logout} alt="Đăng xuất" />
+            </div>
+            <div className="name"></div>
+          </Tooltip>
         </div>
       </div>
     </div>

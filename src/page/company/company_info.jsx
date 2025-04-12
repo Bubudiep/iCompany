@@ -1,8 +1,14 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { GoAlertFill } from "react-icons/go";
 import { useOutletContext } from "react-router-dom";
+import { useUser } from "../../components/context/userContext";
 
 const Company_info = () => {
   const { menu } = useOutletContext();
+  const { user, setUser } = useUser();
+  useEffect(() => {
+    console.log(user);
+  }, []);
   return (
     <div className="flex flex-1 overflow-hidden flex-col contacts-page">
       <div className="whiteTitle fadeInBot">
@@ -12,8 +18,56 @@ const Company_info = () => {
         </div>
       </div>
       <div className="flex flex-col flex-1 p-2 gap-2 fadeInTop">
-        <div className="flex whitebox"></div>
-        <div className="whitebox h-full flex flex-col"></div>
+        <div className="flex whitebox !shadow-none !p-0 border-1 text-[#424242]">
+          <div className="icon p-3 border-r-1">
+            <GoAlertFill />
+          </div>
+          <div className="flex items-center ml-2">
+            Chỉ boss và admin mới có quyền thay đổi thông tin công ty
+          </div>
+        </div>
+        <div className="whitebox h-full flex flex-col">
+          <div className="flex justify-between p-2 border-b-1 border-[#0003]">
+            <div className="name">Tên công ty</div>
+            <div className="name">-</div>
+          </div>
+          <div className="flex justify-between p-2 border-b-1 border-[#0003]">
+            <div className="name">Mã số thuế</div>
+            <div className="name">-</div>
+          </div>
+          <div className="flex justify-between p-2 border-b-1 border-[#0003]">
+            <div className="name">Code nhân viên</div>
+            <div className="name">-</div>
+          </div>
+          <div className="flex justify-between p-2 border-b-1 border-[#0003]">
+            <div className="name">Code tài liệu</div>
+            <div className="name">-</div>
+          </div>
+          <div className="flex justify-between p-2 border-b-1 border-[#0003]">
+            <div className="name">Số tài khoản</div>
+            <div className="name">-</div>
+          </div>
+          <div className="flex justify-between p-2 border-b-1 border-[#0003]">
+            <div className="name">Ngân hàng</div>
+            <div className="name">-</div>
+          </div>
+          <div className="flex justify-between p-2 border-b-1 border-[#0003]">
+            <div className="name">Link facebook</div>
+            <div className="name">-</div>
+          </div>
+          <div className="flex justify-between p-2 border-b-1 border-[#0003]">
+            <div className="name">Link Zalo</div>
+            <div className="name">-</div>
+          </div>
+          <div className="flex justify-between p-2 border-b-1 border-[#0003]">
+            <div className="name">Liên hệ</div>
+            <div className="name">-</div>
+          </div>
+          <div className="flex justify-between p-2 border-b-1 border-[#0003]">
+            <div className="name">Hotline CSKH</div>
+            <div className="name">-</div>
+          </div>
+        </div>
       </div>
     </div>
   );

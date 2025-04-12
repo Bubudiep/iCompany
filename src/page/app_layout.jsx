@@ -31,7 +31,6 @@ const Homepage_layout = () => {
       .then((res) => {
         if (!res?.id) navigate("/login/");
         setUser({ ...res, token: token });
-        // api.send("maximized");
         setTimeout(() => {
           setCheckauthfade(true);
           setTimeout(() => {
@@ -98,13 +97,21 @@ const Homepage_layout = () => {
           setListOnline(uniqueUsers.filter((item) => item.user.id !== user.id));
       });
       window.socket.on("message", (data) => {
-        console.log(data);
         if (data.type === "message") {
           notification.open({
             message: data?.user?.full_name,
             description: data?.data?.message,
             duration: 3,
           });
+          setUser((old) => ({
+            ...old,
+            app_config: {
+              ...old?.app_config,
+              chat_not_read: old?.app_config?.chat_not_read
+                ? old?.app_config?.chat_not_read + 1
+                : 1,
+            },
+          }));
         }
       });
       window.socket.emit("user_online");
