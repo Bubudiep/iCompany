@@ -19,6 +19,9 @@ const Chat_room = () => {
   const [newMessage, setNewMessage] = useState("");
   const [showRightSide, setShowRightSide] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingOlder, setLoadingOlder] = useState(false);
+  const [nextPageUrl, setNextPageUrl] = useState(null); // Lưu URL của trang tiếp theo
+
   const fetchMessages = async () => {
     if (id_room) {
       setLoading(true);
@@ -48,8 +51,60 @@ const Chat_room = () => {
     }
   };
 
+  const fetchOlderMessages = async (lastId) => {
+    if (id_room && lastId && !loadingOlder) {
+      setLoadingOlder(true);
+      try {
+        // Nếu có nextPageUrl, sử dụng nó; nếu không, gọi API với last_id
+        const url =
+          nextPageUrl ||
+          `/message/?room_id=${id_room}&last_id=${lastId}&page_size=30`;
+        const response = await api.get(url, user.token);
+        const responseData = response.data || response;
+        console.log("Raw response from fetchOlderMessages:", responseData);
+
+        // Lấy danh sách tin nhắn từ results
+        let olderMessages = [];
+        if (responseData && Array.isArray(responseData.results)) {
+          olderMessages = responseData.results;
+        } else {
+          console.warn("Results is not an array:", responseData);
+          olderMessages = [];
+        }
+
+        // Lưu URL của trang tiếp theo
+        setNextPageUrl(responseData.next || null);
+
+        console.log("Older messages fetched:", olderMessages);
+
+        // Loại bỏ tin nhắn trùng lặp dựa trên id
+        setMessages((prevMessages) => {
+          const existingIds = new Set(
+            prevMessages.message.data.map((msg) => msg.id)
+          );
+          const newMessages = olderMessages.filter(
+            (msg) => !existingIds.has(msg.id)
+          );
+
+          return {
+            ...prevMessages,
+            message: {
+              ...prevMessages.message,
+              data: [...newMessages, ...prevMessages.message.data],
+            },
+          };
+        });
+      } catch (error) {
+        console.error("Error fetching older messages:", error);
+      } finally {
+        setLoadingOlder(false);
+      }
+    }
+  };
+
   useEffect(() => {
     fetchMessages();
+    setNextPageUrl(null); // Reset nextPageUrl khi chuyển phòng chat
   }, [id_room]);
 
   const sendMessage = async () => {
@@ -66,13 +121,15 @@ const Chat_room = () => {
         if (!responseData || typeof responseData !== "object") {
           throw new Error("Invalid response format from sendMessage API");
         }
+
         setChatList((old) =>
           old.map((item) =>
             item.id === parseInt(id_room)
-              ? { ...item, not_read: 0, last_message: response }
+              ? { ...item, not_read: 0, last_message: responseData }
               : item
           )
         );
+
         const newSentMessage = {
           id: responseData.id || Date.now(),
           message: responseData.message || newMessage,
@@ -100,7 +157,6 @@ const Chat_room = () => {
         });
 
         setNewMessage("");
-        // Không gọi fetchMessages để tránh re-render toàn bộ
       } catch (error) {
         console.error("Error sending message:", error);
       }
@@ -119,6 +175,8 @@ const Chat_room = () => {
             <MainChatArea
               messages={messages}
               sendMessage={sendMessage}
+              fetchOlderMessages={fetchOlderMessages}
+              loadingOlder={loadingOlder}
               newMessage={newMessage}
               setNewMessage={setNewMessage}
               toggleRightSide={() => setShowRightSide(!showRightSide)}

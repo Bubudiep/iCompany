@@ -11,12 +11,9 @@ const Chat_layout = () => {
   const [chatList, setChatList] = useState([]);
   const { user } = useUser();
 
-  // Lấy danh sách cuộc trò chuyện từ API
   useEffect(() => {
-    // Kiểm tra xem có token hay không
     if (!user.token) {
       console.error("No token found now. Redirect to login or show an error.");
-      // Chuyển hướng đến trang đăng nhập hoặc hiển thị thông báo
       return;
     }
     const getChatList = () => {
@@ -32,7 +29,7 @@ const Chat_layout = () => {
     };
 
     getChatList();
-  }, []); // Thêm token vào dependency array
+  }, []);
 
   return (
     <div className="flex flex-1 overflow-hidden">

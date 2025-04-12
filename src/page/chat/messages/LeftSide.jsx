@@ -16,6 +16,19 @@ const LeftSide = ({ chatList, user }) => {
   useEffect(() => {
     console.log("Chat list updated:", chatList);
   }, [chatList]);
+
+  const getTimeDisplay = (timestamp) => {
+    if (!timestamp) return "";
+
+    const now = new Date();
+    const messageDate = new Date(timestamp);
+    const diffInSeconds = Math.floor((now - messageDate) / 1000);
+
+    if (diffInSeconds < 10) return "vừa xong";
+    if (diffInSeconds < 60) return `${diffInSeconds} giây trước`;
+
+    return app.timeSince(timestamp);
+  };
   return (
     <div className="left-side bg-white w-1/5 flex flex-col border-r-1 border-gray-400 rounded-r-xl">
       <div className="flex items-center p-4">
@@ -60,7 +73,12 @@ const LeftSide = ({ chatList, user }) => {
                 className="flex items-center p-2 hover:bg-gray-500 rounded cursor-pointer relative"
                 to={`/app/chat/${chat.id}`}
               >
-                <Avatar size={40} src={chat.avatar} />
+                <Avatar
+                  size={40}
+                  src={
+                    "https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
+                  }
+                />
                 {/* Nội dung */}
                 <div className="ml-2 flex-1">
                   <div className="font-bold">
@@ -71,16 +89,26 @@ const LeftSide = ({ chatList, user }) => {
                   </div>
                   <div className="text-sm overflow-hidden text-nowrap text-ellipsis">
                     {chat.last_message?.sender === user.id && "Bạn: "}
-                    {chat.last_message?.message.length > 14
-                      ? chat.last_message?.message.slice(0, 15) + "..."
-                      : chat.last_message?.message || "Chưa có tin nhắn"}
+                    {chat.last_message?.message
+                      ? chat.last_message.message.length > 14
+                        ? chat.last_message.message.slice(0, 15) + "..."
+                        : chat.last_message.message
+                      : "Chưa có tin nhắn"}
+                    {/* {chat.last_message?.created_at && (
+                      <span className="text-xs text-gray-500 ml-1">
+                        {getTimeDisplay(chat.last_message.created_at)}
+                      </span>
+                    )} */}
                   </div>
                 </div>
                 {/* Thời gian và Badge */}
                 <div className="absolute top-0 right-0">
                   <div className="text-sm">
-                    {app.timeSince(chat?.last_message?.created_at)}
+                    {chat.last_message?.created_at
+                      ? getTimeDisplay(chat.last_message.created_at)
+                      : ""}
                   </div>
+                  {/* when user click on box chat, not read = 0 */}
                   {chat.not_read > 0 && (
                     <Badge count={chat.not_read} offset={[30, 5]} />
                   )}
