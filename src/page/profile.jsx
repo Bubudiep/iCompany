@@ -3,16 +3,7 @@ import { useUser } from "../components/context/userContext";
 import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
-  const { user } = useUser(); // Lấy user và logout từ context
-  const navigate = useNavigate(); // Dùng để chuyển hướng sau khi logout
-
-  const handleLogout = () => {
-    // logout(); // Gọi hàm logout từ context
-    navigate("/login"); // Chuyển hướng về trang đăng nhập
-    // clear cookies
-
-    window.localStorage.clear();
-  };
+  const { user } = useUser();
 
   // Kiểm tra xem user có tồn tại không
   if (!user) {
@@ -48,12 +39,6 @@ const Profile = () => {
           </div>
         )}
       </div>
-      <button
-        onClick={handleLogout}
-        className="mt-6 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 cursor-pointer"
-      >
-        Đăng xuất
-      </button>
     </div>
   );
 };

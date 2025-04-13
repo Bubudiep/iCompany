@@ -12,22 +12,11 @@ const { Panel } = Collapse;
 const RightSide = () => {
   return (
     <div className="w-1/4 bg-white p-2 rounded-lg shadow">
-      {/* Header */}
       <div className="text-center">
-        <Avatar
-          size={64}
-          src="img"
-          className="mx-auto mb-2"
-        />
+        <Avatar size={64} src="img" className="mx-auto mb-2" />
         <div className="font-bold text-lg">DEV Team</div>
-        {/* <Button
-          type="link"
-          icon={<SettingOutlined />}
-          className="text-gray-500"
-        /> */}
       </div>
 
-      {/* Action Buttons */}
       <div className="flex justify-around mt-4">
         <div className="flex flex-col items-center">
           <BellOutlined className="text-xl mb-1" />
@@ -47,9 +36,7 @@ const RightSide = () => {
         </div>
       </div>
 
-      {/* Group Info Sections */}
       <Collapse bordered={false} defaultActiveKey={["1"]} className="mt-6">
-        {/* Thành viên nhóm */}
         <Panel
           header={<span className="font-bold">Thành viên nhóm</span>}
           key="1"
@@ -58,8 +45,6 @@ const RightSide = () => {
             <i className="fas fa-users mr-2"></i> 3 thành viên
           </p>
         </Panel>
-
-        {/* Bảng tin nhóm */}
         <Panel
           header={<span className="font-bold">Bảng tin nhóm</span>}
           key="2"
@@ -67,15 +52,11 @@ const RightSide = () => {
           <p className="text-sm">Danh sách nhắc hẹn</p>
           <p className="text-sm">Ghi chú, ghim, bình chọn</p>
         </Panel>
-
-        {/* Ảnh/Video */}
         <Panel header={<span className="font-bold">Ảnh/Video</span>} key="3">
           <p className="text-sm text-gray-500">
             Chưa có Ảnh/Video được chia sẻ trong hội thoại này
           </p>
         </Panel>
-
-        {/* File */}
         <Panel header={<span className="font-bold">File</span>} key="4">
           <div className="flex items-center space-x-2 text-sm">
             <img
@@ -91,7 +72,6 @@ const RightSide = () => {
         </Panel>
       </Collapse>
 
-      {/* View All Button */}
       <Button type="primary" block shape="round" size="medium" className="mt-4">
         Xem tất cả
       </Button>

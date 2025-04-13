@@ -8,7 +8,7 @@ import company_icon from "../../assets/icon/company_app.png";
 import users_app from "../../assets/icon/user_report.png";
 import user_pers from "../../assets/icon/user_pers.png";
 import logout from "../../assets/icon/logout.png";
-import { Tooltip } from "antd";
+import { Modal, Tooltip } from "antd";
 import { useCookies } from "react-cookie";
 import { useUser } from "../../components/context/userContext";
 
@@ -83,11 +83,25 @@ const App_lists = () => {
     }
   }, [activeItemId, user]);
   const handleLogout = () => {
-    setCookie("newversion_token", null, {
-      path: "/",
-      sameSite: "Strict", // Chống CSRF
+    // Hiển thị modal xác nhận
+    Modal.confirm({
+      title: "Xác nhận đăng xuất",
+      content: "Bạn có chắc chắn muốn đăng xuất không?",
+      okText: "Đăng xuất",
+      okType: "danger",
+      cancelText: "Hủy",
+      onOk: () => {
+        // Thực hiện đăng xuất nếu người dùng xác nhận
+        setCookie("newversion_token", null, {
+          path: "/",
+          sameSite: "Strict", // Chống CSRF
+        });
+        navigate("/login");
+      },
+      onCancel: () => {
+        console.log("Đăng xuất bị hủy");
+      },
     });
-    navigate("/login");
   };
   return (
     <div className="app-list">

@@ -5,6 +5,9 @@ import { Avatar, Spin } from "antd";
 import { useUser } from "../../../components/context/userContext";
 import app from "../../../components/app";
 import { IoInformationSharp } from "react-icons/io5";
+import AudioCallLayout from "./AudioCallLayout"; // Import layout gọi audio
+import VideoCallLayout from "./VideoCallLayout"; // Import layout gọi video
+import { IoIosList } from "react-icons/io";
 
 const MainChatArea = ({
   messages,
@@ -20,6 +23,10 @@ const MainChatArea = ({
   const chatEndRef = useRef(null);
   const chatContainerRef = useRef(null);
   const [lastScrollHeight, setLastScrollHeight] = useState(0);
+
+  // Trạng thái để hiển thị layout gọi audio/video
+  const [isAudioCallActive, setIsAudioCallActive] = useState(false);
+  const [isVideoCallActive, setIsVideoCallActive] = useState(false);
 
   const receiver = messages?.members?.find((member) => member.id !== user.id);
 
@@ -69,6 +76,37 @@ const MainChatArea = ({
     return app.timeSince(timestamp);
   };
 
+  // Hàm để bắt đầu/kết thúc cuộc gọi audio
+  const handleAudioCall = () => {
+    console.log("Audio call button clicked");
+    setIsAudioCallActive(true);
+    console.log("isAudioCallActive set to:", true);
+  };
+
+  const handleEndAudioCall = () => {
+    console.log("Ending audio call");
+    setIsAudioCallActive(false);
+    console.log("isAudioCallActive set to:", false);
+  };
+
+  // Hàm để bắt đầu/kết thúc cuộc gọi video
+  const handleVideoCall = () => {
+    console.log("Video call button clicked");
+    setIsVideoCallActive(true);
+    console.log("isVideoCallActive set to:", true);
+  };
+
+  const handleEndVideoCall = () => {
+    console.log("Ending video call");
+    setIsVideoCallActive(false);
+    console.log("isVideoCallActive set to:", false);
+  };
+
+  // Log trạng thái để debug
+  useEffect(() => {
+    console.log("Current isAudioCallActive:", isAudioCallActive);
+    console.log("Current isVideoCallActive:", isVideoCallActive);
+  }, [isAudioCallActive, isVideoCallActive]);
   return (
     <div className="flex-1 flex flex-col bg-gray-300 overflow-hidden">
       <div className="flex items-center justify-between bg-white !h-[60px] p-4 border-b">
@@ -86,13 +124,9 @@ const MainChatArea = ({
           </div>
         </div>
         <div className="flex items-center space-x-4 cursor-pointer">
-          <FaPhone className="icon-hover" />
-          <FaVideo className="icon-hover" />
-          <IoInformationSharp
-            size={24}
-            className="icon-hover"
-            onClick={toggleRightSide}
-          />
+          <FaPhone className="icon-hover" onClick={handleAudioCall} />
+          <FaVideo className="icon-hover" onClick={handleVideoCall} />
+          <IoIosList className="icon-hover" onClick={toggleRightSide} />
         </div>
       </div>
       <div className="flex flex-1 p-1 overflow-hidden">
@@ -155,6 +189,20 @@ const MainChatArea = ({
         onSend={sendMessage}
         onKeyDown={handleKeyDown}
       />
+
+      {/* Hiển thị layout gọi audio nếu đang active */}
+      {isAudioCallActive ? (
+        <AudioCallLayout receiver={receiver} onEndCall={handleEndAudioCall} />
+      ) : (
+        console.log("AudioCallLayout not rendered")
+      )}
+
+      {/* Hiển thị layout gọi video nếu đang active */}
+      {isVideoCallActive ? (
+        <VideoCallLayout receiver={receiver} onEndCall={handleEndVideoCall} />
+      ) : (
+        console.log("VideoCallLayout not rendered")
+      )}
     </div>
   );
 };

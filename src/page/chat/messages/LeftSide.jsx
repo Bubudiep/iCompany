@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaCog,
   FaUserFriends,
@@ -11,11 +11,33 @@ import { Avatar, Badge, Input } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import app from "../../../components/app";
 
-const LeftSide = ({ chatList, user }) => {
+const LeftSide = ({ chatList, setChatList, user }) => {
   const nav = useNavigate();
+  const [searchTerm, setSearchTerm] = useState(""); // Thêm trạng thái tìm kiếm
+  const [filteredChatList, setFilteredChatList] = useState(chatList); // Danh sách đã lọc
+
+  // Cập nhật danh sách chat khi chatList thay đổi
   useEffect(() => {
     console.log("Chat list updated:", chatList);
+    setFilteredChatList(chatList); // Cập nhật danh sách đã lọc khi chatList thay đổi
   }, [chatList]);
+
+  // Lọc danh sách chat khi searchTerm thay đổi
+  useEffect(() => {
+    if (!searchTerm) {
+      setFilteredChatList(chatList); // Nếu không có từ khóa tìm kiếm, hiển thị toàn bộ danh sách
+    } else {
+      const filtered = chatList.filter((chat) => {
+        const otherMember = chat.members.find(
+          (member) => member.id !== user.id
+        );
+        const username = otherMember?.username || "";
+        return username.toLowerCase().includes(searchTerm.toLowerCase());
+      });
+      console.log("find: ", filteredChatList);
+      setFilteredChatList(filtered);
+    }
+  }, [searchTerm, chatList, user]);
 
   const getTimeDisplay = (timestamp) => {
     if (!timestamp) return "";
@@ -50,6 +72,11 @@ const LeftSide = ({ chatList, user }) => {
             className="bg-gray-600 rounded"
             placeholder="Tìm kiếm cuộc trò chuyện"
             allowClear
+            value={searchTerm}
+            onChange={(e) => {
+              console.log("Search term:", e.target.value);
+              setSearchTerm(e.target.value);
+            }} // Cập nhật từ khóa tìm kiếm
             // onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
@@ -67,65 +94,58 @@ const LeftSide = ({ chatList, user }) => {
           </div>
 
           <div className="mt-2">
-            {chatList.map((chat) => (
-              <Link
-                key={chat.id}
-                className="flex items-center p-2 hover:bg-gray-500 rounded cursor-pointer relative"
-                to={`/app/chat/${chat.id}`}
-              >
-                <Avatar
-                  size={40}
-                  src={
-                    "https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
-                  }
-                />
-                {/* Nội dung */}
-                <div className="ml-2 flex-1">
-                  <div className="font-bold">
-                    {
-                      chat.members.find((member) => member.id !== user.id)
-                        .username
+            {chatList
+              .sort((a, b) => b.last_message.id - a.last_message.id)
+              .map((chat) => (
+                <Link
+                  key={chat.id}
+                  className="flex items-center p-2 hover:bg-gray-500 rounded cursor-pointer relative"
+                  to={`/app/chat/${chat.id}`}
+                >
+                  <Avatar
+                    size={40}
+                    src={
+                      "https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
                     }
+                  />
+                  {/* Nội dung */}
+                  <div className="ml-2 flex-1">
+                    <div className="font-bold">
+                      {
+                        chat.members.find((member) => member.id !== user.id)
+                          .username
+                      }
+                    </div>
+                    <div className="text-sm overflow-hidden text-nowrap text-ellipsis">
+                      {chat.last_message?.sender === user.id && "Bạn: "}
+                      {chat.last_message?.message
+                        ? chat.last_message.message.length > 14
+                          ? chat.last_message.message.slice(0, 15) + "..."
+                          : chat.last_message.message
+                        : "Chưa có tin nhắn"}
+                    </div>
                   </div>
-                  <div className="text-sm overflow-hidden text-nowrap text-ellipsis">
-                    {chat.last_message?.sender === user.id && "Bạn: "}
-                    {chat.last_message?.message
-                      ? chat.last_message.message.length > 14
-                        ? chat.last_message.message.slice(0, 15) + "..."
-                        : chat.last_message.message
-                      : "Chưa có tin nhắn"}
-                    {/* {chat.last_message?.created_at && (
-                      <span className="text-xs text-gray-500 ml-1">
-                        {getTimeDisplay(chat.last_message.created_at)}
-                      </span>
-                    )} */}
+                  <div className="absolute top-0 right-0">
+                    <div className="text-sm">
+                      {chat.last_message?.created_at
+                        ? getTimeDisplay(chat.last_message.created_at)
+                        : ""}
+                    </div>
+                    {chat.not_read > 0 && (
+                      <Badge count={chat.not_read} offset={[30, 5]} />
+                    )}
                   </div>
-                </div>
-                {/* Thời gian và Badge */}
-                <div className="absolute top-0 right-0">
-                  <div className="text-sm">
-                    {chat.last_message?.created_at
-                      ? getTimeDisplay(chat.last_message.created_at)
-                      : ""}
-                  </div>
-                  {/* when user click on box chat, not read = 0 */}
-                  {chat.not_read > 0 && (
-                    <Badge count={chat.not_read} offset={[30, 5]} />
-                  )}
-                </div>
-              </Link>
-            ))}
+                </Link>
+              ))}
           </div>
         </div>
       </div>
 
-      {/* Phần footer*/}
       <div className="p-2">
         <div className="flex items-center justify-between cursor-pointer text-xl">
           <FaHome onClick={() => nav("/")} />
           <FaCog onClick={() => nav("/settings")} />
           <FaUserFriends onClick={() => nav("/friends")} />
-          {/* <FaCommentDots onClick={() => nav("/messages")} /> */}
           <FaBell onClick={() => nav("/notifications")} />
           <FaEllipsisH onClick={() => nav("/more")} />
         </div>

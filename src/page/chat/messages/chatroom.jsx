@@ -28,6 +28,11 @@ const Chat_room = () => {
       try {
         const response = await api.get(`/chatbox/${id_room}`, user.token);
         const responseData = response.data || response;
+        setChatList((old) =>
+          old.map((item) =>
+            item.id === parseInt(id_room) ? { ...item, not_read: 0 } : item
+          )
+        );
         setMessages({
           id: responseData.id || null,
           not_read: responseData.not_read || 0,
@@ -74,7 +79,6 @@ const Chat_room = () => {
 
         // Lưu URL của trang tiếp theo
         setNextPageUrl(responseData.next || null);
-
         console.log("Older messages fetched:", olderMessages);
 
         // Loại bỏ tin nhắn trùng lặp dựa trên id

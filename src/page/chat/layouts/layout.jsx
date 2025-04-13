@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "../../../assets/css/chat.css";
-// import RightSide from "../messages/RightSide";
-// import MainChatArea from "../messages/MainChatArea";
 import LeftSide from "../messages/LeftSide";
 import { Outlet } from "react-router-dom";
 import { message } from "antd";
@@ -29,12 +27,12 @@ const Chat_layout = () => {
     };
 
     getChatList();
-  }, []);
+  }, [user.token]);
 
   return (
     <div className="flex flex-1 overflow-hidden">
-      <LeftSide chatList={chatList} user={user} />
-      <Outlet context={{ setChatList,chatList }} />
+      <LeftSide chatList={chatList} setChatList={setChatList} user={user} />
+      <Outlet context={{ setChatList, chatList }} />
     </div>
   );
 };
