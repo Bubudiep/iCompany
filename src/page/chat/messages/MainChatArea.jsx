@@ -31,8 +31,8 @@ const MainChatArea = ({
   const receiver = messages?.members?.find((member) => member.id !== user.id);
 
   useEffect(() => {
-    console.log("All messages in MainChatArea:", all_message);
-    console.log("Last message:", all_message[all_message.length - 1]);
+    // console.log("All messages in MainChatArea:", all_message);
+    // console.log("Last message:", all_message[all_message.length - 1]);
     if (chatEndRef.current) {
       chatEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
@@ -78,34 +78,34 @@ const MainChatArea = ({
 
   // Hàm để bắt đầu/kết thúc cuộc gọi audio
   const handleAudioCall = () => {
-    console.log("Audio call button clicked");
+    // console.log("Audio call button clicked");
     setIsAudioCallActive(true);
-    console.log("isAudioCallActive set to:", true);
+    // console.log("isAudioCallActive set to:", true);
   };
 
   const handleEndAudioCall = () => {
-    console.log("Ending audio call");
+    // console.log("Ending audio call");
     setIsAudioCallActive(false);
-    console.log("isAudioCallActive set to:", false);
+    // console.log("isAudioCallActive set to:", false);
   };
 
   // Hàm để bắt đầu/kết thúc cuộc gọi video
   const handleVideoCall = () => {
-    console.log("Video call button clicked");
+    // console.log("Video call button clicked");
     setIsVideoCallActive(true);
-    console.log("isVideoCallActive set to:", true);
+    // console.log("isVideoCallActive set to:", true);
   };
 
   const handleEndVideoCall = () => {
-    console.log("Ending video call");
+    // console.log("Ending video call");
     setIsVideoCallActive(false);
-    console.log("isVideoCallActive set to:", false);
+    // console.log("isVideoCallActive set to:", false);
   };
 
   // Log trạng thái để debug
   useEffect(() => {
-    console.log("Current isAudioCallActive:", isAudioCallActive);
-    console.log("Current isVideoCallActive:", isVideoCallActive);
+    // console.log("Current isAudioCallActive:", isAudioCallActive);
+    // console.log("Current isVideoCallActive:", isVideoCallActive);
   }, [isAudioCallActive, isVideoCallActive]);
   return (
     <div className="flex-1 flex flex-col bg-gray-300 overflow-hidden">
@@ -194,14 +194,14 @@ const MainChatArea = ({
       {isAudioCallActive ? (
         <AudioCallLayout receiver={receiver} onEndCall={handleEndAudioCall} />
       ) : (
-        console.log("AudioCallLayout not rendered")
+        <>{/* console.log("AudioCallLayout not rendered") */}</>
       )}
 
       {/* Hiển thị layout gọi video nếu đang active */}
       {isVideoCallActive ? (
         <VideoCallLayout receiver={receiver} onEndCall={handleEndVideoCall} />
       ) : (
-        console.log("VideoCallLayout not rendered")
+        <>{/* console.log("VideoCallLayout not rendered") */}</>
       )}
     </div>
   );
