@@ -200,6 +200,14 @@ const zoomAndCrop = (canvas, context) => {
   );
   return tempCanvas;
 };
+const getRandomColorFromString = (str) => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const color = `hsl(${hash % 360}, 60%, 60%)`; // Màu HSL dễ kiểm soát độ sáng
+  return color;
+};
 const handleReadQR = (file) => {
   return new Promise((resolve, reject) => {
     if (!file) return resolve(null);
@@ -247,6 +255,7 @@ const handleReadQR = (file) => {
   });
 };
 export default {
+  getRandomColorFromString,
   handleReadQR,
   zoomAndCrop,
   convertToBase64,

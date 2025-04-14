@@ -4,6 +4,7 @@ import { useUser } from "../../components/context/userContext";
 import { IoSearchOutline } from "react-icons/io5";
 import { Button, Popconfirm, Popover, Select } from "antd";
 import { FaEllipsisH } from "react-icons/fa";
+import app from "../../components/app";
 
 const Contacts_list = () => {
   const { activeFilter } = useOutletContext();
@@ -11,14 +12,6 @@ const Contacts_list = () => {
   const [filterText, setFilterText] = useState("");
   const filterStaff = () => {
     return user.staff.filter((item) => item.id !== user.id);
-  };
-  const getRandomColorFromString = (str) => {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    const color = `hsl(${hash % 360}, 60%, 60%)`; // Màu HSL dễ kiểm soát độ sáng
-    return color;
   };
 
   useEffect(() => {
@@ -74,7 +67,7 @@ const Contacts_list = () => {
                       style={{
                         backgroundColor: item?.profile?.avatar
                           ? "transparent"
-                          : getRandomColorFromString(
+                          : app.getRandomColorFromString(
                               item?.profile?.full_name || "user"
                             ),
                       }}

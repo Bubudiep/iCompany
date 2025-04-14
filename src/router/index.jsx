@@ -20,6 +20,8 @@ import Company_setup from "./../page/company/company_setup";
 import Company_accounts from "./../page/company/company_accounts";
 import Company_roles from "./../page/company/company_roles";
 import Profile from "../page/profile";
+import Details_op from "../page/operators/tools/details_op";
+import List_operators from "../page/operators/tools/list_ops";
 
 function App() {
   return (
@@ -41,7 +43,10 @@ function App() {
             </Route>
             <Route path="operators" element={<Operators_layout />}>
               <Route index element={<Operator_list />} />
-              <Route path="all" element={<Operator_list />} />
+              <Route path="all" element={<Operator_list />}>
+                <Route index element={<List_operators />} />
+                <Route path=":op_id" element={<Details_op />} />
+              </Route>
               <Route path="add" element={<Operator_news />} />
               <Route path="work_report" element={<Operator_work_report />} />
               <Route path="work_off" element={<Operator_offwork_report />} />
