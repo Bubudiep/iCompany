@@ -32,7 +32,13 @@ body,
 .app {
   @apply w-full h-full flex;
 }
-
+.op-left-tools {
+  @apply bg-white w-[300px] min-w-[350px] !p-0 border-[#0003] border-l-1;
+  .item {
+    @apply flex items-center px-3 py-2.5 border-b-1 border-[#0003] gap-3 pl-4;
+    @apply transition-all duration-300 hover:bg-[#eee] cursor-pointer;
+  }
+}
 .login-modal {
   display: flex;
   width: 100vw;
@@ -285,7 +291,7 @@ body,
         align-items: center;
         justify-content: center;
         background-color: #fff;
-        border-radius: 0px 4px 4px 0px;
+        border-radius: 0px 12px 12px 0px;
         border: 1px solid #0003;
         border-left: hidden;
         height: 54px;

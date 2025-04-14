@@ -54,7 +54,7 @@ const List_operators = () => {
     getOP();
   }, []);
   return (
-    <div className="overflow-hidden fadeInTop flex flex-col gap-2 flex-1">
+    <div className="overflow-hidden fadeInTop flex flex-col gap-2 flex-1 p-2 ">
       <div className="flex gap-2 whitebox">
         <div className="search !p-1">
           <div className="searchbox">

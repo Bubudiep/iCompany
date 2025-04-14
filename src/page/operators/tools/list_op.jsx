@@ -1,8 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { HiMiniUserGroup } from "react-icons/hi2";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 const Operator_list = () => {
+  const locate = useLocation();
+  const nav = useNavigate();
+  useEffect(() => {
+    if (locate.pathname === "/app/operators") {
+      console.log(locate);
+      nav("/app/operators/all");
+    }
+  });
   return (
     <div className="flex flex-1 overflow-hidden flex-col contacts-page">
       <div className="whiteTitle fadeInBot">
@@ -11,7 +19,7 @@ const Operator_list = () => {
           Danh sách người lao động
         </div>
       </div>
-      <div className="flex flex-1 p-2 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden">
         <Outlet />
       </div>
     </div>
