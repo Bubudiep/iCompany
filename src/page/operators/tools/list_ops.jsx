@@ -55,7 +55,7 @@ const List_operators = () => {
   }, []);
   return (
     <div className="overflow-hidden fadeInTop flex flex-col gap-2 flex-1 p-2 ">
-      <div className="flex gap-2 whitebox">
+      <div className="flex gap-2 whitebox overflow-hidden">
         <div className="search !p-1">
           <div className="searchbox">
             <label className="icon p-2">
@@ -101,12 +101,11 @@ const List_operators = () => {
             <div className="contact-item" key={item.id}>
               <Link
                 to={`/app/operators/all/${item.id}`}
-                className="flex gap-3 items-center"
+                className="flex items-center"
               >
                 <div className="flex">
                   <div
-                    className="avatar flex flex-1 items-center justify-center text-[#fff] 
-              text-[20px] w-16 h-16 rounded-[8px]"
+                    className="avatar"
                     style={{
                       backgroundColor: item?.avatar
                         ? "transparent"
@@ -125,7 +124,7 @@ const List_operators = () => {
                     )}
                   </div>
                 </div>
-                <div className="flex flex-col flex-1 w-[180px]">
+                <div className="flex flex-col flex-1 w-[180px] ml-3">
                   <div className="flex font-[500] text-[14px]">
                     {item?.ho_ten || "Chưa đặt tên"}
                   </div>
@@ -136,7 +135,7 @@ const List_operators = () => {
                     {item?.congty_danglam ?? "Chưa đi làm"}
                   </div>
                 </div>
-                <div className="flex flex-col flex-1 ml-4 w-[180px]">
+                <div className="block md:!max-w-[180px] md:!w-[180px] md:!ml-[0px]">
                   <div className="flex text-[13px]">
                     CCCD: {item?.so_cccd || "-"}
                   </div>
@@ -146,21 +145,21 @@ const List_operators = () => {
                       ? new Date(item?.ngaysinh).toLocaleDateString()
                       : "-"}
                   </div>
-                  <Tooltip
+                  <div
                     title={item?.quequan}
-                    className="text-[13px] text-[#5f5f5f] text-nowrap max-w-[180px] overflow-ellipsis overflow-hidden"
+                    className="text-[13px] text-[#5f5f5f]"
                   >
                     {item?.quequan || "-"}
-                  </Tooltip>
+                  </div>
                 </div>
-                <div className="flex flex-col flex-1 ml-4 w-[180px]">
-                  <div className="flex text-[13px] text-[#5f5f5f]">
+                <div className="max-w-0 lg:!max-w-[180px] lg:!w-[180px] block">
+                  <div className="flex text-[13px] text-[#5f5f5f]  text-nowrap">
                     Thâm niên: 0 ngày
                   </div>
-                  <div className="flex text-[13px] text-[#5f5f5f]">
+                  <div className="flex text-[13px] text-[#5f5f5f]  text-nowrap">
                     Tổng công: 0 công
                   </div>
-                  <div className="flex text-[13px] text-[#5f5f5f]">
+                  <div className="flex text-[13px] text-[#5f5f5f]  text-nowrap">
                     Ngày phỏng vấn: {item?.ngay_phongvan || "-"}
                   </div>
                 </div>

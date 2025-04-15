@@ -33,10 +33,19 @@ body,
   @apply w-full h-full flex;
 }
 .op-left-tools {
-  @apply bg-white w-[300px] min-w-[350px] !p-0 border-[#0003] border-l-1;
+  @apply transition-all duration-300;
+  @apply bg-white w-[300px] 
+  min-w-[300px] !p-0 border-[#0003] border-l-1;
+}
+.op-right-tools {
+  @apply transition-all duration-300;
   .item {
-    @apply flex items-center px-3 py-2.5 border-b-1 border-[#0003] gap-3 pl-4;
-    @apply transition-all duration-300 hover:bg-[#eee] cursor-pointer;
+    user-select: none;
+    @apply flex items-center px-3 py-2.5 gap-3 pl-4 rounded-[4px] text-[#7e7e7e];
+    @apply transition-all duration-300 hover:text-[#006eff] hover:bg-[#e7effc] cursor-pointer;
+    &:last-child {
+      border-bottom: none;
+    }
   }
 }
 .login-modal {
@@ -1440,6 +1449,17 @@ body,
 
 .whitebox {
   @apply bg-white p-1 rounded-[8px] shadow shadow-black/10;
+  .header {
+    border-bottom: 1px solid #0003;
+    padding: 8px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  &.back-btn {
+    @apply flex items-center gap-2 !p-2 !px-3 text-nowrap 
+    text-[#7c7c7c] hover:text-[#000] transition-all 
+    duration-300 cursor-pointer;
+  }
   .items {
     @apply flex flex-col overflow-auto;
     .item {
@@ -1556,6 +1576,15 @@ body,
       @apply p-2 !px-4 border-t-1 first:border-t-0 border-[#cecece] flex justify-between items-center;
       &:hover {
         background-color: #eee;
+      }
+      .avatar {
+        @apply flex flex-1 items-center justify-center text-[#fff] text-[20px] w-16 h-16 rounded-[8px];
+      }
+      div {
+        white-space: nowrap;
+      }
+      .block {
+        @apply transition-all w-[180px] flex duration-300 overflow-hidden max-w-0 flex-col flex-1 ml-4;
       }
     }
   }
