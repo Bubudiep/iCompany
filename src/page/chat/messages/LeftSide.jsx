@@ -357,6 +357,7 @@ const LeftSide = ({ chatList, setChatList, user }) => {
           {/* Tabs lọc thành viên */}
           <Tabs defaultActiveKey="1">
             <TabPane tab="Tất cả" key="1">
+              {/* change TabPane to items */}
               <div className="max-h-60 overflow-y-auto">
                 <div className="text-sm text-gray-500 mb-2">
                   Trò chuyện gần đây
