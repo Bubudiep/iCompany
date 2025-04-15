@@ -32,15 +32,45 @@ const Company_accounts = () => {
     department: "all",
     position: "all",
   });
+  const [password, setPassword] = useState("********");
   const [updating, setUpdating] = useState(false);
   const [openAddModal, setOpenAddModal] = useState(false);
   const [addForm] = Form.useForm();
   const [editModal, setEditModal] = useState(false);
   const [editForm] = Form.useForm();
   const [selectedAccount, setSelectedAccount] = useState(null);
+  const { confirm } = Modal;
+  const handleResetPassword = () => {
+    const userId = selectedAccount;
+    confirm({
+      title: "Xác nhận đặt lại mật khẩu?",
+      content:
+        "Bạn có chắc chắn muốn đặt lại mật khẩu cho người dùng này không?",
+      okText: "Xác nhận",
+      cancelText: "Huỷ",
+      onOk: () => {
+        api
+          .post(`/accounts/${userId.id}/reset-password/`, {}, user.token)
+          .then((res) => {
+            const newPass = res.new_password;
+            setPassword(newPass);
+            navigator.clipboard.writeText(newPass).then(() => {
+              message.success(`Mật khẩu mới đã được sao chép: ${newPass}`);
+            });
+            message.success(`Mật khẩu mới: ${newPass}`);
+          })
+          .catch((err) => {
+            message.error(
+              err.response?.data?.detail || "Đặt lại mật khẩu thất bại"
+            );
+          });
+      },
+    });
+  };
   const openEditAccount = (acc) => {
     setSelectedAccount(acc);
     editForm.setFieldsValue({
+      password: password,
       username: acc.username,
       cardID: acc.cardID,
       department: acc.department_name,
@@ -291,8 +321,25 @@ const Company_accounts = () => {
         confirmLoading={updating}
       >
         <Form form={editForm} layout="vertical" className="flex flex-col gap-1">
-          <Form.Item label="Username" name="username" className="!mb-2">
+          <Form.Item
+            label="Tài khoản đăng nhập"
+            name="username"
+            className="!mb-2"
+          >
             <Input disabled />
+          </Form.Item>
+          <Form.Item label="Mật khẩu" name="password" className="!mb-2">
+            <div className="flex gap-2">
+              <Input disabled={password === "********"} value={password} />
+              <Button
+                type="primary"
+                className="!px-2"
+                icon={<FaLock />}
+                onClick={handleResetPassword} // truyền ID người dùng vào
+              >
+                Reset
+              </Button>
+            </div>
           </Form.Item>
           <Form.Item label="Mã NV" name="cardID" className="!mb-2">
             <Input />
