@@ -11,10 +11,8 @@ import { IoIosInformationCircle } from "react-icons/io";
 import { Avatar, Spin, Input, Tooltip, message, Button } from "antd";
 import { useUser } from "../../../components/context/userContext";
 import app from "../../../components/app";
-import { IoInformationSharp } from "react-icons/io5";
 import AudioCallLayout from "./AudioCallLayout";
 import VideoCallLayout from "./VideoCallLayout";
-import { IoIosList } from "react-icons/io";
 import { AiOutlineLike } from "react-icons/ai";
 
 const { Search } = Input;
@@ -23,11 +21,11 @@ const MainChatArea = ({
   messages,
   sendMessage,
   fetchOlderMessages,
+  fetchLatestMessages,
   loadingOlder,
   newMessage,
   setNewMessage,
   toggleRightSide,
-  fetchLatestMessages,
 }) => {
   const { user } = useUser();
   const all_message = messages?.message?.data || [];
@@ -41,7 +39,7 @@ const MainChatArea = ({
 
   // Trạng thái cho ghim tin nhắn
   const [pinnedMessages, setPinnedMessages] = useState([]);
-  const [isPinnedMessagesVisible, setIsPinnedMessagesVisible] = useState(true); // Trạng thái hiển thị/ẩn danh sách ghim
+  const [isPinnedMessagesVisible, setIsPinnedMessagesVisible] = useState(true);
 
   // Trạng thái cho tìm kiếm tin nhắn
   const [searchTerm, setSearchTerm] = useState("");
@@ -50,7 +48,14 @@ const MainChatArea = ({
   // Trạng thái để đồng bộ tin nhắn
   const [lastMessageId, setLastMessageId] = useState(null);
 
+  // Trạng thái cho trả lời tin nhắn
+  const [replyingTo, setReplyingTo] = useState(null);
+
+  // Xác định loại chat (1-1 hay group) và thông tin hiển thị
+  const isGroupChat = messages?.is_group || false;
   const receiver = messages?.members?.find((member) => member.id !== user.id);
+  const chatName = isGroupChat ? messages?.name : receiver?.username || "User";
+  const members = messages?.members || [];
 
   // Cập nhật danh sách tin nhắn khi all_message thay đổi
   useEffect(() => {
@@ -134,7 +139,7 @@ const MainChatArea = ({
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
-      sendMessage();
+      sendMessageWithScroll();
     }
   };
 
@@ -143,10 +148,7 @@ const MainChatArea = ({
     const messageDate = new Date(timestamp);
     const diffInSeconds = Math.floor((now - messageDate) / 1000);
 
-    if (diffInSeconds < 10) {
-      return "vừa xong";
-    }
-
+    if (diffInSeconds < 10) return "vừa xong";
     return app.timeSince(timestamp);
   };
 
@@ -171,31 +173,59 @@ const MainChatArea = ({
   };
 
   const handleReplyMessage = (message) => {
-    setNewMessage(
-      `Trả lời ${message.sender === user.id ? "bạn" : receiver?.username}: ${
-        message.message
-      } - `
-    );
+    setReplyingTo(message);
+    setNewMessage("");
+  };
+
+  const handleCancelReply = () => {
+    setReplyingTo(null);
+    setNewMessage("");
   };
 
   const handleMoreActions = (message) => {
     message.info(`Hiển thị thêm tùy chọn cho tin nhắn: "${message.message}"`);
   };
 
+  // Hàm gửi tin nhắn và cuộn xuống cuối
+  const sendMessageWithScroll = () => {
+    if (!newMessage.trim()) return;
+
+    sendMessage(
+      replyingTo
+        ? { message: newMessage, reply_to: replyingTo.id }
+        : { message: newMessage }
+    );
+    setReplyingTo(null);
+    setNewMessage("");
+
+    // Cuộn xuống cuối sau khi gửi tin nhắn
+    setTimeout(() => {
+      if (chatEndRef.current) {
+        chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 100);
+  };
+
   return (
     <div className="flex-1 flex flex-col bg-gray-300 overflow-hidden">
+      {/* Header */}
       <div className="flex items-center justify-between bg-white !h-[60px] p-4 border-b">
         <div className="flex items-center">
           <Avatar
             className="rounded-full"
             size={40}
-            src="https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
+            src={
+              messages?.avatar ||
+              "https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
+            }
           />
           <div className="ml-2">
-            <h1 className="font-bold text-lg">
-              {receiver?.username || "User"}
-            </h1>
-            <div className="text-sm text-gray-500">Đang hoạt động</div>
+            <h1 className="font-bold text-lg">{chatName || "Không có tên"}</h1>
+            <div className="text-sm text-gray-500">
+              {isGroupChat
+                ? `${members.length} thành viên`
+                : receiver?.status || "Đang hoạt động"}
+            </div>
           </div>
         </div>
         <div className="flex items-center space-x-4 cursor-pointer">
@@ -215,13 +245,14 @@ const MainChatArea = ({
         </div>
       </div>
 
+      {/* Khu vực tin nhắn */}
       <div className="flex flex-1 p-1 overflow-hidden">
         <div
           className="flex-1 overflow-y-auto p-2"
           ref={chatContainerRef}
           onScroll={handleScroll}
         >
-          {/* Hiển thị danh sách tin nhắn được ghim */}
+          {/* Danh sách tin nhắn được ghim */}
           {pinnedMessages.length > 0 && (
             <div
               style={{
@@ -258,6 +289,8 @@ const MainChatArea = ({
                       <span className="font-semibold">
                         {pinnedMsg.sender === user.id
                           ? "Bạn"
+                          : isGroupChat
+                          ? pinnedMsg.sender_username
                           : receiver?.username}
                         :{" "}
                       </span>
@@ -293,108 +326,177 @@ const MainChatArea = ({
               (message) =>
                 message && typeof message === "object" && "sender" in message
             )
-            .map((message, index) => (
-              <div
-                key={message.id || index}
-                className={`flex mb-4 ${
-                  message.sender === user.id ? "justify-end" : "justify-start"
-                }`}
-              >
-                {message.sender !== user.id && (
-                  <Avatar
-                    alt={message.sender.toString()}
-                    src={
-                      message.sender_avatar ||
-                      "https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
-                    }
-                    className="mr-2"
-                  />
-                )}
-                <div className="relative group">
-                  <div
-                    className={`p-2 mx-2 rounded-lg max-w-xs ${
-                      message.sender === user.id
-                        ? "bg-blue-500 text-white"
-                        : "bg-gray-200 text-black"
-                    } ${
-                      searchTerm &&
-                      message.message
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase())
-                        ? "border border-yellow-500"
-                        : ""
-                    }`}
-                  >
-                    <p>{message.message}</p>
-                    <span className="text-xs">
-                      {getTimeDisplay(
-                        message.created_at || new Date().toISOString()
-                      )}
-                    </span>
-                  </div>
-                  <div
-                    className={`absolute top-1/2 transform -translate-y-1/2 ${
-                      message.sender === user.id
-                        ? "left-0 -ml-25"
-                        : "right-0 -mr-25"
-                    } flex space-x-2 bg-white p-1 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity`}
-                  >
-                    <Tooltip title="Thích">
-                      <AiOutlineLike
-                        className="text-gray-600 cursor-pointer hover:text-blue-500"
-                        onClick={() => handleLikeMessage(message)}
-                      />
-                    </Tooltip>
-                    <Tooltip title="Trả lời">
-                      <FaReply
-                        className="text-gray-600 cursor-pointer hover:text-blue-500"
-                        onClick={() => handleReplyMessage(message)}
-                      />
-                    </Tooltip>
-                    <Tooltip
-                      title={
-                        pinnedMessages.some((msg) => msg.id === message.id)
-                          ? "Bỏ ghim"
-                          : "Ghim tin nhắn"
+            .map((message, index) => {
+              // Tìm thông tin tin nhắn gốc nếu có reply_to
+              const repliedMessage = message.reply_to
+                ? filteredMessages.find((msg) => msg.id === message.reply_to)
+                : null;
+
+              return (
+                <div
+                  key={message.id || index}
+                  className={`flex mb-4 ${
+                    message.sender === user.id ? "justify-end" : "justify-start"
+                  }`}
+                >
+                  {message.sender !== user.id && (
+                    <Avatar
+                      alt={message.sender.toString()}
+                      src={
+                        message.sender_avatar ||
+                        "https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
                       }
+                      className="mr-2"
+                    />
+                  )}
+                  <div className="relative group">
+                    <div
+                      className={`p-2 mx-2 rounded-lg max-w-xs ${
+                        message.sender === user.id
+                          ? "bg-blue-500 text-white"
+                          : "bg-gray-200 text-black"
+                      } ${
+                        searchTerm &&
+                        message.message
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
+                          ? "border border-yellow-500"
+                          : ""
+                      }`}
                     >
-                      <FaThumbtack
-                        className={`cursor-pointer ${
+                      {/* Hiển thị tên người gửi nếu là group chat và không phải tin nhắn của bạn */}
+                      {isGroupChat && message.sender !== user.id && (
+                        <p className="text-xs font-semibold text-gray-600 mb-1">
+                          {message.sender_username || "Unknown"}
+                        </p>
+                      )}
+                      {/* Hiển thị tin nhắn trả lời nếu có */}
+                      {message.reply_to && repliedMessage && (
+                        <div className="border-l-4 border-blue-400 pl-2 mb-2 bg-blue-50 rounded-r">
+                          <p className="text-xs font-semibold text-blue-600">
+                            Trả lời{" "}
+                            {repliedMessage.sender === user.id
+                              ? "bạn"
+                              : repliedMessage.sender_username || "Unknown"}
+                          </p>
+                          <p className="text-xs text-gray-600 italic">
+                            {repliedMessage.message.length > 50
+                              ? repliedMessage.message.slice(0, 50) + "..."
+                              : repliedMessage.message}
+                          </p>
+                        </div>
+                      )}
+                      <p>{message.message}</p>
+                      <span className="text-xs">
+                        {getTimeDisplay(
+                          message.created_at || new Date().toISOString()
+                        )}
+                      </span>
+                    </div>
+                    <div
+                      className={`absolute top-1/2 transform -translate-y-1/2 ${
+                        message.sender === user.id
+                          ? "left-0 -ml-25"
+                          : "right-0 -mr-25"
+                      } flex space-x-2 bg-white p-1 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity`}
+                    >
+                      <Tooltip title="Thích">
+                        <AiOutlineLike
+                          className="text-gray-600 cursor-pointer hover:text-blue-500"
+                          onClick={() => handleLikeMessage(message)}
+                        />
+                      </Tooltip>
+                      <Tooltip title="Trả lời">
+                        <FaReply
+                          className="text-gray-600 cursor-pointer hover:text-blue-500"
+                          onClick={() => handleReplyMessage(message)}
+                        />
+                      </Tooltip>
+                      <Tooltip
+                        title={
                           pinnedMessages.some((msg) => msg.id === message.id)
-                            ? "text-yellow-500"
-                            : "text-gray-600"
-                        } hover:text-yellow-500`}
-                        onClick={() => handlePinMessage(message)}
-                      />
-                    </Tooltip>
-                    <Tooltip title="More actions">
-                      <FaEllipsisH
-                        className="text-gray-600 cursor-pointer hover:text-blue-500"
-                        onClick={() => handleMoreActions(message)}
-                      />
-                    </Tooltip>
+                            ? "Bỏ ghim"
+                            : "Ghim tin nhắn"
+                        }
+                      >
+                        <FaThumbtack
+                          className={`cursor-pointer ${
+                            pinnedMessages.some((msg) => msg.id === message.id)
+                              ? "text-yellow-500"
+                              : "text-gray-600"
+                          } hover:text-yellow-500`}
+                          onClick={() => handlePinMessage(message)}
+                        />
+                      </Tooltip>
+                      <Tooltip title="More actions">
+                        <FaEllipsisH
+                          className="text-gray-600 cursor-pointer hover:text-blue-500"
+                          onClick={() => handleMoreActions(message)}
+                        />
+                      </Tooltip>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           <div ref={chatEndRef} style={{ height: "1px" }} />
         </div>
       </div>
 
+      {/* Hiển thị tin nhắn đang trả lời phía trên ô nhập liệu */}
+      {replyingTo && (
+        <div className="bg-gray-100 p-2 border-t border-gray-300 flex items-center justify-between">
+          <div className="flex items-center">
+            <FaReply className="text-gray-500 mr-2" />
+            <div>
+              <p className="text-sm text-gray-500">
+                Trả lời{" "}
+                {replyingTo.sender === user.id
+                  ? "bạn"
+                  : isGroupChat
+                  ? replyingTo.sender_username
+                  : receiver?.username}
+                :
+              </p>
+              <p className="text-sm text-gray-700">
+                {replyingTo.message.length > 50
+                  ? replyingTo.message.slice(0, 50) + "..."
+                  : replyingTo.message}
+              </p>
+            </div>
+          </div>
+          <Button
+            size="small"
+            type="link"
+            onClick={handleCancelReply}
+            className="text-red-500"
+          >
+            Hủy
+          </Button>
+        </div>
+      )}
+
+      {/* Ô nhập liệu */}
       <MessageInput
         value={newMessage}
         onChange={(e) => setNewMessage(e.target.value)}
-        onSend={sendMessage}
+        onSend={sendMessageWithScroll}
         onKeyDown={handleKeyDown}
         members={messages?.members || []}
       />
 
       {isAudioCallActive && (
-        <AudioCallLayout receiver={receiver} onEndCall={handleEndAudioCall} />
+        <AudioCallLayout
+          receiver={isGroupChat ? { username: chatName } : receiver}
+          onEndCall={handleEndAudioCall}
+        />
       )}
 
       {isVideoCallActive && (
-        <VideoCallLayout receiver={receiver} onEndCall={handleEndVideoCall} />
+        <VideoCallLayout
+          receiver={isGroupChat ? { username: chatName } : receiver}
+          onEndCall={handleEndVideoCall}
+        />
       )}
     </div>
   );
