@@ -176,9 +176,6 @@ const List_operators = () => {
                 </div>
               </Link>
               <div className="flex items-center tools ml-auto mr-2 gap-2">
-                <Button icon={<GrMoney />} type="primary" className="mini">
-                  Ứng
-                </Button>
                 <Popover
                   content={
                     <div className="flex flex-col items">

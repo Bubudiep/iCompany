@@ -8,6 +8,7 @@ import { IoCaretDown } from "react-icons/io5";
 import { TbMessage2Check, TbMessage2X, TbMessageReport } from "react-icons/tb";
 import { LuMessageSquareDot, LuMessageSquareLock } from "react-icons/lu";
 import app from "../../../components/app";
+import Baoung_OP from "./op_tools/baoung";
 
 const Details_op = () => {
   const [loading, setLoading] = useState(true);
@@ -16,6 +17,7 @@ const Details_op = () => {
   const { op_id } = useParams();
   const navigate = useNavigate();
   const [modalData, setModalData] = useState();
+  const [modalBaoung, setmodalBaoung] = useState(false);
   const Info = ({ label, value }) => (
     <div>
       <p className="text-gray-600 text-sm">{label}</p>
@@ -43,6 +45,13 @@ const Details_op = () => {
   }, []);
   return (
     <div className="flex flex-col overflow-hidden fadeInLeft flex-1 gap-2">
+      <Baoung_OP
+        op={op}
+        open={modalBaoung}
+        update={(data) => {
+          setOp(data);
+        }}
+      />
       {loading ? (
         <div className="whitebox">
           <Spin size="large" />
