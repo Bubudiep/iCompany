@@ -172,7 +172,7 @@ const Details_op = () => {
               </div>
             </div>
           </div>
-          <div className="op-left-tools !w-0 !min-w-0 lg:!min-w-[300px] lg:!w-[300px]">
+          <div className="op-left-tools !w-0 !min-w-0 2xl:!min-w-[300px] 2xl:!w-[300px]">
             <div className="hd-1 font-[500] py-3 px-3 flex justify-between">
               Lịch sử tác động
               <FaHistory />
