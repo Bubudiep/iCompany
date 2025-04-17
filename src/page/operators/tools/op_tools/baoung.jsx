@@ -81,7 +81,7 @@ const Baoung_OP = ({ op, onClose, open, update, user }) => {
           >
             <InputNumber
               className="!w-[200px]"
-              min={200000}
+              min={20000}
               max={2000000}
               step={100000}
               formatter={(value) =>
