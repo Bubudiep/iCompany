@@ -1888,3 +1888,41 @@ label {
     }
   }
 }
+.popupcontent {
+  width: 680px !important;
+  .ant-modal-content {
+    padding: 0px;
+    button.ant-modal-close {
+      top: 8px;
+      right: 8px;
+      position: absolute;
+      transition: all 0.3s;
+      &:hover {
+        transform: rotate(90deg);
+        color: red !important;
+        background-color: transparent;
+      }
+    }
+    .ant-modal-header {
+      padding: 12px;
+      border-bottom: 1px solid #0003;
+      box-shadow: 2px 2px 4px #0003;
+    }
+    .ant-modal-body {
+      padding: 8px 12px;
+    }
+    .ant-modal-footer {
+      padding: 12px;
+    }
+    .ant-descriptions-view {
+      table {
+        tr {
+          th,
+          td {
+            padding: 8px !important;
+          }
+        }
+      }
+    }
+  }
+}

@@ -48,6 +48,7 @@ const Details_op = () => {
       <Baoung_OP
         op={op}
         open={modalBaoung}
+        onClose={() => setmodalBaoung(false)}
         update={(data) => {
           setOp(data);
         }}
@@ -83,7 +84,7 @@ const Details_op = () => {
                   </div>
                 </div>
                 <div className="whitebox op-right-tools">
-                  <div className="item">
+                  <div className="item" onClick={() => setmodalBaoung(true)}>
                     <div className="icon">
                       <LuMessageSquareDot />
                     </div>
