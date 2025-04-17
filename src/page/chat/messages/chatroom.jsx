@@ -33,6 +33,7 @@ const Chat_room = () => {
             item.id === parseInt(id_room) ? { ...item, not_read: 0 } : item
           )
         );
+
         setMessages({
           id: responseData.id || null,
           not_read: responseData.not_read || 0,
@@ -40,7 +41,23 @@ const Chat_room = () => {
             total: responseData.message?.total || 0,
             data: responseData.message?.data || [],
           },
+          admin: responseData.admin || [],
+          avatar: responseData.avatar || null,
+          company: responseData.company || null,
+          created_at: responseData.created_at || null,
+          host: responseData.host || null,
+          is_group: responseData.is_group || false,
+          last_have_message_at: responseData.last_have_message_at || null,
           members: responseData.members || [],
+          members_add_members: responseData.members_add_members || false,
+          members_change_avatar: responseData.members_change_avatar || false,
+          members_change_name: responseData.members_change_avatar || false,
+          members_remove_members: responseData.members_remove_members || false,
+          name: responseData.name || "",
+          // message_add_message: responseData.message_add_message || false,
+          // message_change_message: responseData.message_change_message || false,
+          // message_remove_message: responseData.message_remove_message || false,
+          // message_read_message: responseData.message_read_message || false
         });
       } catch (error) {
         console.error("Error fetching messages:", error);
@@ -108,6 +125,7 @@ const Chat_room = () => {
 
   useEffect(() => {
     fetchMessages();
+    // console.log("id_room ne:", id_room);
     setNextPageUrl(null); // Reset nextPageUrl khi chuyển phòng chat
   }, [id_room]);
 
@@ -178,6 +196,7 @@ const Chat_room = () => {
           <>
             <MainChatArea
               messages={messages}
+              dataResponse={setMessages}
               sendMessage={sendMessage}
               fetchOlderMessages={fetchOlderMessages}
               loadingOlder={loadingOlder}

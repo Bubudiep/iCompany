@@ -13,11 +13,15 @@ const RightSide = () => {
   return (
     <div className="w-1/4 bg-white p-2 rounded-lg shadow">
       <div className="text-center">
-        <Avatar size={64} src="img" className="mx-auto mb-2" />
+        <Avatar
+          size={64}
+          src="https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
+          className="mx-auto mb-2"
+        />
         <div className="font-bold text-lg">DEV Team</div>
       </div>
 
-      <div className="flex justify-around mt-4">
+      <div className="flex justify-around mt-4 cursor-pointer">
         <div className="flex flex-col items-center">
           <BellOutlined className="text-xl mb-1" />
           {/* <span className="text-sm">Tắt thông báo</span> */}
