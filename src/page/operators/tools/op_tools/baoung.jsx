@@ -1,50 +1,45 @@
 import {
-  Descriptions,
+  Form,
   Input,
   InputNumber,
   Modal,
   Select,
   Button,
   message,
+  Descriptions,
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import React, { useEffect, useState } from "react";
+import Card_bank_user from "../../../../components/cards/user-bank-card";
+import api from "../../../../components/api";
 
 const { Option } = Select;
 
-const Baoung_OP = ({ op, onClose, open, update }) => {
-  const [soTien, setSoTien] = useState(null);
-  const [lyDo, setLyDo] = useState("");
+const Baoung_OP = ({ op, onClose, open, update, user }) => {
+  const [form] = Form.useForm();
   const [nguoiThuHuong, setNguoiThuHuong] = useState(null);
   const [hinhThuc, setHinhThuc] = useState(null);
-  const [ghiChu, setGhiChu] = useState("");
 
   useEffect(() => {
     if (open && op) {
-      // Reset dữ liệu khi mở lại modal
-      setSoTien(null);
-      setLyDo("");
+      form.resetFields();
       setNguoiThuHuong(null);
       setHinhThuc(null);
-      setGhiChu("");
     }
-  }, [open, op]);
+  }, [open, op, form]);
 
-  const handleSave = () => {
-    if (!soTien || !lyDo || !nguoiThuHuong || !hinhThuc) {
+  const handleSave = async () => {
+    try {
+      const values = await form.validateFields();
+      console.log(values, op);
+      // update?.(data);
+      // onClose();
+      api.post(`/ops/${op.id}/baoung/`, values, user.token).then((res) => {
+        console.log(res);
+      });
+    } catch (err) {
       message.warning("Vui lòng điền đầy đủ thông tin bắt buộc!");
-      return;
     }
-    const data = {
-      soTien,
-      lyDo,
-      nguoiThuHuong,
-      hinhThuc,
-      ghiChu,
-      opId: op?.id,
-    };
-    update?.(data); // gọi hàm cập nhật từ props
-    onClose(); // đóng modal sau khi lưu
   };
 
   return (
@@ -52,7 +47,7 @@ const Baoung_OP = ({ op, onClose, open, update }) => {
       open={open}
       onCancel={onClose}
       title={`${op?.ho_ten || ""} - Báo ứng`}
-      className="popupcontent"
+      className="popupcontent !w-[800px]"
       footer={[
         <Button key="cancel" onClick={onClose}>
           Hủy
@@ -78,69 +73,127 @@ const Baoung_OP = ({ op, onClose, open, update }) => {
 
         <div className="text-lg font-semibold mt-4">Thông tin báo ứng</div>
 
-        <Descriptions bordered column={1}>
-          <Descriptions.Item label="Số tiền">
-            <div className="flex gap-1 items-center">
-              <InputNumber
-                value={soTien}
-                onChange={setSoTien}
-                placeholder="Nhập số tiền"
-                className="!w-[150px]"
-                min={200000}
-                max={2000000}
-                step={100000}
-                formatter={
-                  (value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".") // 1000000 => 1.000.000
-                }
-                parser={
-                  (value) => value.replace(/\./g, "").replace(/[^0-9]/g, "") // bỏ dấu chấm khi parse ngược lại
-                }
-              />
-              <span>vnđ</span>
-            </div>
-          </Descriptions.Item>
-
-          <Descriptions.Item label="Lý do">
-            <Input
-              value={lyDo}
-              onChange={(e) => setLyDo(e.target.value)}
-              placeholder="Nhập lý do báo ứng"
+        <Form layout="vertical" className="form-baoung" form={form}>
+          <Form.Item
+            label="Số tiền"
+            name="soTien"
+            rules={[{ required: true, message: "Vui lòng nhập số tiền" }]}
+          >
+            <InputNumber
+              className="!w-[200px]"
+              min={200000}
+              max={2000000}
+              step={100000}
+              formatter={(value) =>
+                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+              }
+              parser={(value) =>
+                value.replace(/\./g, "").replace(/[^0-9]/g, "")
+              }
+              placeholder="Nhập số tiền"
+              addonAfter="vnđ"
             />
-          </Descriptions.Item>
+          </Form.Item>
 
-          <Descriptions.Item label="Người thụ hưởng và Hình thức">
-            <div className="flex flex-col gap-2">
+          <Form.Item
+            label="Lý do"
+            name="lyDo"
+            rules={[{ required: true, message: "Vui lòng nhập lý do" }]}
+          >
+            <Input placeholder="Nhập lý do báo ứng" />
+          </Form.Item>
+
+          <Form.Item
+            label="Người thụ hưởng"
+            name="nguoiThuhuong"
+            rules={[{ required: true, message: "Chọn người thụ hưởng" }]}
+          >
+            <Select
+              placeholder="Chọn người thụ hưởng"
+              className="w-[200px]"
+              onChange={(val) => {
+                setNguoiThuHuong(val);
+                form.setFieldsValue({ hinhThuc: undefined });
+              }}
+            >
+              <Option value="opertor">Người lao động</Option>
+              <Option value="staff">Người tuyển</Option>
+              <Option value="other">Người khác nhận hộ</Option>
+            </Select>
+          </Form.Item>
+
+          {nguoiThuHuong && (
+            <Form.Item
+              label="Hình thức"
+              name="hinhthucThanhtoan"
+              rules={[{ required: true, message: "Chọn hình thức giải ngân" }]}
+            >
               <Select
-                value={hinhThuc}
-                onChange={setHinhThuc}
-                className="w-[200px]"
                 placeholder="Chọn hình thức"
+                className="w-[200px]"
+                onChange={setHinhThuc}
               >
-                <Option value="chuyenkhoan">Chuyển khoản</Option>
-                <Option value="thanhtoan">Thanh toán tiền mặt</Option>
+                <Option value="bank">Chuyển khoản</Option>
+                <Option value="money">Thanh toán tiền mặt</Option>
               </Select>
-              {hinhThuc && (
-                <Select
-                  value={nguoiThuHuong}
-                  onChange={setNguoiThuHuong}
-                  className="w-[200px]"
-                  placeholder="Chọn người thụ hưởng"
-                >
-                  <Option value="nguoilaodong">Người lao động</Option>
-                  <Option value="nguoituyen">Người tuyển</Option>
-                </Select>
-              )}
-            </div>
-          </Descriptions.Item>
-          <Descriptions.Item label="Ghi chú">
-            <TextArea
-              value={ghiChu}
-              onChange={(e) => setGhiChu(e.target.value)}
-              placeholder="Ghi chú thêm (nếu có)"
-              rows={3}
+            </Form.Item>
+          )}
+
+          {hinhThuc === "bank" && nguoiThuHuong === "opertor" && (
+            <Card_bank_user
+              user_id={op.id}
+              user_type="op"
+              sotien={form.getFieldValue("soTien")}
             />
-          </Descriptions.Item>
-        </Descriptions>
+          )}
+
+          {hinhThuc === "bank" && nguoiThuHuong === "staff" && (
+            <Card_bank_user
+              user_id={op.nguoituyen}
+              user_type="staff"
+              sotien={form.getFieldValue("soTien")}
+            />
+          )}
+
+          {hinhThuc === "bank" && nguoiThuHuong === "other" && (
+            <>
+              <Form.Item
+                label="Ngân hàng"
+                name="khacNganhang"
+                rules={[{ required: true, message: "Chọn ngân hàng" }]}
+              >
+                <Select
+                  showSearch
+                  optionFilterProp="label"
+                  className="w-[200px]"
+                  options={user?.banks?.data?.map((bank) => ({
+                    value: bank.bin,
+                    label: `${bank.shortName} - ${bank.name}`,
+                  }))}
+                  filterOption={(input, option) =>
+                    option?.label?.toLowerCase().includes(input.toLowerCase())
+                  }
+                />
+              </Form.Item>
+
+              <Form.Item
+                label="Số tài khoản"
+                name="khacStk"
+                rules={[{ required: true, message: "Nhập số tài khoản" }]}
+              >
+                <Input className="w-[200px]" />
+              </Form.Item>
+
+              <Form.Item
+                label="Tên chủ tài khoản"
+                name="khacCtk"
+                rules={[{ required: true, message: "Nhập tên chủ tài khoản" }]}
+              >
+                <Input className="w-[200px]" />
+              </Form.Item>
+            </>
+          )}
+        </Form>
       </div>
     </Modal>
   );

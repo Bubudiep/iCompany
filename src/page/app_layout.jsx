@@ -28,9 +28,10 @@ const Homepage_layout = () => {
     }
     api
       .get("/user/", token)
-      .then((res) => {
+      .then(async (res) => {
         if (!res?.id) navigate("/login/");
-        setUser({ ...res, token: token });
+        const banks = await api.get("/banks/");
+        setUser({ ...res, token: token, banks: banks });
         setTimeout(() => {
           setCheckauthfade(true);
           setTimeout(() => {

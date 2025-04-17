@@ -46,6 +46,7 @@ const Details_op = () => {
   return (
     <div className="flex flex-col overflow-hidden fadeInLeft flex-1 gap-2">
       <Baoung_OP
+        user={user}
         op={op}
         open={modalBaoung}
         onClose={() => setmodalBaoung(false)}

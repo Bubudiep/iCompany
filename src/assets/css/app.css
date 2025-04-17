@@ -1888,8 +1888,64 @@ label {
     }
   }
 }
+.form-baoung {
+  width: 100%;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  .whitebox {
+    border-radius: 0px !important;
+    box-shadow: none;
+    border-bottom: 1px solid #eee;
+    padding: 8px;
+  }
+  .ant-form-item {
+    border-bottom: 1px solid #eee;
+    margin-bottom: 0px;
+    .ant-row {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      flex-direction: row !important;
+      .ant-form-item-label {
+        display: table-cell;
+        width: 30%;
+        padding: 4px 8px;
+        label {
+          color: #7a7a7a !important;
+          position: relative;
+          &::before {
+            position: absolute;
+            right: 0;
+            top: 0;
+            font-size: 12px;
+          }
+        }
+      }
+      .ant-form-item-control {
+        padding: 4px;
+        border-left: 1px solid #eee;
+        display: table-cell;
+        width: 70%;
+      }
+    }
+  }
+}
+.form-nguoikhac {
+  gap: 4px;
+  .item {
+    display: flex;
+    font-size: 13px;
+    select {
+      padding: 0px;
+    }
+    .value {
+      margin-left: auto;
+    }
+  }
+}
 .popupcontent {
-  width: 680px !important;
   .ant-modal-content {
     padding: 0px;
     button.ant-modal-close {
