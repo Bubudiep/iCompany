@@ -17,6 +17,8 @@ const Chat_room = () => {
   });
   const { user } = useUser();
   const [newMessage, setNewMessage] = useState("");
+  // pin messages
+
   const [showRightSide, setShowRightSide] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingOlder, setLoadingOlder] = useState(false);
@@ -41,6 +43,7 @@ const Chat_room = () => {
             total: responseData.message?.total || 0,
             data: responseData.message?.data || [],
           },
+          ghim: responseData.ghim || [],
           admin: responseData.admin || [],
           avatar: responseData.avatar || null,
           company: responseData.company || null,
@@ -70,6 +73,22 @@ const Chat_room = () => {
       } finally {
         setLoading(false);
       }
+    }
+  };
+
+  const fetchPinMessages = async () => {
+    try {
+      const response = await api.get(`/chatbox/${id_room}/ghim`, user.token);
+      const responseData = response.data || response;
+      setMessages((prevMessages) => ({
+        ...prevMessages,
+        message: {
+          ...prevMessages.message,
+          data: [...prevMessages.message.data, ...responseData],
+        },
+      }));
+    } catch (error) {
+      console.error("Error fetching pin messages:", error);
     }
   };
 

@@ -27,6 +27,7 @@ const LeftSide = ({ chatList, setChatList, user }) => {
   const [isCreateGroupModalVisible, setIsCreateGroupModalVisible] =
     useState(false);
   const [availableUsers, setAvailableUsers] = useState([]);
+
   const [groupName, setGroupName] = useState("");
   const [host, setHost] = useState(user.id); // Mặc định host là người dùng hiện tại
   const [admins, setAdmins] = useState([]);
@@ -123,7 +124,8 @@ const LeftSide = ({ chatList, setChatList, user }) => {
 
     const reader = new FileReader();
     reader.onload = () => {
-      setGroupCover(reader.result.split(",")[1]); // Lấy base64 string (bỏ phần "data:image/jpeg;base64,")
+      const base64String = reader.result.split(",")[1]; // Lấy base64 string (bỏ phần "data:image/jpeg;base64,")
+      setGroupCover(base64String);
       setGroupCoverURL(reader.result); // Để hiển thị preview
     };
     reader.onerror = () => {
@@ -151,12 +153,13 @@ const LeftSide = ({ chatList, setChatList, user }) => {
 
     try {
       const groupData = {
+        // id: null,
         name: groupName,
         host: host,
         admins: admins,
         members: selectedMembers,
         is_group: true,
-        avatar: groupCover || null,
+        avatar: groupCover || null, // Gửi base64 string
       };
 
       const createRoomResponse = await api.post(
@@ -164,9 +167,24 @@ const LeftSide = ({ chatList, setChatList, user }) => {
         groupData,
         user.token
       );
+      // Kiểm tra response từ API
+      console.log("API Response:", createRoomResponse);
 
-      const newRoom = createRoomResponse.data;
-      setChatList((prevChatList) => [...prevChatList, newRoom]);
+      // API trả về trực tiếp object, không có .data
+      const newRoom = createRoomResponse;
+
+      // Kiểm tra xem newRoom có tồn tại và có id không
+      if (!newRoom || !newRoom.id) {
+        throw new Error("Không thể lấy ID của room mới từ API response");
+      }
+
+      console.log("New room:", newRoom);
+
+      // Cập nhật chatList để hiển thị group mới trong danh sách
+      // setChatList((prevChatList) => [...prevChatList, newRoom]);
+      setChatList((prevChatList) => [newRoom, ...prevChatList]);
+
+      // Reset các state sau khi tạo group
       setIsCreateGroupModalVisible(false);
       setGroupName("");
       setHost(user.id);
@@ -176,12 +194,10 @@ const LeftSide = ({ chatList, setChatList, user }) => {
       setGroupCover(null);
       setGroupCoverURL(null);
 
-      // Redirect đến URL: /app/chat/id
-      const newRoomId = newRoom.id;
-      const newRoomUrl = `/app/chat/${newRoomId}`;
-      <Redirect to={newRoomUrl} />;
-      // nav(`/app/chat/${newRoom.id}`);
-      // nav(`/app/chat/`);
+      // Redirect đến URL: /app/chat/:id
+      // nav(`/app/`);
+      message.success("Tạo group chat thành công!");
+      nav(`/app/chat/${newRoom.id}`);
     } catch (error) {
       console.error("Error creating group chat:", error);
       Modal.error({
@@ -190,6 +206,7 @@ const LeftSide = ({ chatList, setChatList, user }) => {
       });
     }
   };
+  // console.log("FilteredChatList: ", filteredChatList);
 
   return (
     <div className="left-side bg-white w-1/5 flex flex-col min-w-[280px] overflow-hidden">
@@ -227,12 +244,13 @@ const LeftSide = ({ chatList, setChatList, user }) => {
           <span className="font-bold">Ưu tiên</span>
           <span className="text-sm">Khác</span>
         </div>
-        {/* <h2 className="p-2 text-xl font-medium text-center">
-          Danh sách cuộc trò chuyện: {filteredChatList.length}
-        </h2> */}
         <h1 className="text-center">
           {filteredChatList.length === 0 &&
             "Không tìm thấy cuộc trò chuyện. Hãy bắt đầu 1 cuộc trò chuyện."}
+        </h1>
+        {/* count total chat */}
+        <h1 className="text-center">
+          số lượng cuộc trò chuyện: {filteredChatList.length}
         </h1>
         <div className="h-full overflow-auto">
           <div className="p-2 mt-2">
@@ -270,10 +288,7 @@ const LeftSide = ({ chatList, setChatList, user }) => {
                       <div className="font-bold flex items-center">
                         {chatName}
                         {isGroupChat && (
-                          <span className="ml-2 text-xs text-gray-500">
-                            {/* (Nhóm - {chat.members.length} thành viên) */}
-                            {/* 🧑👩 */}
-                          </span>
+                          <span className="ml-2 text-xs text-gray-500"></span>
                         )}
                       </div>
                       <div className="text-sm overflow-hidden text-nowrap text-ellipsis">
@@ -360,10 +375,10 @@ const LeftSide = ({ chatList, setChatList, user }) => {
               />
             </div>
           </div>
-          {/* css host and admins in 1 row */}
+          {/* Host và Admins trong 1 hàng */}
           <div className="flex space-x-4">
             {/* Host (Quản trị viên) */}
-            <div>
+            <div className="flex-1">
               <label className="block mb-1">Host (Quản trị viên):</label>
               <Select
                 value={host}
@@ -383,7 +398,7 @@ const LeftSide = ({ chatList, setChatList, user }) => {
             </div>
 
             {/* Admins (Quản lý) */}
-            <div>
+            <div className="flex-1">
               <label className="block mb-1">Admins (Quản lý):</label>
               <Select
                 mode="multiple"
@@ -426,13 +441,28 @@ const LeftSide = ({ chatList, setChatList, user }) => {
                   id: user.id,
                   fullName: user.username,
                 };
-
+                const isCreator = memberId === user.id;
+                {
+                  /* console.log(
+                  "Member ID:",
+                  memberId,
+                  "User ID:",
+                  user.id,
+                  "Is creator:",
+                  isCreator
+                ); */
+                }
                 return (
                   <div
                     key={memberId}
                     className="flex items-center bg-blue-500 text-white rounded-full px-2 py-1 m-1"
                   >
-                    <span className="text-sm">{member.fullName}</span>
+                    <span className="text-sm">
+                      {member.fullName}
+                      {isCreator && "Người tạo: "}
+                      {member.id === host && "Host"}
+                      {admins.includes(memberId) && " (Admin)"}
+                    </span>
                     <button
                       className="ml-2 text-xs cursor-pointer"
                       onClick={() => handleRemoveMember(memberId)}

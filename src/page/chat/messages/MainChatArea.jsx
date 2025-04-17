@@ -6,6 +6,7 @@ import {
   FaThumbtack,
   FaReply,
   FaEllipsisH,
+  FaStar,
 } from "react-icons/fa";
 import { IoIosInformationCircle } from "react-icons/io";
 import { Avatar, Spin, Input, Tooltip, message, Button } from "antd";
@@ -14,6 +15,7 @@ import app from "../../../components/app";
 import AudioCallLayout from "./AudioCallLayout";
 import VideoCallLayout from "./VideoCallLayout";
 import { AiOutlineLike } from "react-icons/ai";
+import api from "../../../components/api";
 
 const { Search } = Input;
 
@@ -41,6 +43,9 @@ const MainChatArea = ({
   const [pinnedMessages, setPinnedMessages] = useState([]);
   const [isPinnedMessagesVisible, setIsPinnedMessagesVisible] = useState(true);
 
+  // Trạng thái cho thông báo hệ thống (khi ghim tin nhắn)
+  const [systemMessages, setSystemMessages] = useState([]);
+
   // Trạng thái cho tìm kiếm tin nhắn
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredMessages, setFilteredMessages] = useState(all_message);
@@ -53,9 +58,37 @@ const MainChatArea = ({
 
   // Xác định loại chat (1-1 hay group) và thông tin hiển thị
   const isGroupChat = messages?.is_group || false;
+  const roomId = messages?.id; // ID của room chat
   const receiver = messages?.members?.find((member) => member.id !== user.id);
   const chatName = isGroupChat ? messages?.name : receiver?.username || "User";
   const members = messages?.members || [];
+
+  // Lấy username hoặc full_name của người gửi
+  const getSenderName = (senderId) => {
+    const member = members.find((m) => m.id === senderId);
+    if (!member) return "Unknown";
+    return member.profile?.full_name || member.username || "Unknown";
+  };
+  console.log("Ghim from API:", messages?.ghim);
+
+  // Khôi phục pinnedMessages từ API và systemMessages từ localStorage
+  useEffect(() => {
+    // Lấy danh sách tin nhắn ghim từ API
+    const pinnedFromApi = messages?.ghim || [];
+    const pinnedWithSenderName = pinnedFromApi.map((msg) => ({
+      ...msg,
+      sender_username: getSenderName(msg.sender),
+    }));
+    setPinnedMessages(pinnedWithSenderName);
+
+    // Khôi phục systemMessages từ localStorage
+    const storedSystemMessages = localStorage.getItem(
+      `systemMessages_${roomId}`
+    );
+    if (storedSystemMessages) {
+      setSystemMessages(JSON.parse(storedSystemMessages));
+    }
+  }, [messages, roomId]);
 
   // Cập nhật danh sách tin nhắn khi all_message thay đổi
   useEffect(() => {
@@ -70,7 +103,7 @@ const MainChatArea = ({
     if (chatEndRef.current && !searchTerm) {
       chatEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [all_message, searchTerm]);
+  }, [all_message, systemMessages, searchTerm]);
 
   // Xử lý cuộn để tải tin nhắn cũ
   const handleScroll = () => {
@@ -107,17 +140,60 @@ const MainChatArea = ({
   };
 
   // Xử lý ghim tin nhắn
-  const handlePinMessage = (message) => {
-    if (pinnedMessages.some((msg) => msg.id === message.id)) {
-      setPinnedMessages((prev) => prev.filter((msg) => msg.id !== message.id));
-      message.success("Đã bỏ ghim tin nhắn!");
-    } else {
-      if (pinnedMessages.length >= 3) {
-        message.error("Bạn chỉ có thể ghim tối đa 3 tin nhắn!");
-        return;
+  const handlePinMessage = async (msg) => {
+    try {
+      const isAlreadyPinned = pinnedMessages.some((m) => m.id === msg.id);
+
+      if (isAlreadyPinned) {
+        // Gọi API bỏ ghim
+        await api.post(
+          `/chatbox/${roomId}/boghim/`,
+          { message: msg.id },
+          user.token
+        );
+        setPinnedMessages((prev) => prev.filter((m) => m.id !== msg.id));
+        message.success("Đã bỏ ghim tin nhắn!");
+      } else {
+        if (pinnedMessages.length >= 3) {
+          message.error("Bạn chỉ có thể ghim tối đa 3 tin nhắn!");
+          return;
+        }
+        // Gọi API ghim
+        await api.post(
+          `/chatbox/${roomId}/ghim/`,
+          { message: msg.id },
+          user.token
+        );
+        const msgWithSenderName = {
+          ...msg,
+          sender_username: getSenderName(msg.sender),
+        };
+        setPinnedMessages((prev) => [...prev, msgWithSenderName]);
+
+        // Thêm thông báo hệ thống
+        const systemMessage = {
+          id: `system_${Date.now()}`,
+          type: "system",
+          message: `${user.username} đã ghim tin nhắn: "${
+            msg.message.length > 50
+              ? msg.message.slice(0, 50) + "..."
+              : msg.message
+          }"`,
+          created_at: new Date().toISOString(),
+        };
+        setSystemMessages((prev) => [...prev, systemMessage]);
+
+        // Lưu systemMessages vào localStorage
+        localStorage.setItem(
+          `systemMessages_${roomId}`,
+          JSON.stringify([...systemMessages, systemMessage])
+        );
+
+        message.success("Đã ghim tin nhắn!");
       }
-      setPinnedMessages((prev) => [...prev, message]);
-      message.success("Đã ghim tin nhắn!");
+    } catch (error) {
+      console.error("Error pinning/unpinning message:", error);
+      message.error("Không thể ghim/bỏ ghim tin nhắn. Vui lòng thử lại.");
     }
   };
 
@@ -168,12 +244,12 @@ const MainChatArea = ({
     setIsVideoCallActive(false);
   };
 
-  const handleLikeMessage = (message) => {
-    message.success(`Bạn đã thích tin nhắn: "${message.message}"`);
+  const handleLikeMessage = (msg) => {
+    message.success(`Bạn đã thích tin nhắn: "${msg.message}"`);
   };
 
-  const handleReplyMessage = (message) => {
-    setReplyingTo(message);
+  const handleReplyMessage = (msg) => {
+    setReplyingTo(msg);
     setNewMessage("");
   };
 
@@ -182,8 +258,8 @@ const MainChatArea = ({
     setNewMessage("");
   };
 
-  const handleMoreActions = (message) => {
-    message.info(`Hiển thị thêm tùy chọn cho tin nhắn: "${message.message}"`);
+  const handleMoreActions = (msg) => {
+    message.info(`Hiển thị thêm tùy chọn cho tin nhắn: "${msg.message}"`);
   };
 
   // Hàm gửi tin nhắn và cuộn xuống cuối
@@ -301,11 +377,7 @@ const MainChatArea = ({
                     <Button
                       size="small"
                       type="link"
-                      onClick={() =>
-                        setPinnedMessages((prev) =>
-                          prev.filter((msg) => msg.id !== pinnedMsg.id)
-                        )
-                      }
+                      onClick={() => handlePinMessage(pinnedMsg)}
                     >
                       Bỏ ghim
                     </Button>
@@ -320,14 +392,29 @@ const MainChatArea = ({
             </div>
           )}
 
-          {filteredMessages
-            .sort((a, b) => a.id - b.id)
-            .filter(
-              (message) =>
-                message && typeof message === "object" && "sender" in message
-            )
-            .map((message, index) => {
-              // Tìm thông tin tin nhắn gốc nếu có reply_to
+          {/* Kết hợp danh sách tin nhắn và thông báo hệ thống */}
+          {[
+            ...filteredMessages.map((msg) => ({
+              ...msg,
+              type: "message",
+              sender_username: getSenderName(msg.sender),
+            })),
+            ...systemMessages,
+          ]
+            .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+            .map((item, index) => {
+              if (item.type === "system") {
+                return (
+                  <div key={item.id} className="flex justify-center my-2">
+                    <div className="flex items-center bg-gray-100 rounded-full px-3 py-1 text-sm text-gray-600">
+                      <FaStar className="text-yellow-500 mr-2" size={12} />
+                      <span>{item.message}</span>
+                    </div>
+                  </div>
+                );
+              }
+
+              const message = item;
               const repliedMessage = message.reply_to
                 ? filteredMessages.find((msg) => msg.id === message.reply_to)
                 : null;
@@ -367,7 +454,7 @@ const MainChatArea = ({
                       {/* Hiển thị tên người gửi nếu là group chat và không phải tin nhắn của bạn */}
                       {isGroupChat && message.sender !== user.id && (
                         <p className="text-xs font-semibold text-gray-600 mb-1">
-                          {message.sender_username || "Unknown"}
+                          {message.sender_username}
                         </p>
                       )}
                       {/* Hiển thị tin nhắn trả lời nếu có */}
