@@ -16,6 +16,9 @@ import AudioCallLayout from "./AudioCallLayout";
 import VideoCallLayout from "./VideoCallLayout";
 import { AiOutlineLike } from "react-icons/ai";
 import api from "../../../components/api";
+import { BsPinAngleFill } from "react-icons/bs";
+import { RiUnpinFill } from "react-icons/ri";
+import RightSide from "./RightSide";
 
 const { Search } = Input;
 
@@ -41,10 +44,7 @@ const MainChatArea = ({
 
   // Trạng thái cho ghim tin nhắn
   const [pinnedMessages, setPinnedMessages] = useState([]);
-  const [isPinnedMessagesVisible, setIsPinnedMessagesVisible] = useState(true);
-
-  // Trạng thái cho thông báo hệ thống (khi ghim tin nhắn)
-  const [systemMessages, setSystemMessages] = useState([]);
+  const [isPinnedMessagesVisible, setIsPinnedMessagesVisible] = useState(false); // Thu gọn mặc định
 
   // Trạng thái cho tìm kiếm tin nhắn
   const [searchTerm, setSearchTerm] = useState("");
@@ -58,7 +58,7 @@ const MainChatArea = ({
 
   // Xác định loại chat (1-1 hay group) và thông tin hiển thị
   const isGroupChat = messages?.is_group || false;
-  const roomId = messages?.id; // ID của room chat
+  const roomId = messages?.id;
   const receiver = messages?.members?.find((member) => member.id !== user.id);
   const chatName = isGroupChat ? messages?.name : receiver?.username || "User";
   const members = messages?.members || [];
@@ -69,9 +69,8 @@ const MainChatArea = ({
     if (!member) return "Unknown";
     return member.profile?.full_name || member.username || "Unknown";
   };
-  console.log("Ghim from API:", messages?.ghim);
 
-  // Khôi phục pinnedMessages từ API và systemMessages từ localStorage
+  // Khôi phục pinnedMessages từ API
   useEffect(() => {
     // Lấy danh sách tin nhắn ghim từ API
     const pinnedFromApi = messages?.ghim || [];
@@ -80,14 +79,6 @@ const MainChatArea = ({
       sender_username: getSenderName(msg.sender),
     }));
     setPinnedMessages(pinnedWithSenderName);
-
-    // Khôi phục systemMessages từ localStorage
-    const storedSystemMessages = localStorage.getItem(
-      `systemMessages_${roomId}`
-    );
-    if (storedSystemMessages) {
-      setSystemMessages(JSON.parse(storedSystemMessages));
-    }
   }, [messages, roomId]);
 
   // Cập nhật danh sách tin nhắn khi all_message thay đổi
@@ -103,7 +94,7 @@ const MainChatArea = ({
     if (chatEndRef.current && !searchTerm) {
       chatEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [all_message, systemMessages, searchTerm]);
+  }, [all_message, searchTerm]);
 
   // Xử lý cuộn để tải tin nhắn cũ
   const handleScroll = () => {
@@ -145,7 +136,6 @@ const MainChatArea = ({
       const isAlreadyPinned = pinnedMessages.some((m) => m.id === msg.id);
 
       if (isAlreadyPinned) {
-        // Gọi API bỏ ghim
         await api.post(
           `/chatbox/${roomId}/boghim/`,
           { message: msg.id },
@@ -154,11 +144,10 @@ const MainChatArea = ({
         setPinnedMessages((prev) => prev.filter((m) => m.id !== msg.id));
         message.success("Đã bỏ ghim tin nhắn!");
       } else {
-        if (pinnedMessages.length >= 3) {
-          message.error("Bạn chỉ có thể ghim tối đa 3 tin nhắn!");
+        if (pinnedMessages.length >= 5) {
+          message.error("Bạn chỉ có thể ghim tối đa 5 tin nhắn!");
           return;
         }
-        // Gọi API ghim
         await api.post(
           `/chatbox/${roomId}/ghim/`,
           { message: msg.id },
@@ -169,26 +158,6 @@ const MainChatArea = ({
           sender_username: getSenderName(msg.sender),
         };
         setPinnedMessages((prev) => [...prev, msgWithSenderName]);
-
-        // Thêm thông báo hệ thống
-        const systemMessage = {
-          id: `system_${Date.now()}`,
-          type: "system",
-          message: `${user.username} đã ghim tin nhắn: "${
-            msg.message.length > 50
-              ? msg.message.slice(0, 50) + "..."
-              : msg.message
-          }"`,
-          created_at: new Date().toISOString(),
-        };
-        setSystemMessages((prev) => [...prev, systemMessage]);
-
-        // Lưu systemMessages vào localStorage
-        localStorage.setItem(
-          `systemMessages_${roomId}`,
-          JSON.stringify([...systemMessages, systemMessage])
-        );
-
         message.success("Đã ghim tin nhắn!");
       }
     } catch (error) {
@@ -260,6 +229,7 @@ const MainChatArea = ({
 
   const handleMoreActions = (msg) => {
     message.info(`Hiển thị thêm tùy chọn cho tin nhắn: "${msg.message}"`);
+    // show 3 menu
   };
 
   // Hàm gửi tin nhắn và cuộn xuống cuối
@@ -271,6 +241,7 @@ const MainChatArea = ({
         ? { message: newMessage, reply_to: replyingTo.id }
         : { message: newMessage }
     );
+
     setReplyingTo(null);
     setNewMessage("");
 
@@ -281,20 +252,15 @@ const MainChatArea = ({
       }
     }, 100);
   };
+  // show all data from api
+  console.log("messages", messages);
 
   return (
     <div className="flex-1 flex flex-col bg-gray-300 overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between bg-white !h-[60px] p-4 border-b">
         <div className="flex items-center">
-          <Avatar
-            className="rounded-full"
-            size={40}
-            src={
-              messages?.avatar ||
-              "https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
-            }
-          />
+          <Avatar className="rounded-full" size={40} src={messages?.avatar} />
           <div className="ml-2">
             <h1 className="font-bold text-lg">{chatName || "Không có tên"}</h1>
             <div className="text-sm text-gray-500">
@@ -334,55 +300,69 @@ const MainChatArea = ({
               style={{
                 position: "sticky",
                 top: 0,
-                backgroundColor: "#f0f2f5",
+                backgroundColor: "#e6f0fa",
                 zIndex: 10,
-                padding: "8px",
+                padding: "4px 8px",
                 borderRadius: "8px",
                 boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
               }}
             >
-              <div className="flex justify-between items-center">
-                <div className="font-bold text-sm">
-                  Danh sách ghim ({pinnedMessages.length})
-                </div>
-                <Button
-                  size="small"
-                  type="link"
-                  onClick={() =>
-                    setIsPinnedMessagesVisible(!isPinnedMessagesVisible)
-                  }
-                >
-                  {isPinnedMessagesVisible ? "Thu gọn" : "Hiện ghim"}
-                </Button>
-              </div>
-              {isPinnedMessagesVisible &&
-                pinnedMessages.map((pinnedMsg) => (
-                  <div
-                    key={pinnedMsg.id}
-                    className="flex justify-between items-center p-2 bg-white rounded mt-1"
-                  >
-                    <div className="text-sm">
-                      <span className="font-semibold">
-                        {pinnedMsg.sender === user.id
-                          ? "Bạn"
-                          : isGroupChat
-                          ? pinnedMsg.sender_username
-                          : receiver?.username}
-                        :{" "}
-                      </span>
-                      {pinnedMsg.message.length > 50
-                        ? pinnedMsg.message.slice(0, 50) + "..."
-                        : pinnedMsg.message}
+              {isPinnedMessagesVisible ? (
+                <>
+                  <div className="flex justify-between items-center">
+                    <div className="font-bold text-sm">
+                      Danh sách ghim ({pinnedMessages.length})
                     </div>
                     <Button
                       size="small"
                       type="link"
-                      onClick={() => handlePinMessage(pinnedMsg)}
+                      onClick={() => setIsPinnedMessagesVisible(false)}
                     >
-                      Bỏ ghim
+                      Thu gọn
                     </Button>
                   </div>
-                ))}
+                  {pinnedMessages.map((pinnedMsg) => (
+                    <div
+                      key={pinnedMsg.id}
+                      className="flex justify-between items-center p-2 bg-white rounded mt-1"
+                    >
+                      <div className="text-sm">
+                        <span className="font-semibold">
+                          {pinnedMsg.sender === user.id
+                            ? "Bạn"
+                            : isGroupChat
+                            ? pinnedMsg.sender_username
+                            : receiver?.username}
+                          :{" "}
+                        </span>
+                        {pinnedMsg.message.length > 50
+                          ? pinnedMsg.message.slice(0, 50) + "..."
+                          : pinnedMsg.message}
+                      </div>
+                      <Button
+                        size="small"
+                        type="link"
+                        onClick={() => handlePinMessage(pinnedMsg)}
+                      >
+                        Bỏ ghim
+                      </Button>
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <div
+                  className="flex items-center justify-between cursor-pointer"
+                  onClick={() => setIsPinnedMessagesVisible(true)}
+                >
+                  <div className="text-sm text-blue-600">
+                    Tin nhắn{" "}
+                    <span className="font-semibold">
+                      +{pinnedMessages.length} ghim
+                    </span>
+                  </div>
+                  <BsPinAngleFill size={16} className="text-blue-600" />
+                </div>
+              )}
             </div>
           )}
 
@@ -392,23 +372,41 @@ const MainChatArea = ({
             </div>
           )}
 
-          {/* Kết hợp danh sách tin nhắn và thông báo hệ thống */}
-          {[
-            ...filteredMessages.map((msg) => ({
+          {/* Kết hợp danh sách tin nhắn và thông báo hệ thống từ API */}
+          {filteredMessages
+            .map((msg) => ({
               ...msg,
-              type: "message",
+              type: msg.isAction ? "system" : "message",
               sender_username: getSenderName(msg.sender),
-            })),
-            ...systemMessages,
-          ]
+            }))
             .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
             .map((item, index) => {
               if (item.type === "system") {
+                const isPinAction = item.message.includes("Ghim tin nhắn");
+                const isUnpinAction = item.message.includes("Bỏ ghim tin nhắn");
+
                 return (
                   <div key={item.id} className="flex justify-center my-2">
                     <div className="flex items-center bg-gray-100 rounded-full px-3 py-1 text-sm text-gray-600">
-                      <FaStar className="text-yellow-500 mr-2" size={12} />
-                      <span>{item.message}</span>
+                      {isPinAction && (
+                        <BsPinAngleFill
+                          className="text-yellow-500 mr-2"
+                          size={20}
+                        />
+                      )}
+                      {isUnpinAction && (
+                        <RiUnpinFill
+                          className="text-yellow-500 mr-2"
+                          size={20}
+                        />
+                      )}
+                      <span>
+                        {item.sender === user.id
+                          ? "Bạn"
+                          : getSenderName(item.sender)}{" "}
+                        {item.message}
+                      </span>
+                      {/* <div ref={chatEndRef} /> */}
                     </div>
                   </div>
                 );
@@ -451,13 +449,11 @@ const MainChatArea = ({
                           : ""
                       }`}
                     >
-                      {/* Hiển thị tên người gửi nếu là group chat và không phải tin nhắn của bạn */}
                       {isGroupChat && message.sender !== user.id && (
                         <p className="text-xs font-semibold text-gray-600 mb-1">
                           {message.sender_username}
                         </p>
                       )}
-                      {/* Hiển thị tin nhắn trả lời nếu có */}
                       {message.reply_to && repliedMessage && (
                         <div className="border-l-4 border-blue-400 pl-2 mb-2 bg-blue-50 rounded-r">
                           <p className="text-xs font-semibold text-blue-600">
@@ -526,7 +522,7 @@ const MainChatArea = ({
                 </div>
               );
             })}
-          <div ref={chatEndRef} style={{ height: "1px" }} />
+          <div ref={chatEndRef} />
         </div>
       </div>
 

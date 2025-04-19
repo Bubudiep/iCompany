@@ -16,7 +16,8 @@ const Chat_layout = () => {
     }
     const getChatList = () => {
       api
-        .get("/chatbox/", user.token)
+        .get("/chatbox/?page_size=99", user.token)
+
         .then((res) => {
           setChatList(res.results);
         })

@@ -382,6 +382,7 @@ const LeftSide = ({ chatList, setChatList, user }) => {
               <label className="block mb-1">Host (Quản trị viên):</label>
               <Select
                 value={host}
+                disabled
                 onChange={(value) => {
                   setHost(value);
                   setSelectedMembers((prev) => [...new Set([...prev, value])]);
@@ -459,8 +460,8 @@ const LeftSide = ({ chatList, setChatList, user }) => {
                   >
                     <span className="text-sm">
                       {member.fullName}
-                      {isCreator && "Người tạo: "}
-                      {member.id === host && "Host"}
+                      {isCreator && "Người tạo"}
+                      {member.id === host && ": Host"}
                       {admins.includes(memberId) && " (Admin)"}
                     </span>
                     <button

@@ -76,22 +76,6 @@ const Chat_room = () => {
     }
   };
 
-  const fetchPinMessages = async () => {
-    try {
-      const response = await api.get(`/chatbox/${id_room}/ghim`, user.token);
-      const responseData = response.data || response;
-      setMessages((prevMessages) => ({
-        ...prevMessages,
-        message: {
-          ...prevMessages.message,
-          data: [...prevMessages.message.data, ...responseData],
-        },
-      }));
-    } catch (error) {
-      console.error("Error fetching pin messages:", error);
-    }
-  };
-
   const fetchOlderMessages = async (lastId) => {
     if (id_room && lastId && !loadingOlder) {
       setLoadingOlder(true);
@@ -223,7 +207,20 @@ const Chat_room = () => {
               setNewMessage={setNewMessage}
               toggleRightSide={() => setShowRightSide(!showRightSide)}
             />
-            {showRightSide && <RightSide />}
+            {showRightSide && (
+              <RightSide
+                members={messages?.members}
+                isGroupChat={messages?.is_group}
+                chatName={messages?.name}
+                avatar={messages?.avatar}
+                host={messages?.host}
+                company={messages?.company}
+                created_at={messages?.created_at}
+                ghim={messages.ghim}
+                // mediaFiles={mediaFiles} // Truyền dữ liệu mediaFiles (nếu có)
+                // sharedFiles={sharedFiles} // Truyền dữ liệu sharedFiles (nếu có)
+              />
+            )}
           </>
         ) : (
           <div className="flex-1 flex justify-center items-center">
