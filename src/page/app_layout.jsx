@@ -18,6 +18,7 @@ const Homepage_layout = () => {
   const [checkauthfade, setCheckauthfade] = useState(false);
   const [checkauth, setCheckauth] = useState(true);
   const SOCKET_SERVER_URL = import.meta.env.VITE_SOCKET;
+  console.log(SOCKET_SERVER_URL);
   const [listOnline, setListOnline] = useState([]);
   const checkUserAuth = async (token) => {
     if (!token) {

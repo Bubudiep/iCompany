@@ -8,7 +8,7 @@ const DEFAULT_DEBOUNCE_DELAY = 100;
 const debugMode = import.meta.env.VITE_DEBUGMODE === "development";
 
 const api = axios.create({
-  baseURL: "http://" + host + "/api",
+  baseURL: host + "/api",
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",

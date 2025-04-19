@@ -123,7 +123,6 @@ const Operator_news = () => {
               bank_code: row["Mã ngân hàng"] || null,
               bank_number: row["Số tài khoản"] || null,
               bank_type: row["Loại tài khoản"] || "Chính chủ",
-              type: row["Loại"] || "Người mới",
               avatar: null,
               cccd_img: null,
               note: row["Ghi chú"] || null,
