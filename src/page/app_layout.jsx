@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useUser } from "../components/context/userContext";
 import { useCookies } from "react-cookie";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -9,7 +9,11 @@ import App_tools from "./layout/app-tools";
 import App_lists from "./layout/app-list";
 import { notification } from "antd";
 import app from "../components/app";
-
+const removeQueryParam = (key) => {
+  const url = new URL(window.location.href);
+  url.searchParams.delete(key);
+  window.history.replaceState({}, document.title, url.toString());
+};
 const Homepage_layout = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -49,9 +53,7 @@ const Homepage_layout = () => {
     setBreadcrumbs(newBreadcrumbs);
     if (location.search.includes("f=1")) {
       app.send("maximized");
-      const url = new URL(window.location.href);
-      url.searchParams.delete("f");
-      window.history.replaceState({}, document.title, url.toString());
+      removeQueryParam("f");
     }
   }, [location.pathname]);
   useEffect(() => {
@@ -63,9 +65,7 @@ const Homepage_layout = () => {
         .then(async (res) => {
           if (location.search.includes("f=2")) {
             app.send("maximized");
-            const url = new URL(window.location.href);
-            url.searchParams.delete("f");
-            window.history.replaceState({}, document.title, url.toString());
+            removeQueryParam("f");
           }
           if (!res?.id) navigate("/login/");
           const banks = await api.get("/banks/");
@@ -113,7 +113,7 @@ const Homepage_layout = () => {
     };
   }, []);
   useEffect(() => {
-    if ((window.socket, user)) {
+    if (window.socket && user) {
       window.socket.on("online_users", (data) => {
         console.log(data);
         const seenIds = new Set();
@@ -135,7 +135,7 @@ const Homepage_layout = () => {
           );
           const room_link = `/app/chat/${data.data.room}`;
           console.log(location.pathname);
-          if (!location.pathname.includes(room_link)) {
+          if (!location.pathname.includes(room_link) && sender) {
             window?.electron?.send("Notice", {
               appname: APP_NAME,
               silent: true,
@@ -150,15 +150,16 @@ const Homepage_layout = () => {
               body: data?.data?.message,
             });
           }
-          setUser((old) => ({
-            ...old,
-            app_config: {
-              ...old?.app_config,
-              chat_not_read: old?.app_config?.chat_not_read
-                ? old?.app_config?.chat_not_read + 1
-                : 1,
-            },
-          }));
+          setUser((old) => {
+            const config = old.app_config || {};
+            return {
+              ...old,
+              app_config: {
+                ...config,
+                chat_not_read: (config.chat_not_read || 0) + 1,
+              },
+            };
+          });
         }
       });
       window.socket.emit("user_online");
@@ -168,10 +169,15 @@ const Homepage_layout = () => {
       };
     }
   }, [location.pathname, window.socket]);
+  const mapBreadcrumb = (name) => mapLinks[name] || decodeURIComponent(name);
   return (
     <div className="app">
       {checkauth && (
-        <div className={`loading_box ${checkauthfade ? "fadeOut" : ""}`}>
+        <div
+          className={`loading_box ${checkauthfade ? "fadeOut" : ""}`}
+          role="status"
+          aria-live="polite"
+        >
           <div className="loader">
             <div className="square"></div>
             <div className="square"></div>
@@ -200,10 +206,7 @@ const Homepage_layout = () => {
                     {breadcrumbs.map((crumb, index) => (
                       <div key={index}>
                         <i className="fa-solid fa-caret-right icon"></i>
-                        <Link to={crumb.path}>
-                          {mapLinks[decodeURIComponent(crumb.name)] ??
-                            crumb.name}
-                        </Link>
+                        <Link to={crumb.path}>{mapBreadcrumb(crumb.name)}</Link>
                       </div>
                     ))}
                   </div>

@@ -3,12 +3,14 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import LeftNav from "../../components/layout/LeftNav";
 import { BsBuildingsFill, BsFillDiagram2Fill } from "react-icons/bs";
 import { FaUsersCog } from "react-icons/fa";
-import { TbManualGearbox } from "react-icons/tb";
+import { TbBuildingCommunity, TbManualGearbox } from "react-icons/tb";
 import { FaGears, FaUsersGear } from "react-icons/fa6";
+import { MdOutlineDatasetLinked } from "react-icons/md";
+import { PiFactoryFill } from "react-icons/pi";
 const menus = [
   {
     id: 0,
-    icon: <BsBuildingsFill />,
+    icon: <TbBuildingCommunity />,
     label: "Thông tin công ty",
     link: "/app/companys/infomation",
   },
@@ -29,6 +31,18 @@ const menus = [
     icon: <TbManualGearbox />,
     label: "Phòng ban & chức vụ",
     link: "/app/companys/roles",
+  },
+  {
+    id: 4,
+    icon: <PiFactoryFill />,
+    label: "Khách hàng",
+    link: "/app/companys/customers",
+  },
+  {
+    id: 5,
+    icon: <MdOutlineDatasetLinked />,
+    label: "Công ty cung ứng",
+    link: "/app/companys/partners",
   },
 ];
 const Company_layout = () => {

@@ -22,6 +22,8 @@ import Company_roles from "./../page/company/company_roles";
 import Profile from "../page/profile";
 import Details_op from "../page/operators/tools/details_op";
 import List_operators from "../page/operators/tools/list_ops";
+import Company_partner from "../page/company/comapny_parner";
+import Company_customer from "../page/company/company_customer";
 
 function App() {
   return (
@@ -40,6 +42,8 @@ function App() {
               <Route path="configurations" element={<Company_setup />} />
               <Route path="accounts" element={<Company_accounts />} />
               <Route path="roles" element={<Company_roles />} />
+              <Route path="customers" element={<Company_customer />} />
+              <Route path="partners" element={<Company_partner />} />
             </Route>
             <Route path="operators" element={<Operators_layout />}>
               <Route index element={<Operator_list />} />

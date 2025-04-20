@@ -1117,6 +1117,7 @@ body,
     @apply flex justify-between z-10 bg-white border-b-1 border-[#0003] h-[40px];
     .router {
       @apply flex p-1 px-2;
+      -webkit-app-region: drag;
       .view {
         @apply flex items-center gap-1;
         .breadcrumb {

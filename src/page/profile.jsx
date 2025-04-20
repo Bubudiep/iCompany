@@ -104,6 +104,21 @@ const Profile = () => {
                   <Descriptions.Item label="Chức vụ">
                     {user.info.possition_name || "Không có thông tin"}
                   </Descriptions.Item>
+                  <Descriptions.Item label="Quyền Admin" span={2}>
+                    <span
+                      className={
+                        user.info.isAdmin || user.info.isSuperAdmin
+                          ? "text-green-600"
+                          : "text-gray-600"
+                      }
+                    >
+                      {user.info.isSuperAdmin
+                        ? "Super Admin"
+                        : user.info.isAdmin
+                        ? "Admin"
+                        : "Không có"}
+                    </span>
+                  </Descriptions.Item>
                 </Descriptions>
               </div>
               <Descriptions bordered column={2}>
@@ -128,30 +143,6 @@ const Profile = () => {
                     {user.info.isActive ? "Hoạt động" : "Không hoạt động"}
                   </span>
                 </Descriptions.Item>
-                <Descriptions.Item label="Quyền Admin" span={2}>
-                  <span
-                    className={
-                      user.info.isAdmin || user.info.isSuperAdmin
-                        ? "text-green-600"
-                        : "text-gray-600"
-                    }
-                  >
-                    {user.info.isSuperAdmin
-                      ? "Super Admin"
-                      : user.info.isAdmin
-                      ? "Admin"
-                      : "Không có"}
-                  </span>
-                </Descriptions.Item>
-                <Descriptions.Item label="Bị khóa" span={2}>
-                  <span
-                    className={
-                      user.info.isBan ? "text-red-600" : "text-green-600"
-                    }
-                  >
-                    {user.info.isBan ? "Có" : "Không"}
-                  </span>
-                </Descriptions.Item>
                 <Descriptions.Item label="Ngày tạo">
                   {formatDate(user.info.created_at)}
                 </Descriptions.Item>
@@ -167,7 +158,7 @@ const Profile = () => {
       {/* Modal chỉnh sửa */}
       <Modal
         title="Chỉnh sửa thông tin cá nhân"
-        visible={isEditModalVisible}
+        open={isEditModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
         okText="Lưu"
