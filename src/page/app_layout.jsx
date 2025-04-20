@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useUser } from "../components/context/userContext";
 import { useCookies } from "react-cookie";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -8,6 +8,7 @@ import api from "../components/api";
 import App_tools from "./layout/app-tools";
 import App_lists from "./layout/app-list";
 import { notification } from "antd";
+import app from "../components/app";
 
 const Homepage_layout = () => {
   const location = useLocation();
@@ -18,33 +19,8 @@ const Homepage_layout = () => {
   const [checkauthfade, setCheckauthfade] = useState(false);
   const [checkauth, setCheckauth] = useState(true);
   const SOCKET_SERVER_URL = import.meta.env.VITE_SOCKET;
-  console.log(SOCKET_SERVER_URL);
+  const APP_NAME = import.meta.env.APP_NAME;
   const [listOnline, setListOnline] = useState([]);
-  const checkUserAuth = async (token) => {
-    if (!token) {
-      setTimeout(() => {
-        navigate("/login/");
-      }, 1000);
-      return;
-    }
-    api
-      .get("/user/", token)
-      .then(async (res) => {
-        if (!res?.id) navigate("/login/");
-        const banks = await api.get("/banks/");
-        setUser({ ...res, token: token, banks: banks });
-        setTimeout(() => {
-          setCheckauthfade(true);
-          setTimeout(() => {
-            setCheckauth(false);
-          }, 400);
-        }, 600);
-      })
-      .catch((error) => {
-        console.error("Authentication failed:", error);
-        navigate("/login/");
-      });
-  };
   const mapLinks = {
     app: "Trang chủ",
     chat: "Trò chuyện",
@@ -70,20 +46,74 @@ const Homepage_layout = () => {
       breadcrumbPath += `/${name}`;
       return { name: decodeURIComponent(name), path: breadcrumbPath };
     });
-
     setBreadcrumbs(newBreadcrumbs);
+    if (location.search.includes("f=1")) {
+      app.send("maximized");
+      const url = new URL(window.location.href);
+      url.searchParams.delete("f");
+      window.history.replaceState({}, document.title, url.toString());
+    }
   }, [location.pathname]);
   useEffect(() => {
     const token = cookies.newversion_token;
     if (token) {
       console.log("Có token:", token);
-      checkUserAuth(token);
-      window.socket = io(SOCKET_SERVER_URL, {
-        extraHeaders: {
-          ApplicationKey: api.key,
-          Authorization: "Bearer " + token,
-        },
-      });
+      api
+        .get("/user/", token)
+        .then(async (res) => {
+          if (location.search.includes("f=2")) {
+            app.send("maximized");
+            const url = new URL(window.location.href);
+            url.searchParams.delete("f");
+            window.history.replaceState({}, document.title, url.toString());
+          }
+          if (!res?.id) navigate("/login/");
+          const banks = await api.get("/banks/");
+          setUser({ ...res, token: token, banks: banks });
+          if (window?.electron) {
+            window.electron.on("message-from-main", (event, arg) => {
+              console.log("data:", { event });
+              if (event.type === "notification-click") {
+                if (event.data.type === "user_chat") {
+                  const chat_data = event.data.data;
+                  const room = chat_data.room;
+                  const room_link = `/app/chat/${room}`;
+                  navigate(room_link);
+                }
+              }
+            });
+          }
+          if (res) {
+            window.socket = io(SOCKET_SERVER_URL, {
+              extraHeaders: {
+                ApplicationKey: api.key,
+                Authorization: "Bearer " + token,
+              },
+            });
+          }
+          setTimeout(() => {
+            setCheckauthfade(true);
+            setTimeout(() => {
+              setCheckauth(false);
+            }, 400);
+          }, 600);
+        })
+        .catch((error) => {
+          console.error("Authentication failed:", error);
+          navigate("/login/");
+        });
+    } else {
+      console.log("Không tìm thấy token!");
+      navigate("/login");
+    }
+    return () => {
+      if (window?.socket) window.socket.disconnect();
+      if (window.electron)
+        window.electron.removeAllListeners("message-from-main");
+    };
+  }, []);
+  useEffect(() => {
+    if ((window.socket, user)) {
       window.socket.on("online_users", (data) => {
         console.log(data);
         const seenIds = new Set();
@@ -100,11 +130,26 @@ const Homepage_layout = () => {
       });
       window.socket.on("message", (data) => {
         if (data.type === "message") {
-          notification.open({
-            message: data?.user?.full_name,
-            description: data?.data?.message,
-            duration: 3,
-          });
+          const sender = user.staff.find(
+            (staff) => staff.id === data.data.sender
+          );
+          const room_link = `/app/chat/${data.data.room}`;
+          console.log(location.pathname);
+          if (!location.pathname.includes(room_link)) {
+            window?.electron?.send("Notice", {
+              appname: APP_NAME,
+              silent: true,
+              icon: sender?.profile?.avatar || undefined,
+              click_data: {
+                type: "user_chat",
+                data: data.data,
+              },
+              title:
+                sender?.profile?.full_name ||
+                `${sender?.username} (${sender?.cardID})`,
+              body: data?.data?.message,
+            });
+          }
           setUser((old) => ({
             ...old,
             app_config: {
@@ -118,14 +163,11 @@ const Homepage_layout = () => {
       });
       window.socket.emit("user_online");
       return () => {
-        console.log("👋 Disconnect socket");
-        window.socket.disconnect();
+        window.socket.off("online_users");
+        window.socket.off("message");
       };
-    } else {
-      console.log("Không tìm thấy token!");
-      navigate("/login");
     }
-  }, []);
+  }, [location.pathname, window.socket]);
   return (
     <div className="app">
       {checkauth && (

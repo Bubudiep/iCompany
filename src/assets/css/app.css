@@ -1114,7 +1114,7 @@ body,
     }
   }
   .top-container {
-    @apply flex justify-between z-10 bg-white border-b-1 border-[#0003] h-[60px];
+    @apply flex justify-between z-10 bg-white border-b-1 border-[#0003] h-[40px];
     .router {
       @apply flex p-1 px-2;
       .view {
@@ -1142,7 +1142,7 @@ body,
       .search {
         @apply flex items-center;
         .searchbox {
-          @apply flex items-center text-gray-500 bg-gray-300 shadow-inner shadow-black/10 rounded-lg mr-4 p-[2px];
+          @apply flex border border-[#8ca3b3] items-center text-gray-500 bg-[#edeeee] shadow-inner shadow-black/10 rounded-lg mr-4 p-[4px];
           -webkit-app-region: no-drag;
           input {
             outline: none;
@@ -1153,7 +1153,7 @@ body,
             }
           }
           .icon {
-            @apply flex p-1 text-xs;
+            @apply flex p-1 text-xs text-[#8ca3b3];
           }
         }
       }
@@ -1164,8 +1164,21 @@ body,
           -webkit-app-region: no-drag;
         }
         .item {
-          @apply text-[12px] text-[#999] w-6 h-6 flex items-center justify-center rounded-md shadow-inner border border-gray-300 text-gray-700 cursor-pointer transition-all duration-300 text-sm hover:text-black hover:bg-blue-200 last:hover:bg-red-200;
+          @apply text-[#999] w-7.5 h-7.5 flex items-center justify-center rounded-md shadow-inner border border-[#e7e7e7] cursor-pointer transition-all duration-300 text-[13px];
           -webkit-app-region: no-drag;
+          &:hover {
+            background-color: #cfe8ff;
+            color: #032d3a;
+            border-color: #9fb4c9;
+            box-shadow: 2px 2px 4px #0002 inset;
+          }
+          &.exit {
+            &:hover {
+              background-color: #ffc7c7;
+              color: #b60000;
+              border-color: #b60000;
+            }
+          }
         }
       }
     }

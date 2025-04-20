@@ -28,7 +28,7 @@ const App_tools = () => {
             <input type="text" />
           </div>
         </div>
-        <label className="switch">
+        {/* <label className="switch">
           <input
             type="checkbox"
             defaultChecked={true}
@@ -41,7 +41,7 @@ const App_tools = () => {
         </label>
         <div className="lock">
           <i className="fa-solid fa-lock"></i>
-        </div>
+        </div> */}
         <div
           className="item"
           onClick={() => {

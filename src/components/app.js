@@ -139,7 +139,11 @@ const setCookie = (name, value, options = {}) => {
   document.cookie = cookieString;
 };
 const send = (a, b) => {
-  window.electron.send(a, b);
+  try {
+    window.electron.send(a, b);
+  } catch (error) {
+    console.log(error);
+  }
 };
 const convertToBase64 = (file) => {
   return new Promise((resolve, reject) => {
