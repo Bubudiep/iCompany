@@ -4,17 +4,18 @@ import React, { useState } from "react";
 const App_tools = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const showExitConfirm = () => {
-    Modal.confirm({
-      title: "Bạn có chắc chắn muốn thoát?",
-      content: "Dữ liệu của bạn có thể bị mất!",
-      okText: "Thoát",
-      cancelText: "Hủy",
-      maskClosable: true,
-      onOk: () => {
-        console.log("Đang thoát");
-        window.electron.send("exit");
-      },
-    });
+    window.electron.send("close");
+    // Modal.confirm({
+    //   title: "Bạn có chắc chắn muốn thoát?",
+    //   content: "Dữ liệu của bạn có thể bị mất!",
+    //   okText: "Thoát",
+    //   cancelText: "Hủy",
+    //   maskClosable: true,
+    //   onOk: () => {
+    //     console.log("Đang thoát");
+    //     window.electron.send("exit");
+    //   },
+    // });
   };
   return (
     <>
