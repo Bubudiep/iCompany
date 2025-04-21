@@ -90,6 +90,16 @@ const Homepage_layout = () => {
                 Authorization: "Bearer " + token,
               },
             });
+            window.socket.on("connect", () => {
+              console.log("Connected to server");
+              window.socket.emit("user_online");
+            });
+            window.socket.on("disconnect", () => {
+              console.log("Disconnected from server");
+            });
+            window.socket.on("error", (error) => {
+              console.error("Socket error:", error);
+            });
           }
           setTimeout(() => {
             setCheckauthfade(true);
@@ -115,7 +125,6 @@ const Homepage_layout = () => {
   useEffect(() => {
     if (window.socket && user) {
       window.socket.on("online_users", (data) => {
-        console.log(data);
         const seenIds = new Set();
         const uniqueUsers = [];
         for (const item of data) {
