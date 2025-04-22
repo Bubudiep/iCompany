@@ -94,7 +94,7 @@ const RightSide = ({ members, avatar, chatName, isGroupChat, ghim }) => {
           key="2"
         >
           <h2 className="text-sm">Tin nhắn ghim:</h2>
-          {ghim.length > 0 ? (
+          {/* {ghim.length > 0 ? (
             ghim.map((msg) => (
               <p key={msg.id} className="text-sm">
                 {members.find((member) => member.id === msg.sender)?.username}:{" "}
@@ -105,7 +105,7 @@ const RightSide = ({ members, avatar, chatName, isGroupChat, ghim }) => {
             ))
           ) : (
             <p className="text-sm text-gray-500">Chưa có tin nhắn ghim</p>
-          )}
+          )} */}
           <p className="text-sm mt-2">Danh sách nhắc hẹn (Chưa có dữ liệu)</p>
           <p className="text-sm">Ghi chú, bình chọn (Chưa có dữ liệu)</p>
         </Panel>
