@@ -1,15 +1,18 @@
-import { Button, Input, Modal, Form, message } from "antd";
+import { Button, Input, Modal, Form, message, Upload } from "antd";
 import React, { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useOutletContext } from "react-router-dom";
 import api from "../../components/api";
 import { useUser } from "../../components/context/userContext";
+import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
+import app from "../../components/app";
+import * as XLSX from "xlsx";
 
 const Company_partner = () => {
   const { menu } = useOutletContext();
   const { user } = useUser();
   const page_size = 20;
-
+  const [total, setTotal] = useState(0);
   const [partners, setPartners] = useState([]);
   const [nextpage, setNextpage] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -41,12 +44,80 @@ const Company_partner = () => {
       .then((res) => {
         setPartners((old) => [...old, ...res?.results]);
         setNextpage(res?.next);
+        setTotal(res?.count);
       })
       .catch((e) => {
         console.log(e);
       });
   };
+  const handleDownloadTemplate = () => {
+    const headers = [
+      ["name", "fullname", "email", "hotline", "address", "website"],
+      [
+        "Tên gọi ngắn",
+        "Tên đầy đủ",
+        "Địa chỉ email",
+        "Số Hotline",
+        "Địa chỉ",
+        "Trang web",
+      ],
+    ];
+    const worksheet = XLSX.utils.aoa_to_sheet(headers);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Vendors");
+    XLSX.writeFile(workbook, "congty_cung_ung.xlsx");
+  };
+  const handleUploadExcel = ({ file }) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
 
+        // Chuyển sheet thành array of objects
+        const vendors = XLSX.utils.sheet_to_json(worksheet);
+
+        const filteredVendors = vendors.filter(
+          (vendor) => vendor.name !== "Tên gọi ngắn"
+        );
+        if (!filteredVendors.length) {
+          message.warning("File rỗng hoặc không đúng định dạng.");
+          return;
+        }
+
+        let successCount = 0;
+        let errorCount = 0;
+        filteredVendors.forEach((vendor) => {
+          api
+            .post("/vendors/", vendor, user.token)
+            .then((res) => {
+              successCount += 1;
+              setPartners((old) => [...old, res]);
+              setTotal((old) => old + 1);
+            })
+            .catch(() => {
+              errorCount += 1;
+            })
+            .finally(() => {
+              if (successCount + errorCount === filteredVendors.length) {
+                if (errorCount) {
+                  message.warning(`Đã thêm ${successCount}, lỗi ${errorCount}`);
+                } else {
+                  message.success("Thêm tất cả vendor thành công!");
+                }
+              }
+            });
+        });
+      } catch (error) {
+        console.error("Lỗi khi xử lý file Excel:", error);
+        message.error("Không thể đọc file Excel.");
+      }
+    };
+
+    reader.readAsArrayBuffer(file);
+  };
   useEffect(() => {
     loadPartners();
     return () => {
@@ -87,7 +158,20 @@ const Company_partner = () => {
             <div className="flex gap-1">
               <Input placeholder="Tìm kiếm..." />
             </div>
-            <div className="flex">
+            <div className="flex gap-2">
+              <Button
+                icon={<DownloadOutlined />}
+                onClick={handleDownloadTemplate}
+              >
+                Tải mẫu Excel
+              </Button>
+              <Upload
+                customRequest={handleUploadExcel}
+                showUploadList={false}
+                accept=".xlsx"
+              >
+                <Button icon={<UploadOutlined />}>Tải lên Excel</Button>
+              </Upload>
               <Button
                 type="primary"
                 icon={<FaPlus />}

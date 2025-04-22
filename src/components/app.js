@@ -212,6 +212,9 @@ const getRandomColorFromString = (str) => {
   const color = `hsl(${hash % 360}, 60%, 60%)`; // Màu HSL dễ kiểm soát độ sáng
   return color;
 };
+const download = (url) => {
+  window.open(url, "_blank");
+};
 const handleReadQR = (file) => {
   return new Promise((resolve, reject) => {
     if (!file) return resolve(null);
@@ -272,5 +275,6 @@ export default {
   removeSpecial,
   getCookie,
   setCookie,
+  download,
   random: random,
 };
