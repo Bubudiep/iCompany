@@ -24,6 +24,7 @@ import Details_op from "../page/operators/tools/details_op";
 import List_operators from "../page/operators/tools/list_ops";
 import Company_partner from "../page/company/comapny_parner";
 import Company_customer from "../page/company/company_customer";
+import Mobile_layout from "../mobile/layout";
 
 function App() {
   return (
@@ -62,6 +63,7 @@ function App() {
             <Route path="*" element={<NotFoundPage />} />
             <Route path="user" element={<Profile />} />
           </Route>
+          <Route path="/mobile" element={<Mobile_layout />}></Route>
           <Route path="/login" element={<LoginModal />} />
           <Route path="*" element={<LandingPage />} />
           <Route path="/404" element={<NotFoundPage />} />

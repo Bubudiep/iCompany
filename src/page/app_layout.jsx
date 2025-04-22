@@ -143,7 +143,6 @@ const Homepage_layout = () => {
             (staff) => staff.id === data.data.sender
           );
           const room_link = `/app/chat/${data.data.room}`;
-          console.log(location.pathname);
           if (!location.pathname.includes(room_link) && sender) {
             window?.electron?.send("Notice", {
               appname: APP_NAME,
