@@ -7,6 +7,7 @@ import { useUser } from "../../components/context/userContext";
 import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
 import app from "../../components/app";
 import * as XLSX from "xlsx";
+import Alert_box from "../../components/alert-box";
 
 const Company_partner = () => {
   const { menu } = useOutletContext();
@@ -75,7 +76,6 @@ const Company_partner = () => {
         const workbook = XLSX.read(data, { type: "array" });
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
-
         // Chuyển sheet thành array of objects
         const vendors = XLSX.utils.sheet_to_json(worksheet);
 
@@ -149,10 +149,10 @@ const Company_partner = () => {
         </div>
       </div>
       <div className="flex flex-col flex-1 p-2 gap-2 fadeInTop">
-        <div className="flex whitebox !p-2">
-          Danh sách các Công ty cung ứng nhân lực khác vừa có thể là Vendor vừa
-          là Nhà chính
-        </div>
+        <Alert_box
+          text="Danh sách các Công ty cung ứng nhân lực khác vừa có thể là Vendor vừa
+          là Nhà chính"
+        />
         <div className="whitebox h-full flex flex-col overflow-hidden !p-0">
           <div className="tools flex justify-between border-b-1 border-[#0003] p-2">
             <div className="flex gap-1">
@@ -181,9 +181,12 @@ const Company_partner = () => {
               </Button>
             </div>
           </div>
-          <div className="flex flex-col overflow-auto p-2">
+          <div className="flex flex-col overflow-auto pl-2 mr-2 overflow-y-auto text-nowrap">
             {partners.map((p) => (
-              <div key={p.id} className="border p-2 mb-2 rounded bg-[#f9f9f9]">
+              <div
+                key={p.id}
+                className="flex gap-3 justify-between items-center p-2 border-b-1 border-[#0003]"
+              >
                 <div className="font-semibold">{p.name}</div>
                 <div>{p.fullname}</div>
                 <div>{p.address}</div>

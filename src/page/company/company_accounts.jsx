@@ -18,6 +18,7 @@ import api from "../../components/api";
 import { FaEdit, FaLock, FaPlus } from "react-icons/fa";
 import { TbAlertSquareRoundedFilled, TbLockPause } from "react-icons/tb";
 import app from "../../components/app";
+import Alert_box from "../../components/alert-box";
 
 const Company_accounts = () => {
   const { menu } = useOutletContext();
@@ -232,15 +233,7 @@ const Company_accounts = () => {
       </div>
 
       <div className="flex flex-col flex-1 p-2 gap-2 fadeInTop">
-        <div className="flex whitebox !shadow-none !p-0 text-[#d84f00] border-[#d84f00] border-1">
-          <div className="icon p-3 border-r-1">
-            <GoAlertFill />
-          </div>
-          <div className="flex items-center ml-2 font-[500]">
-            Chỉ boss và admin mới được thêm mới tài khoản
-          </div>
-        </div>
-
+        <Alert_box text="Chỉ boss và admin mới được thêm mới tài khoản" />
         <div className="whitebox h-full flex flex-col !p-0">
           {loading ? (
             <div className="flex flex-1 justify-center items-center">

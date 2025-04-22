@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { GoAlertFill } from "react-icons/go";
 import { useOutletContext } from "react-router-dom";
 import { useUser } from "../../components/context/userContext";
+import Alert_box from "../../components/alert-box";
 
 const Company_info = () => {
   const { menu } = useOutletContext();
@@ -18,14 +19,7 @@ const Company_info = () => {
         </div>
       </div>
       <div className="flex flex-col flex-1 p-2 gap-2 fadeInTop">
-        <div className="flex whitebox !shadow-none !p-0 border-1 text-[#424242]">
-          <div className="icon p-3 border-r-1">
-            <GoAlertFill />
-          </div>
-          <div className="flex items-center ml-2">
-            Chỉ boss và admin mới có quyền thay đổi thông tin công ty
-          </div>
-        </div>
+        <Alert_box text="Chỉ boss và admin mới có quyền thay đổi thông tin công ty" />
         <div className="whitebox h-full flex flex-col">
           <div className="flex justify-between p-2 border-b-1 border-[#0003]">
             <div className="name">Tên công ty</div>
