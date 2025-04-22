@@ -1996,3 +1996,32 @@ label {
     }
   }
 }
+.shadow-bot {
+  box-shadow: -1px 2px 3px #cecece;
+}
+.vendor-edit {
+  .ant-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    .ant-form-item {
+      margin-bottom: 0px;
+      .ant-form-item-row {
+        display: flex;
+        flex-direction: row !important;
+        flex-wrap: nowrap;
+        align-items: center;
+        .ant-form-item-label {
+          display: flex;
+          min-width: 30%;
+          .ant-form-item-control-input {
+            margin-left: auto;
+          }
+        }
+        .ant-form-item-control {
+          display: flex;
+        }
+      }
+    }
+  }
+}

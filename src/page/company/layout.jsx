@@ -8,18 +8,18 @@ import { FaGears, FaUsersGear } from "react-icons/fa6";
 import { MdOutlineDatasetLinked } from "react-icons/md";
 import { PiFactoryFill } from "react-icons/pi";
 const menus = [
-  {
-    id: 0,
-    icon: <TbBuildingCommunity />,
-    label: "Thông tin công ty",
-    link: "/app/companys/infomation",
-  },
-  {
-    id: 1,
-    icon: <FaGears />,
-    label: "Cài đặt chung",
-    link: "/app/companys/configurations",
-  },
+  // {
+  //   id: 0,
+  //   icon: <TbBuildingCommunity />,
+  //   label: "Thông tin công ty",
+  //   link: "/app/companys/infomation",
+  // },
+  // {
+  //   id: 1,
+  //   icon: <FaGears />,
+  //   label: "Cài đặt chung",
+  //   link: "/app/companys/configurations",
+  // },
   {
     id: 2,
     icon: <FaUsersGear />,

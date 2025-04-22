@@ -12,7 +12,7 @@ import Alert_box from "../../components/alert-box";
 const Company_partner = () => {
   const { menu } = useOutletContext();
   const { user } = useUser();
-  const page_size = 20;
+  const page_size = 100;
   const [total, setTotal] = useState(0);
   const [partners, setPartners] = useState([]);
   const [nextpage, setNextpage] = useState(null);
@@ -20,6 +20,7 @@ const Company_partner = () => {
   const [form] = Form.useForm();
   const [editingVendor, setEditingVendor] = useState(null);
   const [editForm] = Form.useForm();
+  const [search, setSearch] = useState("");
 
   const handleEdit = (vendor) => {
     setEditingVendor(vendor);
@@ -148,15 +149,19 @@ const Company_partner = () => {
           {menu.label}
         </div>
       </div>
-      <div className="flex flex-col flex-1 p-2 gap-2 fadeInTop">
+      <div className="flex flex-col flex-1 p-2 gap-2 fadeInTop overflow-hidden min-w-[800px]">
         <Alert_box
           text="Danh sách các Công ty cung ứng nhân lực khác vừa có thể là Vendor vừa
           là Nhà chính"
         />
-        <div className="whitebox h-full flex flex-col overflow-hidden !p-0">
-          <div className="tools flex justify-between border-b-1 border-[#0003] p-2">
+        <div className="whitebox flex-1 flex flex-col overflow-hidden !p-0">
+          <div className="tools flex justify-between p-2">
             <div className="flex gap-1">
-              <Input placeholder="Tìm kiếm..." />
+              <Input
+                placeholder="Tìm kiếm..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
             </div>
             <div className="flex gap-2">
               <Button
@@ -181,50 +186,87 @@ const Company_partner = () => {
               </Button>
             </div>
           </div>
-          <div className="flex flex-col overflow-auto pl-2 mr-2 overflow-y-auto text-nowrap">
-            {partners.map((p) => (
-              <div
-                key={p.id}
-                className="flex gap-3 justify-between items-center p-2 border-b-1 border-[#0003]"
-              >
-                <div className="font-semibold">{p.name}</div>
-                <div>{p.fullname}</div>
-                <div>{p.address}</div>
-                <div>{p.email}</div>
-                <div>{p.hotline}</div>
-                <div className="flex gap-2">
-                  <Button onClick={() => handleEdit(p)}>Sửa</Button>
-                </div>
-              </div>
-            ))}
+          <div className="flex flex-1 items-start overflow-auto mr-1 pr-1 mb-1">
+            <table className="table w-full border-collapse text-left relative">
+              <thead className="z-10 sticky top-0 bg-[#fff] shadow-bot">
+                <tr>
+                  <th className="p-2 !text-[13px] !font-[400] text-[#999] text-nowrap">
+                    Tên gọi
+                  </th>
+                  <th className="p-2 !text-[13px] !font-[400] text-[#999] text-nowrap">
+                    Tên đầy đủ
+                  </th>
+                  <th className="p-2 !text-[13px] !font-[400] text-[#999] text-nowrap">
+                    Địa chỉ
+                  </th>
+                  <th className="p-2 !text-[13px] !font-[400] text-[#999] text-nowrap">
+                    Email
+                  </th>
+                  <th className="p-2 !text-[13px] !font-[400] text-[#999] text-nowrap">
+                    Hotline
+                  </th>
+                  <th className="p-2 !text-[13px] !font-[400] text-[#999] text-nowrap">
+                    Hành động
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {partners
+                  .filter((p) =>
+                    app
+                      .removeSpecial(p.name.toLowerCase())
+                      .replaceAll(" ", "")
+                      .includes(
+                        (
+                          app.removeSpecial(search.toLowerCase()) || ""
+                        ).replaceAll(" ", "")
+                      )
+                  )
+                  .map((p) => (
+                    <tr key={p.id} className="border-b border-[#0003]">
+                      <td className="p-2 font-semibold">{p?.name ?? "-"}</td>
+                      <td className="p-2">{p?.fullname ?? "-"}</td>
+                      <td className="p-2">{p?.address ?? "-"}</td>
+                      <td className="p-2">{p?.email ?? "-"}</td>
+                      <td className="p-2">{p?.hotline ?? "-"}</td>
+                      <td className="p-2">
+                        <Button onClick={() => handleEdit(p)}>Sửa</Button>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
 
       <Modal
         open={!!editingVendor}
-        title="Chỉnh sửa Vendor"
+        title={`Chỉnh sửa ${editingVendor?.name}`}
         onCancel={() => setEditingVendor(null)}
         onOk={handleUpdate}
+        className="popupcontent vendor-edit"
+        okText="Lưu"
+        cancelText="Hủy"
       >
-        <Form form={editForm} layout="vertical">
-          <Form.Item name="name" label="Tên" rules={[{ required: true }]}>
-            <Input />
+        <Form form={editForm} layout="vertical" className="!px-4">
+          <Form.Item name="name" label="Tên gọi" rules={[{ required: true }]}>
+            <Input placeholder="Công ty A..." />
           </Form.Item>
           <Form.Item name="fullname" label="Tên đầy đủ">
-            <Input />
+            <Input placeholder="Công ty TNHH A..." />
           </Form.Item>
           <Form.Item name="email" label="Email">
-            <Input />
+            <Input placeholder="congty@gmail.com..." />
           </Form.Item>
           <Form.Item name="hotline" label="Hotline">
-            <Input />
+            <Input placeholder="1900 000 000..." />
           </Form.Item>
           <Form.Item name="address" label="Địa chỉ">
-            <Input />
+            <Input placeholder="Xã - Huyện - Tỉnh..." />
           </Form.Item>
           <Form.Item name="website" label="Website">
-            <Input />
+            <Input placeholder="https://..." />
           </Form.Item>
         </Form>
       </Modal>
@@ -235,29 +277,35 @@ const Company_partner = () => {
         onOk={() => form.submit()}
         okText="Lưu"
         cancelText="Hủy"
+        className="popupcontent vendor-edit"
       >
-        <Form form={form} layout="vertical" onFinish={handleCreate}>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleCreate}
+          className="!px-4"
+        >
           <Form.Item
             name="name"
             label="Tên viết tắt"
             rules={[{ required: true, message: "Bắt buộc" }]}
           >
-            <Input />
+            <Input placeholder="Công ty A..." />
           </Form.Item>
           <Form.Item name="fullname" label="Tên đầy đủ">
-            <Input />
-          </Form.Item>
-          <Form.Item name="address" label="Địa chỉ">
-            <Input />
+            <Input placeholder="Công ty TNHH A..." />
           </Form.Item>
           <Form.Item name="email" label="Email">
-            <Input type="email" />
+            <Input placeholder="congty@gmail.com..." />
           </Form.Item>
           <Form.Item name="hotline" label="Hotline">
-            <Input />
+            <Input placeholder="1900 000 000..." />
+          </Form.Item>
+          <Form.Item name="address" label="Địa chỉ">
+            <Input placeholder="Xã - Huyện - Tỉnh..." />
           </Form.Item>
           <Form.Item name="website" label="Website">
-            <Input />
+            <Input placeholder="https://..." />
           </Form.Item>
         </Form>
       </Modal>
