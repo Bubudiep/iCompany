@@ -143,6 +143,7 @@ const Homepage_layout = () => {
             (staff) => staff.id === data.data.sender
           );
           const room_link = `/app/chat/${data.data.room}`;
+          console.log("Data from socket messages: ", data);
           if (!location.pathname.includes(room_link) && sender) {
             window?.electron?.send("Notice", {
               appname: APP_NAME,
@@ -158,6 +159,7 @@ const Homepage_layout = () => {
               body: data?.data?.message,
             });
           }
+          // Chỉ tăng chat_not_read nếu không ở trong phòng chat hiện tại
           setUser((old) => {
             const config = old.app_config || {};
             return {

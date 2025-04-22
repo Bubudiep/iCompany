@@ -27,13 +27,12 @@ const LeftSide = ({ chatList, setChatList, user }) => {
   const [isCreateGroupModalVisible, setIsCreateGroupModalVisible] =
     useState(false);
   const [availableUsers, setAvailableUsers] = useState([]);
-
   const [groupName, setGroupName] = useState("");
-  const [host, setHost] = useState(user.id); // Mặc định host là người dùng hiện tại
+  const [host, setHost] = useState(user.id);
   const [admins, setAdmins] = useState([]);
-  const [selectedMembers, setSelectedMembers] = useState([user.id]); // Bao gồm user hiện tại
+  const [selectedMembers, setSelectedMembers] = useState([user.id]);
   const [memberSearchTerm, setMemberSearchTerm] = useState("");
-  const [groupCover, setGroupCover] = useState(null); // Base64 string
+  const [groupCover, setGroupCover] = useState(null);
   const [groupCoverURL, setGroupCoverURL] = useState(null);
 
   // Lấy danh sách người dùng từ user.staff
@@ -73,6 +72,40 @@ const LeftSide = ({ chatList, setChatList, user }) => {
     }
   }, [searchTerm, chatList, user]);
 
+  // Lắng nghe tin nhắn mới qua WebSocket
+  useEffect(() => {
+    if (window.socket) {
+      window.socket.on("message", (data) => {
+        if (data.type === "message") {
+          const newMessage = data.data;
+          const roomId = newMessage.room;
+
+          setChatList((prevChatList) => {
+            return prevChatList.map((chat) => {
+              if (chat.id === roomId) {
+                return {
+                  ...chat,
+                  last_message: {
+                    id: newMessage.id,
+                    message: newMessage.message,
+                    sender: newMessage.sender,
+                    created_at: newMessage.created_at,
+                  },
+                  not_read: (chat.not_read || 0) + 1, // Tăng số tin nhắn chưa đọc
+                };
+              }
+              return chat;
+            });
+          });
+        }
+      });
+
+      return () => {
+        window.socket.off("message");
+      };
+    }
+  }, [setChatList]);
+
   // Lọc danh sách thành viên khi tìm kiếm
   const filteredMembers = availableUsers.filter((u) =>
     u.fullName.toLowerCase().includes(memberSearchTerm.toLowerCase())
@@ -110,7 +143,7 @@ const LeftSide = ({ chatList, setChatList, user }) => {
       return;
     }
     setSelectedMembers((prev) => prev.filter((id) => id !== memberId));
-    setAdmins((prev) => prev.filter((id) => id !== memberId)); // Xóa khỏi admins nếu có
+    setAdmins((prev) => prev.filter((id) => id !== memberId));
   };
 
   // Xử lý chọn ảnh bìa
@@ -124,9 +157,9 @@ const LeftSide = ({ chatList, setChatList, user }) => {
 
     const reader = new FileReader();
     reader.onload = () => {
-      const base64String = reader.result.split(",")[1]; // Lấy base64 string (bỏ phần "data:image/jpeg;base64,")
+      const base64String = reader.result.split(",")[1];
       setGroupCover(base64String);
-      setGroupCoverURL(reader.result); // Để hiển thị preview
+      setGroupCoverURL(reader.result);
     };
     reader.onerror = () => {
       message.error("Không thể đọc file ảnh!");
@@ -153,13 +186,12 @@ const LeftSide = ({ chatList, setChatList, user }) => {
 
     try {
       const groupData = {
-        // id: null,
         name: groupName,
         host: host,
         admins: admins,
         members: selectedMembers,
         is_group: true,
-        avatar: groupCover || null, // Gửi base64 string
+        avatar: groupCover || null,
       };
 
       const createRoomResponse = await api.post(
@@ -167,24 +199,14 @@ const LeftSide = ({ chatList, setChatList, user }) => {
         groupData,
         user.token
       );
-      // Kiểm tra response từ API
-      console.log("API Response:", createRoomResponse);
-
-      // API trả về trực tiếp object, không có .data
       const newRoom = createRoomResponse;
 
-      // Kiểm tra xem newRoom có tồn tại và có id không
       if (!newRoom || !newRoom.id) {
         throw new Error("Không thể lấy ID của room mới từ API response");
       }
 
-      console.log("New room:", newRoom);
-
-      // Cập nhật chatList để hiển thị group mới trong danh sách
-      // setChatList((prevChatList) => [...prevChatList, newRoom]);
       setChatList((prevChatList) => [newRoom, ...prevChatList]);
 
-      // Reset các state sau khi tạo group
       setIsCreateGroupModalVisible(false);
       setGroupName("");
       setHost(user.id);
@@ -194,8 +216,6 @@ const LeftSide = ({ chatList, setChatList, user }) => {
       setGroupCover(null);
       setGroupCoverURL(null);
 
-      // Redirect đến URL: /app/chat/:id
-      // nav(`/app/`);
       message.success("Tạo group chat thành công!");
       nav(`/app/chat/${newRoom.id}`);
     } catch (error) {
@@ -206,7 +226,11 @@ const LeftSide = ({ chatList, setChatList, user }) => {
       });
     }
   };
-  // console.log("FilteredChatList: ", filteredChatList);
+
+  // Tính tổng số tin nhắn chưa đọc
+  const totalUnreadMessages = chatList.reduce((total, chat) => {
+    return total + (chat.not_read || 0);
+  }, 0);
 
   return (
     <div className="left-side bg-white w-1/5 flex flex-col min-w-[280px] overflow-hidden">
@@ -241,17 +265,25 @@ const LeftSide = ({ chatList, setChatList, user }) => {
           />
         </div>
         <div className="flex p-3 items-center justify-between">
-          <span className="font-bold">Ưu tiên</span>
+          <span className="font-bold flex items-center">
+            Chat
+            {totalUnreadMessages > 0 && (
+              <Badge
+                count={totalUnreadMessages > 9 ? "9+" : totalUnreadMessages}
+                offset={[10, 0]}
+                style={{ backgroundColor: "#ff4d4f" }}
+              />
+            )}
+          </span>
           <span className="text-sm">Khác</span>
         </div>
         <h1 className="text-center">
           {filteredChatList.length === 0 &&
             "Không tìm thấy cuộc trò chuyện. Hãy bắt đầu 1 cuộc trò chuyện."}
         </h1>
-        {/* count total chat */}
-        <h1 className="text-center">
+        {/* <h1 className="text-center">
           số lượng cuộc trò chuyện: {filteredChatList.length}
-        </h1>
+        </h1> */}
         <div className="h-full overflow-auto">
           <div className="p-2 mt-2">
             {filteredChatList
@@ -307,7 +339,11 @@ const LeftSide = ({ chatList, setChatList, user }) => {
                           : ""}
                       </div>
                       {chat.not_read > 0 && (
-                        <Badge count={chat.not_read} offset={[30, 5]} />
+                        <Badge
+                          count={chat.not_read > 9 ? "9+" : chat.not_read}
+                          offset={[30, 5]}
+                          style={{ backgroundColor: "#ff4d4f" }}
+                        />
                       )}
                     </div>
                   </Link>
@@ -317,7 +353,6 @@ const LeftSide = ({ chatList, setChatList, user }) => {
         </div>
       </div>
 
-      {/* Modal tạo group chat */}
       <Modal
         title="Tạo nhóm"
         open={isCreateGroupModalVisible}
@@ -335,7 +370,6 @@ const LeftSide = ({ chatList, setChatList, user }) => {
         width={1000}
       >
         <div className="space-y-4">
-          {/* Select cover group và nhập tên nhóm */}
           <div className="flex items-center space-x-2">
             <div className="flex-shrink-0">
               {groupCoverURL ? (
@@ -375,9 +409,7 @@ const LeftSide = ({ chatList, setChatList, user }) => {
               />
             </div>
           </div>
-          {/* Host và Admins trong 1 hàng */}
           <div className="flex space-x-4">
-            {/* Host (Quản trị viên) */}
             <div className="flex-1">
               <label className="block mb-1">Host (Quản trị viên):</label>
               <Select
@@ -397,8 +429,6 @@ const LeftSide = ({ chatList, setChatList, user }) => {
                 ))}
               </Select>
             </div>
-
-            {/* Admins (Quản lý) */}
             <div className="flex-1">
               <label className="block mb-1">Admins (Quản lý):</label>
               <Select
@@ -420,16 +450,12 @@ const LeftSide = ({ chatList, setChatList, user }) => {
               </Select>
             </div>
           </div>
-
-          {/* Ô tìm kiếm thành viên */}
           <Input
             placeholder="Nhập tên, số điện thoại, email..."
             value={memberSearchTerm}
             onChange={(e) => setMemberSearchTerm(e.target.value)}
             allowClear
           />
-
-          {/* Thanh hiển thị thành viên đã chọn */}
           {selectedMembers.length > 0 && (
             <div className="flex flex-wrap items-center p-2 bg-gray-100 rounded cursor-pointer">
               <span className="text-sm text-gray-700 mr-2">
@@ -443,16 +469,6 @@ const LeftSide = ({ chatList, setChatList, user }) => {
                   fullName: user.username,
                 };
                 const isCreator = memberId === user.id;
-                {
-                  /* console.log(
-                  "Member ID:",
-                  memberId,
-                  "User ID:",
-                  user.id,
-                  "Is creator:",
-                  isCreator
-                ); */
-                }
                 return (
                   <div
                     key={memberId}
@@ -475,8 +491,6 @@ const LeftSide = ({ chatList, setChatList, user }) => {
               })}
             </div>
           )}
-
-          {/* Tabs lọc thành viên */}
           <Tabs defaultActiveKey="1">
             <TabPane tab="Tất cả" key="1">
               <div className="max-h-60 overflow-y-auto">
@@ -538,8 +552,6 @@ const LeftSide = ({ chatList, setChatList, user }) => {
               </div>
             </TabPane>
           </Tabs>
-
-          {/* Nút Hủy và Tạo nhóm */}
           <div className="flex justify-end space-x-2">
             <Button
               onClick={() => {

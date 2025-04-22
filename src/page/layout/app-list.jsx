@@ -139,7 +139,9 @@ const App_lists = () => {
                 {item?.unread_field &&
                   user?.app_config?.[item?.unread_field] > 0 && (
                     <div className="unread">
-                      {user?.app_config?.[item?.unread_field]}
+                      {user?.app_config?.[item?.unread_field] > 9
+                        ? "9+"
+                        : user?.app_config?.[item?.unread_field]}
                     </div>
                   )}
                 <div className="icon">
