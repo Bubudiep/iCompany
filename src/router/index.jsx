@@ -38,7 +38,7 @@ function App() {
               <Route path=":id_room" element={<Chat_room />} />
             </Route>
             <Route path="companys" element={<Company_layout />}>
-              <Route index element={<Company_info />} />
+              <Route index element={<Company_accounts />} />
               <Route path="infomation" element={<Company_info />} />
               <Route path="configurations" element={<Company_setup />} />
               <Route path="accounts" element={<Company_accounts />} />
