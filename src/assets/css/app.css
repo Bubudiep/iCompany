@@ -1997,7 +1997,7 @@ label {
   }
 }
 .shadow-bot {
-  box-shadow: -1px 2px 3px #cecece;
+  box-shadow: -2px 2px 3px #cecece;
 }
 .vendor-edit {
   .ant-form {

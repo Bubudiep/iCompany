@@ -14,7 +14,7 @@ const Company_partner = () => {
   const { user } = useUser();
   const page_size = 100;
   const [total, setTotal] = useState(0);
-  const [partners, setPartners] = useState([]);
+  const [partners, setPartners] = useState(user?.company?.Vendor);
   const [nextpage, setNextpage] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
@@ -41,8 +41,18 @@ const Company_partner = () => {
     });
   };
   const loadPartners = () => {
+    const old_parner = partners?.sort(
+      (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
+    );
     api
-      .get(`/vendors/?page_size=${page_size}`, user.token)
+      .get(
+        `/vendors/?page_size=999${
+          old_parner.length > 0
+            ? `&last_update=${old_parner[0].updated_at}`
+            : ``
+        }`,
+        user.token
+      )
       .then((res) => {
         setPartners((old) => [...old, ...res?.results]);
         setNextpage(res?.next);
@@ -149,7 +159,7 @@ const Company_partner = () => {
           {menu.label}
         </div>
       </div>
-      <div className="flex flex-col flex-1 p-2 gap-2 fadeInTop overflow-hidden min-w-[800px]">
+      <div className="flex flex-col flex-1 p-2 gap-2 fadeInTop overflow-hidden min-w-[720px]">
         <Alert_box
           text="Danh sách các Công ty cung ứng nhân lực khác vừa có thể là Vendor vừa
           là Nhà chính"
