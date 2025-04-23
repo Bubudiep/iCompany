@@ -21,18 +21,18 @@ const Contacts_layout = () => {
       icon: <MdOutlineContacts />,
       link: "/app/contacts/group",
     },
-    {
-      id: "department",
-      label: "Đồng nghiệp cùng bộ phận",
-      icon: <HiOutlineUserGroup />,
-      link: "/app/contacts/department",
-    },
-    {
-      id: "chatted",
-      label: "Đã nhắn tin",
-      icon: <GrContactInfo />,
-      link: "/app/contacts/chatted",
-    },
+    // {
+    //   id: "department",
+    //   label: "Đồng nghiệp cùng bộ phận",
+    //   icon: <HiOutlineUserGroup />,
+    //   link: "/app/contacts/department",
+    // },
+    // {
+    //   id: "chatted",
+    //   label: "Đã nhắn tin",
+    //   icon: <GrContactInfo />,
+    //   link: "/app/contacts/chatted",
+    // },
   ];
   return (
     <div className="flex flex-1">

@@ -11,7 +11,7 @@ const Contacts_list = () => {
   const { user } = useUser();
   const [filterText, setFilterText] = useState("");
   const filterStaff = () => {
-    return user.staff.filter((item) => item.id !== user.id);
+    return user.company.Staff.filter((item) => item.id !== user.id);
   };
 
   useEffect(() => {
