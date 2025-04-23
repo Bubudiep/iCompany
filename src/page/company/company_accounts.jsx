@@ -232,7 +232,7 @@ const Company_accounts = () => {
         </div>
       </div>
 
-      <div className="flex flex-col flex-1 p-2 gap-2 fadeInTop">
+      <div className="flex flex-col flex-1 p-2 gap-2 fadeInTop min-w-[720px]">
         <Alert_box text="Chỉ boss và admin mới được thêm mới tài khoản" />
         <div className="whitebox h-full flex flex-col !p-0">
           {loading ? (
@@ -364,6 +364,7 @@ const Company_accounts = () => {
         onOk={handleAddAccount}
         okText="Tạo tài khoản"
         cancelText="Hủy"
+        className="popupcontent"
       >
         <Form form={addForm} layout="vertical" className="flex flex-col gap-1">
           <Form.Item

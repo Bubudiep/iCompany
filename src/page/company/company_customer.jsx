@@ -14,7 +14,7 @@ const Company_customer = () => {
   const { user } = useUser();
   const page_size = 100;
   const [total, setTotal] = useState(0);
-  const [customers, setCustomers] = useState([]);
+  const [customers, setCustomers] = useState(user?.company?.Customer);
   const [nextpage, setNextpage] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
@@ -41,8 +41,16 @@ const Company_customer = () => {
     });
   };
   const loadPartners = () => {
+    const old_cus = customers.sort(
+      (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
+    );
     api
-      .get(`/customers/?page_size=${page_size}`, user.token)
+      .get(
+        `/customers/?page_size=${page_size}${
+          old_cus.length > 0 ? `&last_update=${old_cus[0].updated_at}` : ``
+        }`,
+        user.token
+      )
       .then((res) => {
         setCustomers((old) => [...old, ...res?.results]);
         setNextpage(res?.next);
@@ -149,7 +157,7 @@ const Company_customer = () => {
           {menu.label}
         </div>
       </div>
-      <div className="flex flex-col flex-1 p-2 gap-2 fadeInTop overflow-hidden min-w-[800px]">
+      <div className="flex flex-col flex-1 p-2 gap-2 fadeInTop overflow-hidden min-w-[720px]">
         <Alert_box text="Danh sách các Công ty khách hàng là các công ty mà người lao động đi vào làm việc" />
         <div className="whitebox flex-1 flex flex-col overflow-hidden !p-0">
           <div className="tools flex justify-between p-2">
