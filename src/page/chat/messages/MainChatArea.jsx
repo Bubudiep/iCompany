@@ -9,7 +9,17 @@ import {
   FaStar,
 } from "react-icons/fa";
 import { IoIosInformationCircle } from "react-icons/io";
-import { Avatar, Spin, Input, Tooltip, message, Button } from "antd";
+import {
+  Avatar,
+  Spin,
+  Input,
+  Tooltip,
+  message,
+  Button,
+  Modal,
+  Divider,
+  Popconfirm,
+} from "antd";
 import { useUser } from "../../../components/context/userContext";
 import app from "../../../components/app";
 import AudioCallLayout from "./AudioCallLayout";
@@ -19,6 +29,18 @@ import api from "../../../components/api";
 import { BsPinAngleFill } from "react-icons/bs";
 import { RiUnpinFill } from "react-icons/ri";
 import RightSide from "./RightSide";
+import { CiUser } from "react-icons/ci";
+import { IoPersonAddSharp } from "react-icons/io5";
+import {
+  CameraOutlined,
+  CopyOutlined,
+  EditOutlined,
+  LogoutOutlined,
+  SettingOutlined,
+  ShareAltOutlined,
+  TagsOutlined,
+} from "@ant-design/icons";
+import { FaCubesStacked } from "react-icons/fa6";
 
 const { Search } = Input;
 
@@ -37,6 +59,33 @@ const MainChatArea = ({
   const chatEndRef = useRef(null);
   const chatContainerRef = useRef(null);
   const [lastScrollHeight, setLastScrollHeight] = useState(0);
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
+  const [isNameModalOpen, setIsNameModalOpen] = useState(false);
+
+  // chat box information
+  const handleAvatarClick = () => {
+    setIsAvatarModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsAvatarModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsAvatarModalOpen(false);
+  };
+
+  const handleNameClick = () => {
+    setIsNameModalOpen(true);
+  };
+
+  const handleNameOk = () => {
+    setIsNameModalOpen(false);
+  };
+
+  const handleNameCancel = () => {
+    setIsNameModalOpen(false);
+  };
 
   // Trạng thái để hiển thị layout gọi audio/video
   const [isAudioCallActive, setIsAudioCallActive] = useState(false);
@@ -44,7 +93,7 @@ const MainChatArea = ({
 
   // Trạng thái cho ghim tin nhắn
   const [pinnedMessages, setPinnedMessages] = useState([]);
-  const [isPinnedMessagesVisible, setIsPinnedMessagesVisible] = useState(false);
+  const [isPinnedMessagesVisible, setIsPinnedMessagesVisible] = useState(false); // Thu gọn mặc định
 
   // Trạng thái cho tìm kiếm tin nhắn
   const [searchTerm, setSearchTerm] = useState("");
@@ -72,6 +121,7 @@ const MainChatArea = ({
 
   // Khôi phục pinnedMessages từ API
   useEffect(() => {
+    // Lấy danh sách tin nhắn ghim từ API
     const pinnedFromApi = messages?.ghim || [];
     const pinnedWithSenderName = pinnedFromApi.map((msg) => ({
       ...msg,
@@ -124,6 +174,7 @@ const MainChatArea = ({
       chatEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [filteredMessages, searchTerm]); // Thay all_message bằng filteredMessages
+  // }, [all_message, searchTerm]); // Thay all_message bằng filteredMessages
 
   // Xử lý cuộn để tải tin nhắn cũ
   const handleScroll = () => {
@@ -230,6 +281,12 @@ const MainChatArea = ({
     message.success(`Bạn đã thích tin nhắn: "${msg.message}"`);
   };
 
+  const handleAddToGroup = (user) => {
+    message.success(
+      `${user.username} đã được bạn ${user.username} thêm vào nhóm ${chatName}`
+    );
+  };
+
   const handleReplyMessage = (msg) => {
     setReplyingTo(msg);
     setNewMessage("");
@@ -277,13 +334,15 @@ const MainChatArea = ({
     setReplyingTo(null);
     setNewMessage("");
 
+    // Cuộn xuống cuối sau khi gửi tin nhắn
     setTimeout(() => {
       if (chatEndRef.current) {
         chatEndRef.current.scrollIntoView({ behavior: "smooth" });
       }
     }, 100);
   };
-
+  // show all data from api
+  console.log("messages", messages);
   return (
     <div className="flex flex-1">
       {/* Khu vực chat chính */}
@@ -291,19 +350,203 @@ const MainChatArea = ({
         {/* Header */}
         <div className="flex items-center justify-between bg-white !h-[60px] p-4 border-b">
           <div className="flex items-center">
-            <Avatar
-              className="rounded-full"
-              size={40}
-              src={messages?.avatar}
-            />
-            <div className="ml-2">
-              <h1 className="font-bold text-lg">{chatName || "Không có tên"}</h1>
-              <div className="text-sm text-gray-500">
-                {isGroupChat
-                  ? `${members.length} thành viên`
-                  : receiver?.status || "Đang hoạt động"}
+            <div className="relative">
+              <Avatar
+                onClick={handleAvatarClick}
+                className="rounded-full cursor-pointer"
+                size={40}
+                src={messages?.avatar}
+              />
+            </div>
+
+            <div className="ml-2 relative group">
+              <div className="flex items-center space-x-2">
+                <h1 className="font-bold">{chatName}</h1>
+                <Tooltip title="Chỉnh sửa">
+                  <EditOutlined
+                    className="opacity-0 group-hover:opacity-100 text-sm cursor-pointer transition-opacity"
+                    onClick={handleNameClick}
+                  />
+                </Tooltip>
+
+                <Modal
+                  title={isGroupChat ? "Đổi tên nhóm" : "Đặt tên gợi nhớ"}
+                  open={isNameModalOpen}
+                  onOk={handleNameOk}
+                  onCancel={handleNameCancel}
+                  okText="Xác nhận"
+                  cancelText="Hủy"
+                >
+                  <div className="flex flex-col items-center">
+                    <div className="relative">
+                      <Avatar
+                        size={64}
+                        // src={avatarUrl}
+                      />
+                      <div className="absolute -bottom-1 right-0 bg-white border rounded-full p-1">
+                        📷
+                      </div>
+                    </div>
+                    {/*  nếu là group chat, chat 1-1 */}
+                    {isGroupChat ? (
+                      <p className="text-center mt-4 text-gray-600">
+                        Bạn có chắc chắn muốn đổi tên nhóm, khi xác nhận tên
+                        nhóm mới sẽ hiển thị với tất cả thành viên.
+                      </p>
+                    ) : (
+                      <p className="text-center mt-4 text-gray-600">
+                        Hãy đặt tên cho ... {user.username} một cái tên dễ nhớ.
+                        <br />
+                        Lưu ý: Tên gợi nhớ sẽ chỉ hiện thị với riêng bạn.
+                      </p>
+                    )}
+
+                    <Input
+                      className="mt-3"
+                      value={chatName}
+                      // onChange={(e) => setNewName(e.target.value)}
+                    />
+
+                    <div className="flex justify-end mt-5 w-full gap-2"></div>
+                  </div>
+                </Modal>
+              </div>
+
+              <div className="text-sm text-gray-500 flex items-center space-x-2">
+                {isGroupChat ? (
+                  <>
+                    <CiUser className="inline mr-1" />
+                    <span>{members.length} thành viên</span>
+                  </>
+                ) : (
+                  <span className="text-sm text-green-500">
+                    {receiver?.status || "Đang hoạt động"}
+                  </span>
+                )}{" "}
+                <Divider
+                  type="vertical"
+                  className="h-4 border-black-solid w-2"
+                />
+                <Tooltip title="Phân loại đoạn chat">
+                  <FaCubesStacked className="icon-hover cursor-pointer" />
+                </Tooltip>
               </div>
             </div>
+
+            <Modal
+              centered
+              title={isGroupChat ? "Thông tin nhóm" : "Thông tin đoạn chat"}
+              open={isAvatarModalOpen}
+              onOk={handleOk}
+              onCancel={handleCancel}
+              okText="Xác nhận"
+              cancelText="Hủy"
+            >
+              <div className="flex flex-col items-center">
+                {/* Avatar nhóm */}
+                <div className="relative cursor-pointer">
+                  <Avatar src={user.avatar} size={72} />
+                  {/* Tên nhóm */}
+                  <span className="text-lg font-semibold ml-4 mr-2">
+                    {chatName}
+                  </span>
+                  <Tooltip title="Đổi tên nhóm">
+                    <EditOutlined
+                      onClick={() => setIsNameModalOpen(true)}
+                      className="cursor-pointer text-gray-500"
+                    />
+                  </Tooltip>
+                  {/* )} */}
+                </div>
+
+                <Button className="mt-4 w-full" type="default">
+                  Nhắn tin
+                </Button>
+
+                {/* Thành viên */}
+                <div className="w-full mt-5">
+                  <div className="mb-1 font-bold">
+                    Thành viên ({members.length})
+                  </div>
+                  <div className="flex items-center gap-[-8px]">
+                    {members.map((src, idx) => (
+                      <Avatar
+                        key={idx}
+                        size={32}
+                        src={user.avatar}
+                        className="-ml-1"
+                      />
+                    ))}
+                    <Avatar size={32}>...</Avatar>
+                  </div>
+                </div>
+
+                {/* Ảnh/Video */}
+                <div className="w-full mt-5">
+                  <div className="text-gray-500 mb-1">Ảnh/Video</div>
+                  <div className="flex gap-2 overflow-x-auto">
+                    {/* {mediaList.map((src, idx) => ( */}
+                    <img
+                      // key={idx}
+                      // src={src}
+                      alt="media"
+                      className="h-16 w-16 rounded object-cover"
+                    />
+                    {/* ))} */}
+                    <div className="h-16 w-16 rounded bg-gray-100 flex items-center justify-center text-xl">
+                      →
+                    </div>
+                  </div>
+                </div>
+
+                <Divider />
+
+                {/* Link tham gia */}
+                <div className="w-full flex items-center justify-between mb-2">
+                  <h1>Link tham gia </h1>
+                  <a
+                    // href={joinLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 truncate"
+                  >
+                    {/* {joinLink} */}
+                    https://hl.djc.me/g/rfgqjg415
+                  </a>
+                  <div className="">
+                    <Tooltip title="Sao chép">
+                      <CopyOutlined
+                        // onClick={handleCopy}
+                        className="cursor-pointer mr-2"
+                      />
+                    </Tooltip>
+                    <Tooltip title="Chia sẻ">
+                      <ShareAltOutlined
+                        // onClick={handleCopy}
+                        className="cursor-pointer"
+                      />
+                    </Tooltip>
+                  </div>
+                </div>
+
+                {/* Quản lý nhóm */}
+                <Button icon={<SettingOutlined />} className="w-full mb-2">
+                  Quản lý nhóm
+                </Button>
+
+                {/* Rời nhóm */}
+                <Popconfirm
+                  title="Bạn chắc chắn muốn rời nhóm?"
+                  onConfirm={() => message.warning("Bạn đã rời nhóm")}
+                  okText="Ok"
+                  cancelText="Hủy"
+                >
+                  <Button icon={<LogoutOutlined />} danger className="w-full">
+                    Rời nhóm
+                  </Button>
+                </Popconfirm>
+              </div>
+            </Modal>
           </div>
           <div className="flex items-center space-x-4 cursor-pointer">
             <Search
@@ -312,13 +555,23 @@ const MainChatArea = ({
               onChange={(e) => handleSearch(e.target.value)}
               style={{ width: 200 }}
             />
-            <FaPhone className="icon-hover" onClick={handleAudioCall} />
-            <FaVideo className="icon-hover" onClick={handleVideoCall} />
-            <IoIosInformationCircle
-              size={20}
-              className="icon-hover"
-              onClick={toggleRightSide}
-            />
+            <Tooltip title="Thêm bạn vào nhóm">
+              <IoPersonAddSharp onClick={handleAddToGroup} />
+            </Tooltip>
+            <Tooltip title="Cuộc gọi thoại">
+              <FaPhone className="icon-hover" onClick={handleAudioCall} />
+            </Tooltip>
+
+            <Tooltip title="Cuộc gọi video">
+              <FaVideo className="icon-hover" onClick={handleVideoCall} />
+            </Tooltip>
+            <Tooltip title="Thông tin cuộc trò chuyện">
+              <IoIosInformationCircle
+                size={20}
+                className="icon-hover"
+                onClick={toggleRightSide}
+              />
+            </Tooltip>
           </div>
         </div>
 
@@ -329,6 +582,7 @@ const MainChatArea = ({
             ref={chatContainerRef}
             onScroll={handleScroll}
           >
+            {/* Danh sách tin nhắn được ghim */}
             {pinnedMessages.length > 0 && (
               <div
                 style={{
@@ -406,12 +660,19 @@ const MainChatArea = ({
               </div>
             )}
 
+            {/* Kết hợp danh sách tin nhắn và thông báo hệ thống từ API */}
             {filteredMessages
+              .map((msg) => ({
+                ...msg,
+                type: msg.isAction ? "system" : "message",
+                sender_username: getSenderName(msg.sender),
+              }))
               .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
               .map((item, index) => {
                 if (item.type === "system") {
                   const isPinAction = item.message.includes("Ghim tin nhắn");
-                  const isUnpinAction = item.message.includes("Bỏ ghim tin nhắn");
+                  const isUnpinAction =
+                    item.message.includes("Bỏ ghim tin nhắn");
 
                   return (
                     <div key={item.id} className="flex justify-center my-2">
@@ -448,9 +709,12 @@ const MainChatArea = ({
                   <div
                     key={message.id || index}
                     className={`flex mb-4 ${
-                      message.sender === user.id ? "justify-end" : "justify-start"
+                      message.sender === user.id
+                        ? "justify-end"
+                        : "justify-start"
                     }`}
                   >
+                    {/* messages in chatbox */}
                     {message.sender !== user.id && (
                       <Avatar
                         alt={message.sender.toString()}
@@ -531,7 +795,9 @@ const MainChatArea = ({
                         >
                           <FaThumbtack
                             className={`cursor-pointer ${
-                              pinnedMessages.some((msg) => msg.id === message.id)
+                              pinnedMessages.some(
+                                (msg) => msg.id === message.id
+                              )
                                 ? "text-yellow-500"
                                 : "text-gray-600"
                             } hover:text-yellow-500`}
@@ -609,16 +875,6 @@ const MainChatArea = ({
           />
         )}
       </div>
-
-      {/* Khu vực RightSide */}
-      <RightSide
-        chatName={chatName}
-        avatar={messages?.avatar}
-        members={members}
-        pinnedMessages={pinnedMessages}
-        isGroupChat={isGroupChat}
-        toggleRightSide={toggleRightSide}
-      />
     </div>
   );
 };

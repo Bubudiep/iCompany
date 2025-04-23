@@ -354,6 +354,7 @@ const LeftSide = ({ chatList, setChatList, user }) => {
       </div>
 
       <Modal
+        // centered
         title="Tạo nhóm"
         open={isCreateGroupModalVisible}
         onCancel={() => {
@@ -409,7 +410,7 @@ const LeftSide = ({ chatList, setChatList, user }) => {
               />
             </div>
           </div>
-          <div className="flex space-x-4">
+          {/* <div className="flex space-x-4">
             <div className="flex-1">
               <label className="block mb-1">Host (Quản trị viên):</label>
               <Select
@@ -449,7 +450,7 @@ const LeftSide = ({ chatList, setChatList, user }) => {
                 ))}
               </Select>
             </div>
-          </div>
+          </div> */}
           <Input
             placeholder="Nhập tên, số điện thoại, email..."
             value={memberSearchTerm}
@@ -476,8 +477,8 @@ const LeftSide = ({ chatList, setChatList, user }) => {
                   >
                     <span className="text-sm">
                       {member.fullName}
-                      {isCreator && "Người tạo"}
-                      {member.id === host && ": Host"}
+                      {isCreator && "Bạn"}
+                      {/* {member.id === host && ": Host"} */}
                       {admins.includes(memberId) && " (Admin)"}
                     </span>
                     <button

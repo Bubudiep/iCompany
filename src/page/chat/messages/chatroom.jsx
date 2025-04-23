@@ -14,11 +14,10 @@ const Chat_room = () => {
     not_read: 0,
     message: { total: 0, data: [] },
     members: [],
+    ghim: [],
   });
   const { user } = useUser();
   const [newMessage, setNewMessage] = useState("");
-  // pin messages
-
   const [showRightSide, setShowRightSide] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingOlder, setLoadingOlder] = useState(false);
