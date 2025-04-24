@@ -80,28 +80,42 @@ const Company_accounts = () => {
     });
     setEditModal(true);
   };
+  const blockFields = ["username", "password"];
   const handleUpdateAccount = () => {
     setUpdating(true);
     editForm.validateFields().then((values) => {
       const { role, ...rest } = values;
-      const payload = {
+
+      const updatedFields = {};
+      const newPayload = {
         ...rest,
         isSuperAdmin: role === "SuperAdmin",
         isAdmin: role === "Admin",
       };
+      // So sánh với selectedAccount, chỉ lấy field khác
+      Object.keys(newPayload).forEach((key) => {
+        if (blockFields.includes(key)) return;
+        if (newPayload[key] !== selectedAccount[key]) {
+          updatedFields[key] = newPayload[key];
+        }
+      });
+      if (Object.keys(updatedFields).length === 0) {
+        message.info("Không có thay đổi nào để cập nhật");
+        setUpdating(false);
+        return;
+      }
       api
-        .patch(`/accounts/${selectedAccount.id}/`, payload, user.token)
+        .patch(`/accounts/${selectedAccount.id}/`, updatedFields, user.token)
         .then((res) => {
-          setAccounts((old) => {
-            const updated = old.map((acc) => (acc.id === res.id ? res : acc));
-            return updated;
-          });
+          setAccounts((old) =>
+            old.map((acc) => (acc.id === res.id ? res : acc))
+          );
           message.success("Cập nhật tài khoản thành công");
           setEditModal(false);
           editForm.resetFields();
         })
         .catch((e) => {
-          message.error(e?.response?.data?.detail || "Lỗi khi cập nhập!");
+          message.error(e?.response?.data?.detail || "Lỗi khi cập nhật!");
         })
         .finally(() => {
           setUpdating(false);
@@ -191,17 +205,39 @@ const Company_accounts = () => {
       className="flex gap-2 items-center p-2 py-1.5 border-b-1 border-[#6a80ad33] relative hover:bg-[#f4f7fd] transition-all text-[13px]"
     >
       <div className="flex flex-col w-[50px] items-center">
-        <div className="avatar w-[40px] h-[40px] bg-[#0003] rounded-xl"></div>
+        <div
+          className="avatar w-[50px] h-[50px] rounded-xl flex items-center 
+        justify-center font-[500] text-[#fff] text-[18px]"
+          style={{
+            backgroundColor: acc?.profile?.avatar_base64
+              ? undefined
+              : app.stringToColor(acc?.profile?.full_name || "G"),
+          }}
+        >
+          {acc?.profile?.avatar_base64 ? (
+            <img src={acc?.profile?.avatar_base64} alt="" />
+          ) : acc?.profile?.full_name ? (
+            acc?.profile?.full_name.toUpperCase().split(" ").pop()[0]
+          ) : (
+            "?"
+          )}
+        </div>
       </div>
       <div className="flex flex-col w-[160px]">
-        <div className="name">Mã NV: {acc.cardID}</div>
-        <div className="name">Tài khoản: {acc.username}</div>
+        <div className="name">
+          {acc?.profile?.full_name ? (
+            <div className="font-[500] text-[15px]">
+              {acc?.profile?.full_name}
+            </div>
+          ) : (
+            "Chưa đặt tên"
+          )}
+        </div>
+        <div className="name">{acc.cardID}</div>
       </div>
       <div className="flex flex-col w-[180px]">
         <div className="name">{renderRole(acc)}</div>
-        <div className="name">
-          Trạng thái: {acc.isActive ? "Hoạt động" : "Đã tắt"}
-        </div>
+        <div className="name">{acc.isActive ? "Hoạt động" : "Đã tắt"}</div>
       </div>
       <div className="flex flex-col w-[120px]">
         <div className="name">Sửa: {app.timeSince(acc.updated_at)}</div>
@@ -311,6 +347,7 @@ const Company_accounts = () => {
         onOk={handleUpdateAccount}
         okText="Cập nhật"
         cancelText="Hủy"
+        className="popupcontent"
         confirmLoading={updating}
       >
         <Form form={editForm} layout="vertical" className="flex flex-col gap-1">
@@ -367,49 +404,70 @@ const Company_accounts = () => {
         className="popupcontent"
       >
         <Form form={addForm} layout="vertical" className="flex flex-col gap-1">
-          <Form.Item
-            className="!mb-2"
-            label="Username"
-            name="username"
-            rules={[{ required: true, message: "Vui lòng nhập tài khoản" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            className="!mb-2"
-            label="Mật khẩu"
-            name="password"
-            rules={[{ required: true, message: "Vui lòng nhập mật khẩu" }]}
-          >
-            <Input.Password />
-          </Form.Item>
-          <Form.Item
-            className="!mb-2"
-            label="Mã nhân viên"
-            name="cardID"
-            rules={[{ message: "Vui lòng nhập mã NV" }]}
-          >
-            <Input placeholder="để trống hệ thống sẽ tạo tự động..." />
-          </Form.Item>
-          <Form.Item
-            className="!mb-2"
-            label="Vai trò"
-            name="role"
-            initialValue="Staff"
-          >
-            <Select
-              options={[
-                isSuper && { value: "SuperAdmin", label: "Boss" },
-                isAdmin && { value: "Admin", label: "Admin" },
-                { value: "Staff", label: "Staff" },
-              ].filter(Boolean)}
-            />
-          </Form.Item>
           <div className="flex gap-5">
-            <Form.Item label="Phòng ban" name="department">
+            <Form.Item
+              className="!mb-2 flex-1"
+              label="Username"
+              name="username"
+              rules={[{ required: true, message: "Vui lòng nhập tài khoản" }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              className="!mb-2 flex-1"
+              label="Mật khẩu"
+              name="password"
+              rules={[{ required: true, message: "Vui lòng nhập mật khẩu" }]}
+            >
+              <Input.Password />
+            </Form.Item>
+          </div>
+          <div className="flex gap-5">
+            <Form.Item
+              className="!mb-2 flex-1"
+              label="Họ và tên"
+              name="fullname"
+              rules={[{ message: "Vui lòng nhập mã NV" }]}
+            >
+              <Input placeholder="họ và tên..." />
+            </Form.Item>
+            <Form.Item
+              className="!mb-2 flex-1"
+              label="Ngày sinh"
+              name="birthday"
+            >
+              <Input type="date" />
+            </Form.Item>
+          </div>
+          <div className="flex gap-5">
+            <Form.Item
+              className="!mb-2 flex-1"
+              label="Mã nhân viên"
+              name="cardID"
+              rules={[{ message: "Vui lòng nhập mã NV" }]}
+            >
+              <Input placeholder="để trống sẽ tạo tự động..." />
+            </Form.Item>
+            <Form.Item
+              className="!mb-2 flex-1"
+              label="Vai trò"
+              name="role"
+              initialValue="Staff"
+            >
+              <Select
+                options={[
+                  isSuper && { value: "SuperAdmin", label: "Boss" },
+                  isAdmin && { value: "Admin", label: "Admin" },
+                  { value: "Staff", label: "Staff" },
+                ].filter(Boolean)}
+              />
+            </Form.Item>
+          </div>
+          <div className="flex gap-5">
+            <Form.Item label="Phòng ban" name="department" className="flex-1">
               <Input placeholder="VD: Kỹ thuật, Nhân sự..." />
             </Form.Item>
-            <Form.Item label="Chức vụ" name="possition">
+            <Form.Item label="Chức vụ" name="possition" className="flex-1">
               <Input placeholder="VD: Nhân viên, Trưởng phòng..." />
             </Form.Item>
           </div>

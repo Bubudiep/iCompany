@@ -91,10 +91,24 @@ const Company_roles = () => {
           ...old,
           company: {
             ...old.company,
-            Department: [...old.company.Department, ...res?.results],
+            Department: [
+              ...old.company.Department.map((dept) => {
+                const find = res?.results.find(
+                  (newdept) => newdept.id === dept.id
+                );
+                if (find) return find;
+                return dept;
+              }),
+            ],
           },
         }));
-        setDepartment((old) => [...old, ...res?.results]);
+        setDepartment((old) => [
+          ...old.map((dept) => {
+            const find = res?.results.find((newdept) => newdept.id === dept.id);
+            if (find) return find;
+            return dept;
+          }),
+        ]);
       })
       .catch((e) => {
         console.log(e);
@@ -108,13 +122,13 @@ const Company_roles = () => {
   }, []);
   return (
     <div className="flex flex-1 overflow-hidden flex-col contacts-page">
-      <div className="whiteTitle fadeInBot min-w-[600px]">
+      <div className="whiteTitle fadeInBot min-w-[600px] overflow-hidden">
         <div className="flex items-center gap-2.5">
           <div className="icon text-[20px]">{menu.icon}</div>
           {menu.label}
         </div>
       </div>
-      <div className="flex flex-col flex-1 p-2 gap-2 fadeInTop  min-w-[600px]">
+      <div className="flex flex-col flex-1 p-2 gap-2 fadeInTop  min-w-[600px] overflow-hidden">
         <Alert_box text="Chỉ có boss mới có quyền thêm chức vụ và phòng ban" />
         <div className="whitebox h-full flex flex-col overflow-hidden">
           <div className="flex p-2 items-center justify-between border-b-1 border-[#c5c5c5] mb-2">
@@ -128,8 +142,8 @@ const Company_roles = () => {
               </Button>
             </div>
           </div>
-          <div className="mr-0.5 my-0.5 flex flex-col overflow-y-auto px-1 fadeInTop">
-            {department.map((dept) => {
+          <div className="mr-0.5 my-0.5 flex flex-col overflow-y-auto px-1 fadeInTop gap-2">
+            {department?.map((dept) => {
               return (
                 <div key={dept.id} className="flex flex-col">
                   <div
@@ -144,7 +158,7 @@ const Company_roles = () => {
                     <div className="flex flex-col w-[160px]">
                       <div className="name">Bộ phận: {dept?.name}</div>
                       <div className="name">
-                        Chức vụ: {dept?.Possition.length}
+                        Chức vụ: {dept?.Possition?.length}
                       </div>
                     </div>
                     <div className="flex flex-col w-[180px]">
@@ -190,7 +204,7 @@ const Company_roles = () => {
                       </Button>
                     </div>
                   </div>
-                  {dept.Possition.length > 0 && (
+                  {dept?.Possition?.length > 0 && (
                     <div
                       className="flex overflow-hidden flex-col ml-20 rounded-br-[12px] rounded-bl-[12px] border-b-1 
                     border-r-1 border-l-1 border-[#669fe9]"
