@@ -48,7 +48,6 @@ const MainChatArea = ({
   messages,
   sendMessage,
   fetchOlderMessages,
-  fetchLatestMessages,
   loadingOlder,
   newMessage,
   setNewMessage,
@@ -174,7 +173,7 @@ const MainChatArea = ({
       chatEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [filteredMessages, searchTerm]); // Thay all_message bằng filteredMessages
-  // }, [all_message, searchTerm]); // Thay all_message bằng filteredMessages
+  // }, [all_message, searchTerm]);
 
   // Xử lý cuộn để tải tin nhắn cũ
   const handleScroll = () => {
@@ -342,7 +341,10 @@ const MainChatArea = ({
     }, 100);
   };
   // show all data from api
-  console.log("messages", messages);
+  // console.log("messages", messages);
+  // console.log("total mesage: ", messages?.message?.data.length);
+  // console.log("total mesage: ", messages?.message?.total);
+
   return (
     <div className="flex flex-1">
       {/* Khu vực chat chính */}
@@ -699,12 +701,21 @@ const MainChatArea = ({
                     </div>
                   );
                 }
-
+                {
+                  /* if messages <= 0, show no messages, please send somthing */
+                }
+                {
+                  messages?.message?.total === 0 && (
+                    <p className="text-xs text-gray-600">
+                      Vui lồng nhập tin nhắn
+                    </p>
+                  );
+                }
                 const message = item;
                 const repliedMessage = message.reply_to
                   ? filteredMessages.find((msg) => msg.id === message.reply_to)
                   : null;
-
+                // All messages are here
                 return (
                   <div
                     key={message.id || index}
@@ -760,7 +771,8 @@ const MainChatArea = ({
                             </p>
                           </div>
                         )}
-                        <p>{message.message}</p>
+
+                        <p className="text-sm">{message.message}</p>
                         <span className="text-xs">
                           {getTimeDisplay(
                             message.created_at || new Date().toISOString()

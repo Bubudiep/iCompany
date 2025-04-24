@@ -13,15 +13,27 @@ const Chat_room = () => {
     id: null,
     not_read: 0,
     message: { total: 0, data: [] },
-    members: [],
     ghim: [],
+    admin: [],
+    avatar: null,
+    company: null,
+    created_at: null,
+    host: null,
+    is_group: false,
+    last_have_message_at: null,
+    members: [],
+    members_add_members: false,
+    members_change_avatar: false,
+    members_change_name: false,
+    members_remove_members: false,
+    name: "",
   });
   const { user } = useUser();
   const [newMessage, setNewMessage] = useState("");
   const [showRightSide, setShowRightSide] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingOlder, setLoadingOlder] = useState(false);
-  const [nextPageUrl, setNextPageUrl] = useState(null); // Lưu URL của trang tiếp theo
+  const [nextPageUrl, setNextPageUrl] = useState(null);
 
   const fetchMessages = async () => {
     if (id_room) {
@@ -56,10 +68,6 @@ const Chat_room = () => {
           members_change_name: responseData.members_change_avatar || false,
           members_remove_members: responseData.members_remove_members || false,
           name: responseData.name || "",
-          // message_add_message: responseData.message_add_message || false,
-          // message_change_message: responseData.message_change_message || false,
-          // message_remove_message: responseData.message_remove_message || false,
-          // message_read_message: responseData.message_read_message || false
         });
       } catch (error) {
         console.error("Error fetching messages:", error);
@@ -79,33 +87,36 @@ const Chat_room = () => {
     if (id_room && lastId && !loadingOlder) {
       setLoadingOlder(true);
       try {
-        // Nếu có nextPageUrl, sử dụng nó; nếu không, gọi API với last_id
         const url =
           nextPageUrl ||
           `/message/?room_id=${id_room}&last_id=${lastId}&page_size=30`;
         const response = await api.get(url, user.token);
-        const responseData = response.data || response;
-        console.log("Raw response from fetchOlderMessages:", responseData);
+        console.log("Raw API response from fetchOlderMessages:", response);
 
-        // Lấy danh sách tin nhắn từ results
-        let olderMessages = [];
-        if (responseData && Array.isArray(responseData.results)) {
-          olderMessages = responseData.results;
-        } else {
-          console.warn("Results is not an array:", responseData);
-          olderMessages = [];
-        }
+        // API /message/ trả về cấu trúc: { total, next, results }
+        const responseData = response || {};
+        const olderMessages = Array.isArray(responseData.results)
+          ? responseData.results
+          : [];
 
-        // Lưu URL của trang tiếp theo
-        setNextPageUrl(responseData.next || null);
-        console.log("Older messages fetched:", olderMessages);
+        // Kiểm tra xem tin nhắn có thuộc đoạn chat hiện tại không
+        const filteredMessages = olderMessages.filter(
+          (msg) => msg.room === parseInt(id_room)
+        );
 
-        // Loại bỏ tin nhắn trùng lặp dựa trên id
+        // Lưu URL của trang tiếp theo, should be https://vieclamvp.vn/api/message/?last_id=173&page=2&page_size=30&room_id=1
+        // Lưu URL của trang tiếp theo, thay thế http thành https
+        const nextUrl = responseData.next
+          ? responseData.next.replace("http://", "https://")
+          : null;
+        setNextPageUrl(nextUrl);
+
+        // Loại bỏ tin nhắn trùng lặp và cập nhật messages
         setMessages((prevMessages) => {
           const existingIds = new Set(
             prevMessages.message.data.map((msg) => msg.id)
           );
-          const newMessages = olderMessages.filter(
+          const newMessages = filteredMessages.filter(
             (msg) => !existingIds.has(msg.id)
           );
 
@@ -127,7 +138,6 @@ const Chat_room = () => {
 
   useEffect(() => {
     fetchMessages();
-    // console.log("id_room ne:", id_room);
     setNextPageUrl(null); // Reset nextPageUrl khi chuyển phòng chat
   }, [id_room]);
 
@@ -139,7 +149,6 @@ const Chat_room = () => {
           { message: newMessage },
           user.token
         );
-        console.log("Sent message response:", response);
         const responseData = response.data || response;
 
         if (!responseData || typeof responseData !== "object") {
@@ -175,8 +184,6 @@ const Chat_room = () => {
               data: [...prevMessages.message.data, newSentMessage],
             },
           };
-          console.log("Updated messages in sendMessage:", updatedMessages);
-          console.log("New sent message:", newSentMessage);
           return updatedMessages;
         });
 
@@ -186,6 +193,18 @@ const Chat_room = () => {
       }
     }
   };
+
+  // Debug thông tin tin nhắn
+  console.log("messages.message.data:", messages?.message?.data);
+  console.log("messages.message.total:", messages?.message?.total);
+  console.log(
+    "all id message:",
+    messages?.message?.data.map((item) => item.id)
+  );
+  console.log(
+    "first id to fetch older message:",
+    messages?.message?.data[0]?.id
+  );
 
   return (
     <div className="flex flex-1">
@@ -216,8 +235,6 @@ const Chat_room = () => {
                 company={messages?.company}
                 created_at={messages?.created_at}
                 ghim={messages.ghim}
-                // mediaFiles={mediaFiles} // Truyền dữ liệu mediaFiles (nếu có)
-                // sharedFiles={sharedFiles} // Truyền dữ liệu sharedFiles (nếu có)
               />
             )}
           </>
