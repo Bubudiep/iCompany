@@ -355,6 +355,7 @@ const LeftSide = ({ chatList, setChatList, user }) => {
 
       <Modal
         // centered
+        className="create-group-modal text-center"
         title="Tạo nhóm"
         open={isCreateGroupModalVisible}
         onCancel={() => {
@@ -495,7 +496,7 @@ const LeftSide = ({ chatList, setChatList, user }) => {
           <Tabs defaultActiveKey="1">
             <TabPane tab="Tất cả" key="1">
               <div className="max-h-60 overflow-y-auto">
-                <div className="text-sm text-gray-500 mb-2">
+                <div className="text-sm text-left text-gray-500 mb-2">
                   Trò chuyện gần đây
                 </div>
                 {filteredMembers.map((u) => (

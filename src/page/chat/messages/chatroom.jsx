@@ -82,6 +82,7 @@ const Chat_room = () => {
       }
     }
   };
+  console.log("User is online: ", user.onlines);
 
   const fetchOlderMessages = async (lastId) => {
     if (id_room && lastId && !loadingOlder) {
