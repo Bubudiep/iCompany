@@ -134,8 +134,13 @@ const Homepage_layout = () => {
             uniqueUsers.push(item);
           }
         }
-        if (user)
+        if (user) {
           setListOnline(uniqueUsers.filter((item) => item.user.id !== user.id));
+          setUser((old) => ({
+            ...old,
+            onlines: uniqueUsers.filter((item) => item.user.id !== user.id),
+          }));
+        }
       });
       window.socket.on("message", (data) => {
         if (data.type === "message") {
