@@ -1,21 +1,13 @@
-import { Modal } from "antd";
+import { Modal, Tooltip } from "antd";
 import React, { useState } from "react";
+import { AiOutlineUserSwitch } from "react-icons/ai";
+import { FaDotCircle, FaUser, FaUserAlt } from "react-icons/fa";
+import { GoDotFill } from "react-icons/go";
 
-const App_tools = () => {
+const App_tools = ({ user }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const showExitConfirm = () => {
     window.electron.send("close");
-    // Modal.confirm({
-    //   title: "Bạn có chắc chắn muốn thoát?",
-    //   content: "Dữ liệu của bạn có thể bị mất!",
-    //   okText: "Thoát",
-    //   cancelText: "Hủy",
-    //   maskClosable: true,
-    //   onOk: () => {
-    //     console.log("Đang thoát");
-    //     window.electron.send("exit");
-    //   },
-    // });
   };
   return (
     <>
@@ -29,20 +21,18 @@ const App_tools = () => {
             <input type="text" />
           </div>
         </div>
-        {/* <label className="switch">
-          <input
-            type="checkbox"
-            defaultChecked={true}
-            onClick={() => {
-              localStorage.setItem("new_version", 1);
-              location.href = location.origin + "/electron/";
-            }}
-          />
-          <span className="slider"></span>
-        </label>
-        <div className="lock">
-          <i className="fa-solid fa-lock"></i>
-        </div> */}
+        <Tooltip
+          title={user.onlines.length + " người đang online"}
+          className="flex items-center flex-col relative cursor-pointer mr-2"
+        >
+          <FaUserAlt size={17} className="text-[#4096ff]" />
+          <div
+            className="text-[8px] absolute text-nowrap -right-1.5 -bottom-1.5 text-white border-1 border-[#fff]
+          bg-[#005dcf] w-3.5 h-3.5 flex items-center justify-center rounded-full shadow-lg font-bold"
+          >
+            {user.onlines.length}
+          </div>
+        </Tooltip>
         <div
           className="item"
           onClick={() => {

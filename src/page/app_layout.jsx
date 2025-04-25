@@ -125,21 +125,47 @@ const Homepage_layout = () => {
   useEffect(() => {
     if (window.socket && user) {
       window.socket.on("online_users", (data) => {
-        const seenIds = new Set();
-        const uniqueUsers = [];
-        for (const item of data) {
-          const id = item.user.id;
-          if (!seenIds.has(id)) {
-            seenIds.add(id);
-            uniqueUsers.push(item);
-          }
-        }
-        if (user) {
-          setListOnline(uniqueUsers.filter((item) => item.user.id !== user.id));
+        console.log("Online users:", data);
+        if (data?.action === "all_users") {
+          setListOnline(data.data);
           setUser((old) => ({
             ...old,
-            onlines: uniqueUsers.filter((item) => item.user.id !== user.id),
+            onlines: data.data.filter((item) => item.user.id !== user.id),
           }));
+        }
+        if (data?.action === "dissconnect") {
+          setListOnline((old) => [
+            ...old.filter((item) => item.user.id !== data.data.id),
+          ]);
+          setUser((old) => ({
+            ...old,
+            onlines: old.onlines.filter(
+              (item) => item.user.id !== data.data.id
+            ),
+          }));
+        }
+        if (data?.action === "connect") {
+          setListOnline((old) => [
+            ...old.map((item) =>
+              item.user.id !== data.data.id ? item : data.data
+            ),
+          ]);
+          setUser((old) => {
+            const in_old = old.onlines.find((item) => item.id === data.data.id);
+            if (in_old) {
+              return {
+                ...old,
+                onlines: old.onlines.map((item) =>
+                  item.id === data.data.id ? data.data : item
+                ),
+              };
+            } else {
+              return {
+                ...old,
+                onlines: [...old.onlines, data.data],
+              };
+            }
+          });
         }
       });
       window.socket.on("message", (data) => {
@@ -177,7 +203,6 @@ const Homepage_layout = () => {
           });
         }
       });
-      window.socket.emit("user_online");
       return () => {
         window.socket.off("online_users");
         window.socket.off("message");
@@ -228,7 +253,7 @@ const Homepage_layout = () => {
                 </div>
               </div>
               <div className="app-tools">
-                <App_tools />
+                <App_tools user={user} />
               </div>
             </div>
             <div className="main-container">
