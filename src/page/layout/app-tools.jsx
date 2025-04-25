@@ -22,7 +22,7 @@ const App_tools = ({ user }) => {
           </div>
         </div>
         <Tooltip
-          title={user.onlines.length + " người đang online"}
+          title={(user?.onlines?.length ?? 0) + " người đang online"}
           className="flex items-center flex-col relative cursor-pointer mr-2"
         >
           <FaUserAlt size={17} className="text-[#4096ff]" />

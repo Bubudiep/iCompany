@@ -130,7 +130,7 @@ const Homepage_layout = () => {
           setListOnline(data.data);
           setUser((old) => ({
             ...old,
-            onlines: data.data.filter((item) => item.user.id !== user.id),
+            onlines: data.data,
           }));
         }
         if (data?.action === "dissconnect") {
