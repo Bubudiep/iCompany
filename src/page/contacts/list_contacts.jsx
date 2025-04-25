@@ -67,8 +67,11 @@ const Contacts_list = () => {
                       style={{
                         backgroundColor: item?.profile?.avatar
                           ? "transparent"
-                          : app.getRandomColorFromString(
-                              item?.profile?.full_name || "user"
+                          : app.stringToColor(
+                              item?.profile?.full_name
+                                ?.toUpperCase()
+                                ?.split(" ")
+                                .pop()?.[0] || "user"
                             ),
                       }}
                     >
@@ -78,7 +81,10 @@ const Contacts_list = () => {
                           className="w-full h-full object-cover rounded-[18px]"
                         />
                       ) : (
-                        item?.profile?.full_name?.split(" ").pop()?.[0] || "?"
+                        item?.profile?.full_name
+                          ?.toUpperCase()
+                          ?.split(" ")
+                          .pop()?.[0] || "?"
                       )}
                     </div>
                   </div>

@@ -145,6 +145,15 @@ const send = (a, b) => {
     console.log(error);
   }
 };
+const stringToColor = (str) => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const color = `hsl(${hash % 360}, 60%, 50%)`; // dùng HSL để màu dễ nhìn
+  return color;
+};
+
 const convertToBase64 = (file) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -262,6 +271,7 @@ const handleReadQR = (file) => {
   });
 };
 export default {
+  stringToColor,
   getRandomColorFromString,
   handleReadQR,
   zoomAndCrop,
