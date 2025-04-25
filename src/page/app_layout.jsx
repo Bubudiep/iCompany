@@ -127,6 +127,8 @@ const Homepage_layout = () => {
       window.socket.on("online_users", (data) => {
         const seenIds = new Set();
         const uniqueUsers = [];
+        // console.log("Online users:", data);
+
         for (const item of data) {
           const id = item.user.id;
           if (!seenIds.has(id)) {
@@ -134,9 +136,15 @@ const Homepage_layout = () => {
             uniqueUsers.push(item);
           }
         }
-        if (user)
+        if (user) {
           setListOnline(uniqueUsers.filter((item) => item.user.id !== user.id));
+          setUser((old) => ({
+            ...old,
+            onlines: uniqueUsers.filter((item) => item.user.id !== user.id),
+          }));
+        }
       });
+
       window.socket.on("message", (data) => {
         if (data.type === "message") {
           const sender = user.staff.find(
