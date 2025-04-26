@@ -30,6 +30,8 @@ const Chat_layout = () => {
     getChatList();
   }, [user.token]);
 
+  // console.log("chatList", chatList);
+
   return (
     <div className="flex flex-1 overflow-hidden">
       <LeftSide chatList={chatList} setChatList={setChatList} user={user} />

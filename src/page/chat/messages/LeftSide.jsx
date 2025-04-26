@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaPlus, FaCamera, FaUsers } from "react-icons/fa";
+import { FaPlus, FaCamera, FaUsers, FaThumbtack } from "react-icons/fa";
 import {
   Avatar,
   Badge,
@@ -16,6 +16,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import app from "../../../components/app";
 import api from "../../../components/api";
+import { IoIosMore } from "react-icons/io";
 
 const { TabPane } = Tabs;
 const { Option } = Select;
@@ -345,6 +346,15 @@ const LeftSide = ({ chatList, setChatList, user }) => {
                           style={{ backgroundColor: "#ff4d4f" }}
                         />
                       )}
+                    </div>
+                    {chat.is_pinned && (
+                      <div className="absolute top-0 left-0">
+                        <FaThumbtack size={20} color="#ff4d4f" />
+                      </div>
+                    )}
+                    <div className="relative group">
+                      {/*chỉ khi hover với con tro chuot vao thi hien thi icon */}
+                      <IoIosMore size={20} />
                     </div>
                   </Link>
                 );

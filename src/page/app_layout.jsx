@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useUser } from "../components/context/userContext";
 import { useCookies } from "react-cookie";
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { data, Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/icon/icon.png";
 import { io } from "socket.io-client";
 import api from "../components/api";
@@ -169,12 +169,13 @@ const Homepage_layout = () => {
         }
       });
       window.socket.on("message", (data) => {
+        console.log("Data from socket messages: ", data);
         if (data.type === "message") {
           const sender = user?.company?.Staff.find(
             (staff) => staff.id === data.data.sender
           );
           const room_link = `/app/chat/${data.data.room}`;
-          console.log("Data from socket messages: ", data);
+
           if (!location.pathname.includes(room_link) && sender) {
             window?.electron?.send("Notice", {
               appname: APP_NAME,

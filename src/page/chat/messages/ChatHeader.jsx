@@ -86,6 +86,7 @@ const ChatHeader = ({
           onSearch={handleSearch}
           onChange={(e) => handleSearch(e.target.value)}
           style={{ width: 200 }}
+          // onPressEnter={(e) => handleSearch(e.target.value)}
         />
         <Tooltip title="Thêm bạn vào nhóm">
           <IoPersonAddSharp onClick={() => setIsAddMemberModalVisible(true)} />
