@@ -1141,9 +1141,9 @@ body,
     .app-tools {
       @apply flex gap-2;
       .search {
-        @apply flex items-center;
+        @apply flex items-center !p-0;
         .searchbox {
-          @apply flex border border-[#8ca3b3] items-center text-gray-500 bg-[#edeeee] shadow-inner shadow-black/10 rounded-lg mr-4 p-[4px];
+          @apply flex border border-[#8ca3b3] items-center text-gray-500 bg-[#edeeee] shadow-inner shadow-black/10 rounded-lg mr-4;
           -webkit-app-region: no-drag;
           input {
             outline: none;
