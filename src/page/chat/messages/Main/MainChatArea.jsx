@@ -1,15 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { message, Modal } from "antd";
-import { useUser } from "../../../components/context/userContext";
-import app from "../../../components/app";
-import api from "../../../components/api";
+import { useUser } from "../../../../components/context/userContext";
+import app from "../../../../components/app";
+import api from "../../../../components/api";
 import ChatHeader from "./ChatHeader";
-import PinnedMessages from "./PinnedMessages";
+import PinnedMessages from "../Functions/PinnedMessages";
 import MessageList from "./MessageList";
-import ReplyPreview from "./ReplyPreview";
+import ReplyPreview from "../Functions/ReplyPreview";
 import MessageInput from "./MessageInput";
-import AudioCallLayout from "./AudioCallLayout";
-import VideoCallLayout from "./VideoCallLayout";
+import AudioCallLayout from "../Functions/AudioCallLayout";
+import VideoCallLayout from "../Functions/VideoCallLayout";
 import { FaArrowDown } from "react-icons/fa"; // Icon để cuộn xuống
 
 const MainChatArea = ({
@@ -20,6 +20,7 @@ const MainChatArea = ({
   newMessage,
   setNewMessage,
   toggleRightSide,
+  setMessages,
 }) => {
   const { user } = useUser();
   const chatEndRef = useRef(null);
@@ -77,60 +78,65 @@ const MainChatArea = ({
 
   // Tích hợp WebSocket để nhận tin nhắn và thông báo hệ thống thời gian thực
   useEffect(() => {
-    if (window.socket) {
+    if (window.socket && roomId) {
       window.socket.on("message", (data) => {
-        console.log(data);
+        console.log("Received WebSocket message:", data);
         if (data.data.room !== roomId) return;
-        setFilteredMessages((prev) => [...prev, data.data]);
-        setLastMessageId(data.data.id);
-        setShouldScrollToBottom(true);
-        // if (data.type === "message") {
-        //   const newMessage = {
-        //     ...data.data,
-        //     type: "message",
-        //     sender_username: getSenderName(data.data.sender),
-        //   };
-        //   setFilteredMessages((prev) => [...prev, newMessage]);
-        //   setLastMessageId(newMessage.id);
-        //   setShouldScrollToBottom(true);
-        // } else if (data.type === "system") {
-        //   const systemMessage = {
-        //     ...data.data,
-        //     type: "system",
-        //     sender_username: getSenderName(data.data.sender),
-        //   };
-        //   setFilteredMessages((prev) => [...prev, systemMessage]);
-        //   setLastMessageId(systemMessage.id);
-        //   setShouldScrollToBottom(true);
 
-        //   if (systemMessage.message.includes("Ghim tin nhắn")) {
-        //     const pinnedMsgId = systemMessage.message_id;
-        //     const pinnedMsg = filteredMessages.find(
-        //       (msg) => msg.id === pinnedMsgId
-        //     );
-        //     if (pinnedMsg && pinnedMessages.length < 5) {
-        //       setPinnedMessages((prev) => [
-        //         ...prev,
-        //         {
-        //           ...pinnedMsg,
-        //           sender_username: getSenderName(pinnedMsg.sender),
-        //         },
-        //       ]);
-        //     }
-        //   } else if (systemMessage.message.includes("Bỏ ghim tin nhắn")) {
-        //     const unpinnedMsgId = systemMessage.message_id;
-        //     setPinnedMessages((prev) =>
-        //       prev.filter((msg) => msg.id !== unpinnedMsgId)
-        //     );
-        //   }
-        // }
+        // Tạo đối tượng tin nhắn mới với type và sender_username
+        const newMessage = {
+          ...data.data,
+          type: data.type === "system" ? "system" : "message",
+          sender_username: getSenderName(data.data.sender),
+        };
+
+        // Cập nhật messages (state cha) và sắp xếp theo created_at
+        setMessages((prev) => {
+          const updatedData = [...(prev.message?.data || []), newMessage].sort(
+            (a, b) => new Date(a.created_at) - new Date(b.created_at)
+          );
+          return {
+            ...prev,
+            message: {
+              ...prev.message,
+              data: updatedData,
+            },
+          };
+        });
+
+        // Xử lý ghim/bỏ ghim tin nhắn nếu là tin nhắn hệ thống
+        if (data.type === "system") {
+          if (newMessage.message.includes("Ghim tin nhắn")) {
+            const pinnedMsgId = newMessage.message_id;
+            const pinnedMsg = filteredMessages.find(
+              (msg) => msg.id === pinnedMsgId
+            );
+            if (pinnedMsg && pinnedMessages.length < 5) {
+              setPinnedMessages((prev) => [
+                ...prev,
+                {
+                  ...pinnedMsg,
+                  sender_username: getSenderName(pinnedMsg.sender),
+                },
+              ]);
+            }
+          } else if (newMessage.message.includes("Bỏ ghim tin nhắn")) {
+            const unpinnedMsgId = newMessage.message_id;
+            setPinnedMessages((prev) =>
+              prev.filter((msg) => msg.id !== unpinnedMsgId)
+            );
+          }
+        }
+
+        // Cuộn xuống dưới cùng khi có tin nhắn mới
+        setShouldScrollToBottom(true);
       });
+
       return () => {
         window.socket.off("message");
       };
     }
-  }, [roomId, filteredMessages]);
-
+  }, [roomId, filteredMessages, setMessages, getSenderName, pinnedMessages]);
   // Cuộn xuống cuối khi có tin nhắn mới hoặc thông báo hệ thống
   useEffect(() => {
     if (shouldScrollToBottom && chatEndRef.current && !searchTerm) {

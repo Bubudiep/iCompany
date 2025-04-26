@@ -12,7 +12,7 @@ import {
 import { IoIosInformationCircle } from "react-icons/io";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { CiUser } from "react-icons/ci";
-import { AddNewMemberModal } from "./handleModal";
+import AddNewMemberModal from "../Functions/handleModal/AddNewMemberModal";
 const { Search } = Input;
 
 const ChatHeader = ({
