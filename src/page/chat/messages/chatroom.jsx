@@ -197,15 +197,15 @@ const Chat_room = () => {
 
   // Debug thông tin tin nhắn
   console.log("messages.message.data:", messages?.message?.data);
-  console.log("messages.message.total:", messages?.message?.total);
-  console.log(
-    "all id message:",
-    messages?.message?.data.map((item) => item.id)
-  );
-  console.log(
-    "first id to fetch older message:",
-    messages?.message?.data[0]?.id
-  );
+  // console.log("messages.message.total:", messages?.message?.total);
+  // console.log(
+  //   "all id message:",
+  //   messages?.message?.data.map((item) => item.id)
+  // );
+  // console.log(
+  //   "first id to fetch older message:",
+  //   messages?.message?.data[0]?.id
+  // );
 
   return (
     <div className="flex flex-1">

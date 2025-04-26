@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useUser } from "../components/context/userContext";
 import { useCookies } from "react-cookie";
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { data, Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/icon/icon.png";
 import { io } from "socket.io-client";
 import api from "../components/api";
@@ -127,7 +127,7 @@ const Homepage_layout = () => {
       window.socket.on("online_users", (data) => {
         const seenIds = new Set();
         const uniqueUsers = [];
-        // console.log("Online users:", data);
+        console.log("Online users(in app_layout):", data);
 
         for (const item of data) {
           const id = item.user.id;
@@ -146,12 +146,13 @@ const Homepage_layout = () => {
       });
 
       window.socket.on("message", (data) => {
+        console.log("Data from socket messages: ", data);
         if (data.type === "message") {
           const sender = user.staff.find(
             (staff) => staff.id === data.data.sender
           );
           const room_link = `/app/chat/${data.data.room}`;
-          console.log("Data from socket messages: ", data);
+
           if (!location.pathname.includes(room_link) && sender) {
             window?.electron?.send("Notice", {
               appname: APP_NAME,
@@ -180,6 +181,8 @@ const Homepage_layout = () => {
           });
         }
       });
+      // console.log("data", data);
+
       window.socket.emit("user_online");
       return () => {
         window.socket.off("online_users");

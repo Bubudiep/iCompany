@@ -10,6 +10,7 @@ import ReplyPreview from "./ReplyPreview";
 import MessageInput from "./MessageInput";
 import AudioCallLayout from "./AudioCallLayout";
 import VideoCallLayout from "./VideoCallLayout";
+import { FaArrowDown } from "react-icons/fa"; // Icon để cuộn xuống
 
 const MainChatArea = ({
   messages,
@@ -21,31 +22,40 @@ const MainChatArea = ({
   toggleRightSide,
 }) => {
   const { user } = useUser();
-  const all_message = messages?.message?.data || [];
   const chatEndRef = useRef(null);
   const chatContainerRef = useRef(null);
   const [lastScrollHeight, setLastScrollHeight] = useState(0);
+  const [shouldScrollToBottom, setShouldScrollToBottom] = useState(false);
+  const [showScrollToBottomButton, setShowScrollToBottomButton] =
+    useState(false); // State để hiển thị nút cuộn xuống
   const [isCallModalVisible, setIsCallModalVisible] = useState(false);
   const [isAudioCallActive, setIsAudioCallActive] = useState(false);
   const [isVideoCallActive, setIsVideoCallActive] = useState(false);
   const [pinnedMessages, setPinnedMessages] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredMessages, setFilteredMessages] = useState(all_message);
+  const [filteredMessages, setFilteredMessages] = useState(
+    messages?.message?.data || []
+  );
   const [lastMessageId, setLastMessageId] = useState(null);
   const [replyingTo, setReplyingTo] = useState(null);
 
-  // Xác định loại chat và thông tin hiển thị
   const isGroupChat = messages?.is_group || false;
   const roomId = messages?.id;
   const receiver = messages?.members?.find((member) => member.id !== user.id);
   const chatName = isGroupChat ? messages?.name : receiver?.username || "User";
   const members = messages?.members || [];
 
-  // Lấy username hoặc full_name của người gửi
   const getSenderName = (senderId) => {
     const member = members.find((m) => m.id === senderId);
     return member?.profile?.full_name || member?.username || "Unknown";
   };
+
+  // Cuộn xuống cuối khi mở đoạn chat lần đầu
+  useEffect(() => {
+    if (filteredMessages.length > 0 && chatEndRef.current && !searchTerm) {
+      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [roomId]); // Chạy khi roomId thay đổi (tức là khi mở đoạn chat mới)
 
   // Khôi phục pinnedMessages từ API
   useEffect(() => {
@@ -57,51 +67,96 @@ const MainChatArea = ({
     setPinnedMessages(pinnedWithSenderName);
   }, [messages, roomId]);
 
-  // Cập nhật danh sách tin nhắn khi all_message thay đổi
+  // Cập nhật danh sách tin nhắn khi messages.message.data thay đổi
   useEffect(() => {
-    setFilteredMessages(all_message);
-    if (all_message.length > 0) {
-      setLastMessageId(Math.max(...all_message.map((msg) => msg.id)));
+    setFilteredMessages(messages?.message?.data || []);
+    if (messages?.message?.data?.length > 0) {
+      setLastMessageId(Math.max(...messages.message.data.map((msg) => msg.id)));
     }
-  }, [all_message]);
+  }, [messages?.message?.data]);
 
-  // Tích hợp WebSocket để nhận tin nhắn thời gian thực
+  // Tích hợp WebSocket để nhận tin nhắn và thông báo hệ thống thời gian thực
   useEffect(() => {
-    if (window.socket && roomId) {
+    if (window.socket) {
       window.socket.on("message", (data) => {
-        if (data.type === "message") {
-          const newMessage = data.data;
-          if (newMessage.room === roomId) {
-            setFilteredMessages((prev) => [
-              ...prev,
-              {
-                ...newMessage,
-                type: "message",
-                sender_username: getSenderName(newMessage.sender),
-              },
-            ]);
-            setLastMessageId(newMessage.id);
-          }
-        }
+        console.log(data);
+        if (data.data.room !== roomId) return;
+        setFilteredMessages((prev) => [...prev, data.data]);
+        setLastMessageId(data.data.id);
+        setShouldScrollToBottom(true);
+        // if (data.type === "message") {
+        //   const newMessage = {
+        //     ...data.data,
+        //     type: "message",
+        //     sender_username: getSenderName(data.data.sender),
+        //   };
+        //   setFilteredMessages((prev) => [...prev, newMessage]);
+        //   setLastMessageId(newMessage.id);
+        //   setShouldScrollToBottom(true);
+        // } else if (data.type === "system") {
+        //   const systemMessage = {
+        //     ...data.data,
+        //     type: "system",
+        //     sender_username: getSenderName(data.data.sender),
+        //   };
+        //   setFilteredMessages((prev) => [...prev, systemMessage]);
+        //   setLastMessageId(systemMessage.id);
+        //   setShouldScrollToBottom(true);
+
+        //   if (systemMessage.message.includes("Ghim tin nhắn")) {
+        //     const pinnedMsgId = systemMessage.message_id;
+        //     const pinnedMsg = filteredMessages.find(
+        //       (msg) => msg.id === pinnedMsgId
+        //     );
+        //     if (pinnedMsg && pinnedMessages.length < 5) {
+        //       setPinnedMessages((prev) => [
+        //         ...prev,
+        //         {
+        //           ...pinnedMsg,
+        //           sender_username: getSenderName(pinnedMsg.sender),
+        //         },
+        //       ]);
+        //     }
+        //   } else if (systemMessage.message.includes("Bỏ ghim tin nhắn")) {
+        //     const unpinnedMsgId = systemMessage.message_id;
+        //     setPinnedMessages((prev) =>
+        //       prev.filter((msg) => msg.id !== unpinnedMsgId)
+        //     );
+        //   }
+        // }
       });
       return () => {
         window.socket.off("message");
       };
     }
-  }, [roomId]);
+  }, [roomId, filteredMessages]);
 
-  // Tự động cuộn xuống cuối khi có tin nhắn mới
+  // Cuộn xuống cuối khi có tin nhắn mới hoặc thông báo hệ thống
   useEffect(() => {
-    if (chatEndRef.current && !searchTerm) {
+    if (shouldScrollToBottom && chatEndRef.current && !searchTerm) {
       chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+      setShouldScrollToBottom(false);
     }
-  }, [filteredMessages, searchTerm]);
+  }, [filteredMessages, searchTerm, shouldScrollToBottom]);
 
-  // Xử lý cuộn để tải tin nhắn cũ
+  // Xử lý cuộn để tải tin nhắn cũ và kiểm tra hiển thị nút cuộn xuống
   const handleScroll = () => {
     const container = chatContainerRef.current;
-    if (container.scrollTop === 0 && !loadingOlder && all_message.length > 0) {
-      const minId = Math.min(...all_message.map((msg) => msg.id));
+    if (!container) return;
+
+    // Kiểm tra nếu người dùng ở gần cuối (cách 100px)
+    const isNearBottom =
+      container.scrollHeight - container.scrollTop - container.clientHeight <
+      100;
+    setShowScrollToBottomButton(!isNearBottom);
+
+    // Load tin nhắn cũ nếu cuộn lên đầu
+    if (
+      container.scrollTop === 0 &&
+      !loadingOlder &&
+      messages?.message?.data?.length > 0
+    ) {
+      const minId = Math.min(...messages.message.data.map((msg) => msg.id));
       setLastScrollHeight(container.scrollHeight);
       fetchOlderMessages(minId);
     }
@@ -115,43 +170,46 @@ const MainChatArea = ({
       container.scrollTop = newScrollHeight - lastScrollHeight;
       setLastScrollHeight(0);
     }
-  }, [all_message, loadingOlder]);
+  }, [messages?.message?.data, loadingOlder]);
 
-  // Xử lý tìm kiếm tin nhắn
   const handleSearch = (value) => {
-    setSearchTerm(value);
-    if (!value) {
-      setFilteredMessages(all_message);
+    const searchValue = typeof value === "string" ? value : "";
+    setSearchTerm(searchValue);
+    if (!searchValue) {
+      setFilteredMessages(messages?.message?.data || []);
     } else {
-      const filtered = all_message.filter((msg) =>
-        msg.message.toLowerCase().includes(value.toLowerCase())
+      const filtered = (messages?.message?.data || []).filter((msg) =>
+        msg.message.toLowerCase().includes(searchValue.toLowerCase())
       );
       setFilteredMessages(filtered);
     }
   };
 
-  // Xử lý ghim tin nhắn
   const handlePinMessage = async (msg) => {
     try {
       const isAlreadyPinned = pinnedMessages.some((m) => m.id === msg.id);
       if (isAlreadyPinned) {
-        await api.post(
-          `/chatbox/${roomId}/boghim/`,
-          { message: msg.id },
-          user.token
-        );
-        setPinnedMessages((prev) => prev.filter((m) => m.id !== msg.id));
-        message.success("Đã bỏ ghim tin nhắn!");
+        api
+          .post(`/chatbox/${roomId}/boghim/`, { message: msg.id }, user.token)
+          .then((res) => {
+            setPinnedMessages(res.room.ghim);
+            setFilteredMessages((prev) => [...prev, res.message]);
+            message.success("Đã bỏ ghim tin nhắn!");
+          })
+          .catch((e) => {
+            console.log(e);
+            message.error("Không thể bỏ ghim tin nhắn. Vui lòng thử lại.");
+          });
       } else {
         if (pinnedMessages.length >= 5) {
           message.error("Bạn chỉ có thể ghim tối đa 5 tin nhắn!");
           return;
         }
-        await api.post(
-          `/chatbox/${roomId}/ghim/`,
-          { message: msg.id },
-          user.token
-        );
+        await api
+          .post(`/chatbox/${roomId}/ghim/`, { message: msg.id }, user.token)
+          .then((res) => {
+            setFilteredMessages((prev) => [...prev, res.message]);
+          });
         const msgWithSenderName = {
           ...msg,
           sender_username: getSenderName(msg.sender),
@@ -236,11 +294,7 @@ const MainChatArea = ({
     setLastMessageId(newMsg.id);
     setReplyingTo(null);
     setNewMessage("");
-    setTimeout(() => {
-      if (chatEndRef.current) {
-        chatEndRef.current.scrollIntoView({ behavior: "smooth" });
-      }
-    }, 100);
+    setShouldScrollToBottom(true);
   };
 
   const handleKeyDown = (event) => {
@@ -249,10 +303,18 @@ const MainChatArea = ({
     }
   };
 
+  // Hàm cuộn xuống cuối khi click icon
+  const scrollToBottom = () => {
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+      setShowScrollToBottomButton(false);
+    }
+  };
+  // console.log("All messages: ", messages?.message?.data);
+
   return (
     <div className="flex flex-1">
       <div className="flex-1 flex flex-col bg-gray-300 overflow-hidden">
-        {/* Header */}
         <ChatHeader
           chatName={chatName}
           isGroupChat={isGroupChat}
@@ -264,15 +326,12 @@ const MainChatArea = ({
           handleAudioCall={handleAudioCall}
           handleVideoCall={handleVideoCall}
         />
-
-        {/* Khu vực tin nhắn */}
-        <div className="flex flex-1 p-1 overflow-hidden">
+        <div className="flex flex-1 p-1 overflow-hidden relative">
           <div
             className="flex-1 overflow-y-auto p-2"
             ref={chatContainerRef}
             onScroll={handleScroll}
           >
-            {/* Tin nhắn ghim */}
             <PinnedMessages
               pinnedMessages={pinnedMessages}
               isGroupChat={isGroupChat}
@@ -280,8 +339,6 @@ const MainChatArea = ({
               user={user}
               handlePinMessage={handlePinMessage}
             />
-
-            {/* Danh sách tin nhắn */}
             <MessageList
               messages={messages}
               filteredMessages={filteredMessages}
@@ -298,12 +355,25 @@ const MainChatArea = ({
               getTimeDisplay={getTimeDisplay}
               searchTerm={searchTerm}
             />
-
             <div ref={chatEndRef} style={{ height: "1px" }} />
           </div>
+          {/* Nút cuộn xuống cuối */}
+          {showScrollToBottomButton && (
+            <button
+              onClick={scrollToBottom}
+              className="absolute bottom-16 right-4 bg-blue-500 text-white rounded-full p-3 shadow-lg hover:bg-blue-600 transition-colors"
+              style={{ zIndex: 20 }}
+            >
+              <FaArrowDown size={20} />
+              {filteredMessages.length > 0 && (
+                <span className="ml-2 bg-red-500 text-white rounded-full px-2 text-xs">
+                  {/* hiển thị số lượng tin nhắn chưa đọc bên cạnh icon cuộn xuống (nếu người dùng không ở cuối danh sách): */}
+                  {/* {filteredMessages.length - (lastVisibleMessageIndex || 0)} */}
+                </span>
+              )}
+            </button>
+          )}
         </div>
-
-        {/* Hiển thị tin nhắn đang trả lời */}
         <ReplyPreview
           replyingTo={replyingTo}
           user={user}
@@ -311,8 +381,6 @@ const MainChatArea = ({
           receiver={receiver}
           handleCancelReply={handleCancelReply}
         />
-
-        {/* Ô nhập liệu */}
         <MessageInput
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
@@ -320,26 +388,18 @@ const MainChatArea = ({
           onKeyDown={handleKeyDown}
           members={members}
         />
-
-        {/* Modal cuộc gọi */}
         <Modal
           open={isCallModalVisible}
           onCancel={handleEndCall}
           footer={null}
           closable={false}
+          styles={{ padding: 0, background: "transparent" }}
           centered
           width="100%"
-          style={{
-            padding: 0,
-            background: "transparent",
-            top: 0,
-            height: "100vh",
-            maxWidth: "100vw",
-          }}
+          style={{ top: 0, height: "100vh", maxWidth: "100vw" }}
         >
           <AudioCallLayout receiver={receiver} onEndCall={handleEndCall} />
         </Modal>
-
         {isAudioCallActive && (
           <AudioCallLayout
             receiver={isGroupChat ? { username: chatName } : receiver}
