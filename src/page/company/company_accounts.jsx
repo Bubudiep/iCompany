@@ -19,6 +19,8 @@ import { FaEdit, FaLock, FaPlus } from "react-icons/fa";
 import { TbAlertSquareRoundedFilled, TbLockPause } from "react-icons/tb";
 import app from "../../components/app";
 import Alert_box from "../../components/alert-box";
+import Add_account from "./account/add_accounts";
+import Edit_accounts from "./account/edit_accounts";
 
 const Company_accounts = () => {
   const { menu } = useOutletContext();
@@ -33,45 +35,13 @@ const Company_accounts = () => {
     department: "all",
     position: "all",
   });
-  const [password, setPassword] = useState("********");
-  const [updating, setUpdating] = useState(false);
-  const [openAddModal, setOpenAddModal] = useState(false);
-  const [addForm] = Form.useForm();
   const [editModal, setEditModal] = useState(false);
-  const [editForm] = Form.useForm();
   const [selectedAccount, setSelectedAccount] = useState(null);
-  const { confirm } = Modal;
-  const handleResetPassword = () => {
-    const userId = selectedAccount;
-    confirm({
-      title: "Xác nhận đặt lại mật khẩu?",
-      content:
-        "Bạn có chắc chắn muốn đặt lại mật khẩu cho người dùng này không?",
-      okText: "Xác nhận",
-      cancelText: "Huỷ",
-      onOk: () => {
-        api
-          .post(`/accounts/${userId.id}/reset-password/`, {}, user.token)
-          .then((res) => {
-            const newPass = res.new_password;
-            setPassword(newPass);
-            navigator.clipboard.writeText(newPass).then(() => {
-              message.success(`Mật khẩu mới đã được sao chép: ${newPass}`);
-            });
-            message.success(`Mật khẩu mới: ${newPass}`);
-          })
-          .catch((err) => {
-            message.error(
-              err.response?.data?.detail || "Đặt lại mật khẩu thất bại"
-            );
-          });
-      },
-    });
-  };
+  const [editForm] = Form.useForm();
   const openEditAccount = (acc) => {
     setSelectedAccount(acc);
     editForm.setFieldsValue({
-      password: password,
+      password: "******",
       username: acc.username,
       cardID: acc.cardID,
       department: acc.department_name,
@@ -79,64 +49,6 @@ const Company_accounts = () => {
       role: acc.isSuperAdmin ? "SuperAdmin" : acc.isAdmin ? "Admin" : "Staff",
     });
     setEditModal(true);
-  };
-  const blockFields = ["username", "password"];
-  const handleUpdateAccount = () => {
-    setUpdating(true);
-    editForm.validateFields().then((values) => {
-      const { role, ...rest } = values;
-
-      const updatedFields = {};
-      const newPayload = {
-        ...rest,
-        isSuperAdmin: role === "SuperAdmin",
-        isAdmin: role === "Admin",
-      };
-      // So sánh với selectedAccount, chỉ lấy field khác
-      Object.keys(newPayload).forEach((key) => {
-        if (blockFields.includes(key)) return;
-        if (newPayload[key] !== selectedAccount[key]) {
-          updatedFields[key] = newPayload[key];
-        }
-      });
-      if (Object.keys(updatedFields).length === 0) {
-        message.info("Không có thay đổi nào để cập nhật");
-        setUpdating(false);
-        return;
-      }
-      api
-        .patch(`/accounts/${selectedAccount.id}/`, updatedFields, user.token)
-        .then((res) => {
-          setAccounts((old) =>
-            old.map((acc) => (acc.id === res.id ? res : acc))
-          );
-          message.success("Cập nhật tài khoản thành công");
-          setEditModal(false);
-          editForm.resetFields();
-        })
-        .catch((e) => {
-          message.error(e?.response?.data?.detail || "Lỗi khi cập nhật!");
-        })
-        .finally(() => {
-          setUpdating(false);
-        });
-    });
-  };
-
-  const handleAddAccount = () => {
-    addForm.validateFields().then((values) => {
-      api
-        .post("/user/", values, user.token)
-        .then((res) => {
-          message.success("Tạo tài khoản thành công!");
-          setAccounts((old) => [res, ...old]);
-          setOpenAddModal(false);
-          addForm.resetFields();
-        })
-        .catch((e) => {
-          message.error(e?.response?.data?.detail || "Lỗi khi tạo tài khoản!");
-        });
-    });
   };
 
   useEffect(() => {
@@ -169,18 +81,6 @@ const Company_accounts = () => {
       (isAdmin && !acc.isAdmin && !acc.isSuperAdmin);
     return canEdit ? (
       <>
-        {/* <Tooltip title="Lock: Chặn đăng nhập">
-          <Button
-            className="!text-[#0003] hover:!text-[#6c8eff]"
-            icon={<FaLock />}
-          />
-        </Tooltip>
-        <Tooltip title="Reset: Đặt lại mật khẩu">
-          <Button
-            className="!text-[#0003] hover:!text-[#6c8eff]"
-            icon={<TbLockPause />}
-          />
-        </Tooltip> */}
         <Tooltip title="Sửa tài khoản">
           <Button
             className="!text-[#0003] hover:!text-[#6c8eff]"
@@ -295,14 +195,22 @@ const Company_accounts = () => {
                     }}
                   />
                 ))}
-                <Button
-                  type="primary"
-                  className="ml-auto"
-                  icon={<FaPlus />}
-                  onClick={() => setOpenAddModal(true)}
-                >
-                  Thêm tài khoản
-                </Button>
+                <Add_account
+                  setAccounts={setAccounts}
+                  user={user}
+                  isSuper={isSuper}
+                  isAdmin={isAdmin}
+                />
+                <Edit_accounts
+                  editModal={editModal}
+                  editForm={editForm}
+                  setEditModal={setEditModal}
+                  selectedAccount={selectedAccount}
+                  setAccounts={setAccounts}
+                  user={user}
+                  isSuper={isSuper}
+                  isAdmin={isAdmin}
+                />
               </div>
               <div className="mr-0.5 my-0.5 flex flex-col overflow-y-auto px-1 fadeInTop">
                 {accounts
@@ -340,139 +248,6 @@ const Company_accounts = () => {
           )}
         </div>
       </div>
-      <Modal
-        title="Sửa tài khoản"
-        open={editModal}
-        onCancel={() => setEditModal(false)}
-        onOk={handleUpdateAccount}
-        okText="Cập nhật"
-        cancelText="Hủy"
-        className="popupcontent"
-        confirmLoading={updating}
-      >
-        <Form form={editForm} layout="vertical" className="flex flex-col gap-1">
-          <Form.Item
-            label="Tài khoản đăng nhập"
-            name="username"
-            className="!mb-2"
-          >
-            <Input disabled />
-          </Form.Item>
-          <Form.Item label="Mật khẩu" name="password" className="!mb-2">
-            <div className="flex gap-2">
-              <Input disabled={password === "********"} value={password} />
-              <Button
-                type="primary"
-                className="!px-2"
-                icon={<FaLock />}
-                onClick={handleResetPassword} // truyền ID người dùng vào
-              >
-                Reset
-              </Button>
-            </div>
-          </Form.Item>
-          <Form.Item label="Mã NV" name="cardID" className="!mb-2">
-            <Input />
-          </Form.Item>
-          <Form.Item label="Vai trò" name="role" className="!mb-2">
-            <Select
-              options={[
-                isSuper && { value: "SuperAdmin", label: "Boss" },
-                isAdmin && { value: "Admin", label: "Admin" },
-                { value: "Staff", label: "Staff" },
-              ].filter(Boolean)}
-            />
-          </Form.Item>
-          <div className="flex gap-5">
-            <Form.Item label="Phòng ban" name="department">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Chức vụ" name="position">
-              <Input />
-            </Form.Item>
-          </div>
-        </Form>
-      </Modal>
-
-      <Modal
-        title="Thêm tài khoản nhân viên"
-        open={openAddModal}
-        onCancel={() => setOpenAddModal(false)}
-        onOk={handleAddAccount}
-        okText="Tạo tài khoản"
-        cancelText="Hủy"
-        className="popupcontent"
-      >
-        <Form form={addForm} layout="vertical" className="flex flex-col gap-1">
-          <div className="flex gap-5">
-            <Form.Item
-              className="!mb-2 flex-1"
-              label="Username"
-              name="username"
-              rules={[{ required: true, message: "Vui lòng nhập tài khoản" }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              className="!mb-2 flex-1"
-              label="Mật khẩu"
-              name="password"
-              rules={[{ required: true, message: "Vui lòng nhập mật khẩu" }]}
-            >
-              <Input.Password />
-            </Form.Item>
-          </div>
-          <div className="flex gap-5">
-            <Form.Item
-              className="!mb-2 flex-1"
-              label="Họ và tên"
-              name="fullname"
-              rules={[{ message: "Vui lòng nhập mã NV" }]}
-            >
-              <Input placeholder="họ và tên..." />
-            </Form.Item>
-            <Form.Item
-              className="!mb-2 flex-1"
-              label="Ngày sinh"
-              name="birthday"
-            >
-              <Input type="date" />
-            </Form.Item>
-          </div>
-          <div className="flex gap-5">
-            <Form.Item
-              className="!mb-2 flex-1"
-              label="Mã nhân viên"
-              name="cardID"
-              rules={[{ message: "Vui lòng nhập mã NV" }]}
-            >
-              <Input placeholder="để trống sẽ tạo tự động..." />
-            </Form.Item>
-            <Form.Item
-              className="!mb-2 flex-1"
-              label="Vai trò"
-              name="role"
-              initialValue="Staff"
-            >
-              <Select
-                options={[
-                  isSuper && { value: "SuperAdmin", label: "Boss" },
-                  isAdmin && { value: "Admin", label: "Admin" },
-                  { value: "Staff", label: "Staff" },
-                ].filter(Boolean)}
-              />
-            </Form.Item>
-          </div>
-          <div className="flex gap-5">
-            <Form.Item label="Phòng ban" name="department" className="flex-1">
-              <Input placeholder="VD: Kỹ thuật, Nhân sự..." />
-            </Form.Item>
-            <Form.Item label="Chức vụ" name="possition" className="flex-1">
-              <Input placeholder="VD: Nhân viên, Trưởng phòng..." />
-            </Form.Item>
-          </div>
-        </Form>
-      </Modal>
     </div>
   );
 };

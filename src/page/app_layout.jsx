@@ -170,7 +170,7 @@ const Homepage_layout = () => {
       });
       window.socket.on("message", (data) => {
         if (data.type === "message") {
-          const sender = user.staff.find(
+          const sender = user?.company?.Staff.find(
             (staff) => staff.id === data.data.sender
           );
           const room_link = `/app/chat/${data.data.room}`;
