@@ -10,7 +10,7 @@ import ReplyPreview from "../Functions/ReplyPreview";
 import MessageInput from "./MessageInput";
 import AudioCallLayout from "../Functions/AudioCallLayout";
 import VideoCallLayout from "../Functions/VideoCallLayout";
-import { FaArrowDown } from "react-icons/fa"; // Icon để cuộn xuống
+import { FaArrowDown } from "react-icons/fa";
 
 const MainChatArea = ({
   messages,
@@ -21,14 +21,16 @@ const MainChatArea = ({
   setNewMessage,
   toggleRightSide,
   setMessages,
+  isRightSideVisible, // Thêm prop để biết trạng thái của rightSide
 }) => {
   const { user } = useUser();
   const chatEndRef = useRef(null);
   const chatContainerRef = useRef(null);
+  const mainChatRef = useRef(null);
   const [lastScrollHeight, setLastScrollHeight] = useState(0);
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(false);
   const [showScrollToBottomButton, setShowScrollToBottomButton] =
-    useState(false); // State để hiển thị nút cuộn xuống
+    useState(false);
   const [isCallModalVisible, setIsCallModalVisible] = useState(false);
   const [isAudioCallActive, setIsAudioCallActive] = useState(false);
   const [isVideoCallActive, setIsVideoCallActive] = useState(false);
@@ -56,7 +58,7 @@ const MainChatArea = ({
     if (filteredMessages.length > 0 && chatEndRef.current && !searchTerm) {
       chatEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [roomId]); // Chạy khi roomId thay đổi (tức là khi mở đoạn chat mới)
+  }, [roomId]);
 
   // Khôi phục pinnedMessages từ API
   useEffect(() => {
@@ -83,14 +85,12 @@ const MainChatArea = ({
         console.log("Received WebSocket message:", data);
         if (data.data.room !== roomId) return;
 
-        // Tạo đối tượng tin nhắn mới với type và sender_username
         const newMessage = {
           ...data.data,
           type: data.type === "system" ? "system" : "message",
           sender_username: getSenderName(data.data.sender),
         };
 
-        // Cập nhật messages (state cha) và sắp xếp theo created_at
         setMessages((prev) => {
           const updatedData = [...(prev.message?.data || []), newMessage].sort(
             (a, b) => new Date(a.created_at) - new Date(b.created_at)
@@ -104,7 +104,6 @@ const MainChatArea = ({
           };
         });
 
-        // Xử lý ghim/bỏ ghim tin nhắn nếu là tin nhắn hệ thống
         if (data.type === "system") {
           if (newMessage.message.includes("Ghim tin nhắn")) {
             const pinnedMsgId = newMessage.message_id;
@@ -128,7 +127,6 @@ const MainChatArea = ({
           }
         }
 
-        // Cuộn xuống dưới cùng khi có tin nhắn mới
         setShouldScrollToBottom(true);
       });
 
@@ -137,6 +135,7 @@ const MainChatArea = ({
       };
     }
   }, [roomId, filteredMessages, setMessages, getSenderName, pinnedMessages]);
+
   // Cuộn xuống cuối khi có tin nhắn mới hoặc thông báo hệ thống
   useEffect(() => {
     if (shouldScrollToBottom && chatEndRef.current && !searchTerm) {
@@ -150,13 +149,11 @@ const MainChatArea = ({
     const container = chatContainerRef.current;
     if (!container) return;
 
-    // Kiểm tra nếu người dùng ở gần cuối (cách 100px)
     const isNearBottom =
       container.scrollHeight - container.scrollTop - container.clientHeight <
       100;
     setShowScrollToBottomButton(!isNearBottom);
 
-    // Load tin nhắn cũ nếu cuộn lên đầu
     if (
       container.scrollTop === 0 &&
       !loadingOlder &&
@@ -309,18 +306,19 @@ const MainChatArea = ({
     }
   };
 
-  // Hàm cuộn xuống cuối khi click icon
   const scrollToBottom = () => {
     if (chatEndRef.current) {
       chatEndRef.current.scrollIntoView({ behavior: "smooth" });
       setShowScrollToBottomButton(false);
     }
   };
-  // console.log("All messages: ", messages?.message?.data);
 
   return (
-    <div className="flex flex-1">
-      <div className="flex-1 flex flex-col bg-gray-300 overflow-hidden">
+    <div className="relative chat-container flex flex-1">
+      <div
+        className="main-chat flex-1 flex flex-col bg-gray-300 overflow-hidden relative"
+        ref={mainChatRef}
+      >
         <ChatHeader
           chatName={chatName}
           isGroupChat={isGroupChat}
@@ -363,23 +361,29 @@ const MainChatArea = ({
             />
             <div ref={chatEndRef} style={{ height: "1px" }} />
           </div>
-          {/* Nút cuộn xuống cuối */}
-          {showScrollToBottomButton && (
-            <button
-              onClick={scrollToBottom}
-              className="absolute bottom-16 right-4 bg-blue-500 text-white rounded-full p-3 shadow-lg hover:bg-blue-600 transition-colors"
-              style={{ zIndex: 20 }}
-            >
-              <FaArrowDown size={20} />
+        </div>
+        {/* Nút cuộn xuống cuối, căn giữa trong main-chat */}
+        {showScrollToBottomButton && (
+          <button
+            onClick={scrollToBottom}
+            className="absolute bottom-27 left-1/2 transform -translate-x-1/2 bg-gray-500 text-white rounded-full p-3 shadow-xl hover:bg-gray-600 transition-all duration-300 cursor-pointer flex items-center justify-center"
+            style={{
+              zIndex: 20,
+              width: "50px",
+              height: "50px",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+            }}
+          >
+            <div className="relative">
+              <FaArrowDown size={20} className="animate-bounce" />
               {filteredMessages.length > 0 && (
-                <span className="ml-2 bg-red-500 text-white rounded-full px-2 text-xs">
-                  {/* hiển thị số lượng tin nhắn chưa đọc bên cạnh icon cuộn xuống (nếu người dùng không ở cuối danh sách): */}
-                  {/* {filteredMessages.length - (lastVisibleMessageIndex || 0)} */}
+                <span className="absolute -top-5 -right-5 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">
+                  5
                 </span>
               )}
-            </button>
-          )}
-        </div>
+            </div>
+          </button>
+        )}
         <ReplyPreview
           replyingTo={replyingTo}
           user={user}

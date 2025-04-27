@@ -62,7 +62,10 @@ const ChatItem = ({ chat, user, getTimeDisplay }) => {
                 className="hidden group-hover:block absolute right-0 top-1/2 -translate-y-1/2 mr-2 cursor-pointer"
                 onClick={(e) => e.preventDefault()}
               >
-                <IoIosMore size={20} className="text-gray-900" />
+                <IoIosMore
+                  size={20}
+                  className=" hover:bg-gray-300 dark:hover:bg-gray-900 transition rounded-2xl"
+                />
               </div>
             </PopoverMore>
           </div>

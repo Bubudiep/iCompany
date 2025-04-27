@@ -214,7 +214,8 @@ const LeftSide = ({ chatList, setChatList, user }) => {
             Chat
             {totalUnreadMessages > 0 && (
               <Badge
-                count={totalUnreadMessages > 9 ? "9+" : totalUnreadMessages}
+                // count={totalUnreadMessages > 9 ? "9+" : totalUnreadMessages}
+                count={totalUnreadMessages > 99 ? "99+" : totalUnreadMessages}
                 offset={[10, 0]}
                 style={{ backgroundColor: "#ff4d4f" }}
               />
