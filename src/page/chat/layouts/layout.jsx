@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "../../../assets/css/chat.css";
-import LeftSide from "../messages/LeftSide";
 import { Outlet } from "react-router-dom";
 import { message } from "antd";
 import api from "../../../components/api";
 import { useUser } from "../../../components/context/userContext";
+import LeftSide from "../messages/Left/LeftSide";
 const Chat_layout = () => {
   const [chatList, setChatList] = useState([]);
   const { user } = useUser();

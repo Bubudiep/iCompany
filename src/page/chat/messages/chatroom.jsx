@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import MainChatArea from "./MainChatArea";
-import RightSide from "./RightSide";
+import MainChatArea from "./Main/MainChatArea";
+import RightSide from "./Right/RightSide";
 import { useOutletContext, useParams } from "react-router-dom";
 import { Empty, Spin } from "antd";
 import { useUser } from "../../../components/context/userContext";
@@ -39,7 +39,7 @@ const Chat_room = () => {
     if (id_room) {
       setLoading(true);
       try {
-        const response = await api.get(`/chatbox/${id_room}`, user.token);
+        const response = await api.get(`/chatbox/${id_room}/`, user.token);
         const responseData = response.data || response;
         setChatList((old) =>
           old.map((item) =>
@@ -218,7 +218,7 @@ const Chat_room = () => {
           <>
             <MainChatArea
               messages={messages}
-              dataResponse={setMessages}
+              setMessages={setMessages}
               sendMessage={sendMessage}
               fetchOlderMessages={fetchOlderMessages}
               loadingOlder={loadingOlder}
