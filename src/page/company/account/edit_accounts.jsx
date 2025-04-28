@@ -13,11 +13,13 @@ const Edit_accounts = ({
   editForm,
   setAccounts,
 }) => {
+  const [selectedDepartment, setSelectedDepartment] = useState(
+    editForm.getFieldValue("department")
+  );
   const [password, setPassword] = useState("******");
   const blockFields = ["username", "password"];
   const [updating, setUpdating] = useState(false);
   const { confirm } = Modal;
-  const [depart, setDepart] = useState(editForm.department);
   const handleUpdateAccount = () => {
     setUpdating(true);
     editForm.validateFields().then((values) => {
@@ -87,8 +89,7 @@ const Edit_accounts = ({
   };
   useEffect(() => {
     setPassword("******");
-    setDepart(editForm.getFieldValue("department"));
-    editForm.setFieldsValue({ possition: editForm.getFieldValue("position") });
+    setSelectedDepartment(editForm.getFieldValue("department"));
   }, [editModal]);
   return (
     <Modal
@@ -102,44 +103,44 @@ const Edit_accounts = ({
       confirmLoading={updating}
     >
       <Form form={editForm} layout="vertical" className="flex flex-col gap-1">
-        <Form.Item
-          label="Tài khoản đăng nhập"
-          name="username"
-          className="!mb-2"
-        >
-          <Input disabled />
-        </Form.Item>
-        <Form.Item label="Mật khẩu" name="password" className="!mb-2">
-          <div className="flex gap-2">
-            <Input disabled={password === "******"} value={password} />
-            <Button
-              type="primary"
-              className="!px-2"
-              icon={<FaLock />}
-              onClick={handleResetPassword} // truyền ID người dùng vào
-            >
-              Reset
-            </Button>
-          </div>
-        </Form.Item>
-        <Form.Item label="Mã NV" name="cardID" className="!mb-2">
-          <Input />
-        </Form.Item>
-        <Form.Item label="Vai trò" name="role" className="!mb-2">
-          <Select
-            options={[
-              isSuper && { value: "SuperAdmin", label: "Boss" },
-              isAdmin && { value: "Admin", label: "Admin" },
-              { value: "Staff", label: "Staff" },
-            ].filter(Boolean)}
-          />
-        </Form.Item>
-        <div className="flex gap-5">
+        <div className="flex gap-2">
+          <Form.Item label="Tài khoản" name="username" className="!mb-2 flex-1">
+            <Input disabled />
+          </Form.Item>
+          <Form.Item label="Mật khẩu" name="password" className="!mb-2 flex-1">
+            <div className="flex gap-2">
+              <Input disabled={password === "******"} value={password} />
+              <Button
+                type="primary"
+                className="!px-2"
+                icon={<FaLock />}
+                onClick={handleResetPassword} // truyền ID người dùng vào
+              >
+                Reset
+              </Button>
+            </div>
+          </Form.Item>
+        </div>
+        <div className="flex gap-2">
+          <Form.Item label="Mã NV" name="cardID" className="!mb-2 flex-1">
+            <Input />
+          </Form.Item>
+          <Form.Item label="Vai trò" name="role" className="!mb-2 flex-1">
+            <Select
+              options={[
+                isSuper && { value: "SuperAdmin", label: "Boss" },
+                isAdmin && { value: "Admin", label: "Admin" },
+                { value: "Staff", label: "Staff" },
+              ].filter(Boolean)}
+            />
+          </Form.Item>
+        </div>
+        <div className="flex gap-2">
           <Form.Item label="Phòng ban" name="department" className="flex-1">
             <Select
               placeholder="Chọn phòng ban..."
               onChange={(val) => {
-                setDepart(val);
+                setSelectedDepartment(val);
                 editForm.setFieldsValue({ possition: undefined });
               }}
               options={user.company.Department.map((dep) => {
@@ -154,16 +155,38 @@ const Edit_accounts = ({
             <Select
               placeholder="Chọn chức vụ..."
               options={user.company.Department.find(
-                (dep) => dep.name === depart
+                (dep) => dep.name === selectedDepartment
               )?.Possition.map((pos) => {
                 return {
-                  value: pos.id,
+                  value: pos.name,
                   label: pos.name,
                 };
               })}
             />
           </Form.Item>
         </div>
+        <Form.Item
+          label="Là quản lý của công ty"
+          name="managerCustomer"
+          className="flex-1"
+        >
+          <Select
+            mode="multiple"
+            placeholder="Chọn nhiều công ty..."
+            options={user?.company?.Customer.map((company) => {
+              return {
+                value: company.id,
+                label: `${company.name}${
+                  company.fullname ? ` - ${company.fullname}` : ""
+                }`,
+              };
+            })}
+            showSearch
+            filterOption={(input, option) =>
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
+          />
+        </Form.Item>
       </Form>
     </Modal>
   );
