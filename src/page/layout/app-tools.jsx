@@ -30,7 +30,7 @@ const App_tools = ({ user }) => {
             className="text-[8px] absolute text-nowrap -right-1.5 -bottom-1.5 text-white border-1 border-[#fff]
           bg-[#005dcf] w-3.5 h-3.5 flex items-center justify-center rounded-full shadow-lg font-bold"
           >
-            {user.onlines.length}
+            {user?.onlines?.length || 0}
           </div>
         </Tooltip>
         <div

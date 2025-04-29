@@ -125,44 +125,44 @@ const Homepage_layout = () => {
   useEffect(() => {
     if (window.socket && user) {
       window.socket.on("online_users", (data) => {
-        console.log("Online users:", data);
         if (data?.action === "all_users") {
-          setListOnline(data.data);
+          const userlist = [];
+          data.data.map((user) => {
+            if (!userlist[user.user.id]) {
+              userlist[user.user.id] = user.user;
+            }
+          });
+          const list = Object.values(userlist);
+          console.log(list);
           setUser((old) => ({
             ...old,
-            onlines: data.data,
+            onlines: list,
           }));
         }
-        if (data?.action === "dissconnect") {
-          setListOnline((old) => [
-            ...old.filter((item) => item.user.id !== data.data.id),
-          ]);
+        if (data?.action === "disconnect") {
           setUser((old) => ({
             ...old,
             onlines: old.onlines.filter(
-              (item) => item.user.id !== data.data.id
+              (item) => item.id !== data.data.user.id
             ),
           }));
         }
         if (data?.action === "connect") {
-          setListOnline((old) => [
-            ...old.map((item) =>
-              item.user.id !== data.data.id ? item : data.data
-            ),
-          ]);
           setUser((old) => {
-            const in_old = old.onlines.find((item) => item.id === data.data.id);
+            const in_old = old.onlines.find(
+              (item) => item.id === data.data.user.id
+            );
             if (in_old) {
               return {
                 ...old,
                 onlines: old.onlines.map((item) =>
-                  item.id === data.data.id ? data.data : item
+                  item.id === data.data.user.id ? data.data.user : item
                 ),
               };
             } else {
               return {
                 ...old,
-                onlines: [...old.onlines, data.data],
+                onlines: [...old.onlines, data.data.user],
               };
             }
           });

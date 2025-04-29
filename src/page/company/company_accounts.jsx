@@ -21,6 +21,7 @@ import app from "../../components/app";
 import Alert_box from "../../components/alert-box";
 import Add_account from "./account/add_accounts";
 import Edit_accounts from "./account/edit_accounts";
+import { length } from "./../../../node_modules/stylis/src/Tokenizer";
 
 const Company_accounts = () => {
   const { menu } = useOutletContext();
@@ -40,15 +41,17 @@ const Company_accounts = () => {
   const [editForm] = Form.useForm();
   const openEditAccount = (acc) => {
     setSelectedAccount(acc);
+    console.log(acc);
     editForm.setFieldsValue({
       password: "******",
       username: acc.username,
       cardID: acc.cardID,
       department: acc.department_name,
-      position: acc.possition_name,
+      possition: acc.possition_name,
+      managerCustomer: acc.managerCustomer,
       role: acc.isSuperAdmin ? "SuperAdmin" : acc.isAdmin ? "Admin" : "Staff",
     });
-    setEditModal(true);
+    setEditModal(acc);
   };
 
   useEffect(() => {
@@ -133,10 +136,17 @@ const Company_accounts = () => {
             "Chưa đặt tên"
           )}
         </div>
-        <div className="name">{acc.cardID}</div>
+        <div className="name">
+          {acc.managerCustomer.length > 0
+            ? `Quản lý ${acc.managerCustomer.length} công ty`
+            : renderRole(acc)}
+        </div>
       </div>
       <div className="flex flex-col w-[180px]">
-        <div className="name">{renderRole(acc)}</div>
+        <div className="name">
+          {acc.department_name}{" "}
+          {acc.possition_name && ` - ${acc.possition_name}`}
+        </div>
         <div className="name">{acc.isActive ? "Hoạt động" : "Đã tắt"}</div>
       </div>
       <div className="flex flex-col w-[120px]">
@@ -153,8 +163,25 @@ const Company_accounts = () => {
       { value: "Admin", label: "Admin" },
       { value: "Staff", label: "Staff" },
     ],
-    "Phòng ban": [{ value: "all", label: "Tất cả phòng" }],
-    "Chức vụ": [{ value: "all", label: "Tất cả chức vụ" }],
+    "Phòng ban": [
+      { value: "all", label: "Tất cả phòng" },
+      ...user?.company?.Department.map((dpt) => {
+        return { value: dpt.id, label: dpt.name };
+      }),
+    ],
+    "Chức vụ": [
+      { value: "all", label: "Tất cả chức vụ" },
+      ...Array.from(
+        new Set(
+          user?.company?.Department?.flatMap((dep) =>
+            dep.Possition.map((pos) => pos.name)
+          )
+        )
+      ).map((name) => ({
+        value: name,
+        label: name,
+      })),
+    ],
   };
   const handleFilterChange = (key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
@@ -233,7 +260,7 @@ const Company_accounts = () => {
                       return false;
                     if (
                       filters.position !== "all" &&
-                      acc.position !== filters.position
+                      acc.possition_name !== filters.position
                     )
                       return false;
                     return true;
