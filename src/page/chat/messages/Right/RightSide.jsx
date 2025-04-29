@@ -6,10 +6,13 @@ import {
   PushpinOutlined,
   UserAddOutlined,
   SettingOutlined,
+  FolderOutlined,
+  FileImageOutlined,
 } from "@ant-design/icons";
 import { useUser } from "../../../../components/context/userContext";
 import { MdOutlineDelete, MdOutlineReportProblem } from "react-icons/md";
 import { CiLogout } from "react-icons/ci";
+import { IoNotificationsOffOutline } from "react-icons/io5";
 
 const { Panel } = Collapse;
 
@@ -40,24 +43,24 @@ const RightSide = ({ members, avatar, chatName, isGroupChat, ghim }) => {
   const handleLeaveGroup = () => {
     message.success("Bạn đã rời khỏi cuộc trò chuyện nây!");
   };
-  console.log("ghim", ghim);
+  // console.log("ghim", ghim);
 
   return (
-    <div className="w-full md:w-1/3 bg-white dark:bg-gray-900 text-black dark:text-white p-4 rounded-lg shadow overflow-y-auto h-full">
+    <div className="w-full md:w-[350px] bg-white dark:bg-gray-900 text-black dark:text-white p-4 rounded-lg shadow-lg overflow-y-auto h-full max-h-screen">
       <h1 className="text-xl font-bold text-center mb-6">
         {isGroupChat ? "Thông tin nhóm" : "Thông tin người hội thoại"}
       </h1>
 
-      <div className="text-center mb-4">
+      {/* Avatar và tên */}
+      <div className="flex flex-col items-center mb-6">
         <Avatar
-          size={64}
+          size={72}
           src={
-            avatar ||
-            "https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
+            avatar || "https://storage.googleapis.com/a1aa/image/default.jpg"
           }
-          className="mx-auto mb-2"
+          className="mb-2"
         />
-        <div className="font-bold text-lg">
+        <div className="font-semibold text-lg text-center">
           {isGroupChat
             ? chatName
             : members.find((member) => member.id !== user.id)?.username ||
@@ -65,150 +68,192 @@ const RightSide = ({ members, avatar, chatName, isGroupChat, ghim }) => {
         </div>
       </div>
 
-      <div className="flex justify-around text-xl text-gray-700 dark:text-white mb-6">
+      {/* Nút chức năng chính */}
+      <div
+        className={`text-xl text-gray-700 dark:text-white mb-6 flex ${
+          isGroupChat ? "justify-around" : "justify-center gap-10"
+        }`}
+      >
         <Tooltip title="Tắt thông báo">
-          <div className="flex flex-col items-center cursor-pointer hover:text-blue-500">
-            <BellOutlined onClick={handleTurnOffNotification} />
-          </div>
+          <Button
+            size="large"
+            type="text"
+            icon={<BellOutlined />}
+            onClick={handleTurnOffNotification}
+          />
+          {/* <IoNotificationsOffOutline /> */}
         </Tooltip>
         <Tooltip title="Ghim hội thoại">
-          <div className="flex flex-col items-center cursor-pointer hover:text-blue-500">
-            <PushpinOutlined onClick={pinChatbox} />
-          </div>
+          <Button
+            size="large"
+            type="text"
+            icon={<PushpinOutlined />}
+            onClick={pinChatbox}
+          />
         </Tooltip>
-
         {isGroupChat && (
           <>
             <Tooltip title="Thêm thành viên">
-              <div className="flex flex-col items-center cursor-pointer hover:text-blue-500">
-                <UserAddOutlined onClick={handleAddMember} />
-              </div>
+              <Button
+                size="large"
+                type="text"
+                icon={<UserAddOutlined />}
+                onClick={handleAddMember}
+              />
             </Tooltip>
             <Tooltip title="Quản lý nhóm">
-              <div className="flex flex-col items-center cursor-pointer hover:text-blue-500">
-                <SettingOutlined onClick={handleManageGroup} />
-              </div>
+              <Button
+                size="large"
+                type="text"
+                icon={<SettingOutlined />}
+                onClick={handleManageGroup}
+              />
             </Tooltip>
           </>
         )}
       </div>
 
-      <Collapse bordered={false} defaultActiveKey={["1"]} className="mb-6">
+      {/* Thông tin nhóm */}
+      <Collapse
+        bordered={false}
+        defaultActiveKey={["1"]}
+        className="mb-4 text-sm"
+        accordion
+      >
+        {/* Thành viên nhóm */}
         {isGroupChat && (
           <Panel
-            header={<span className="font-bold">Thành viên nhóm</span>}
+            header={<span className="font-semibold">👥 Thành viên nhóm</span>}
             key="1"
           >
-            <p className="text-sm mb-2 text-center">
-              <i className="fas fa-users mr-2"></i> {members.length} thành viên
+            <p className="text-gray-600 text-center mb-2">
+              {members.length} thành viên
             </p>
-            {members.map((member) => (
-              <p key={member.id} className="flex items-center text-sm mb-1">
-                <Avatar
-                  size={30}
-                  src={
-                    member.profile?.avatar ||
-                    "https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
-                  }
-                  className="mr-2"
-                />
-                {member.profile?.full_name || member.username || "Unknown"}
-                {member.isActive && (
-                  <span className="ml-auto text-green-500">
-                    ● Đang hoạt động
-                  </span>
-                )}
-              </p>
-            ))}
+            <div className="space-y-2 max-h-64 overflow-y-auto pr-2">
+              {members.map((member) => {
+                const avatar =
+                  member.profile?.avatar ||
+                  "https://storage.googleapis.com/a1aa/image/default.jpg";
+                const name =
+                  member.profile?.full_name || member.username || "Không rõ";
+
+                return (
+                  <div
+                    key={member.id}
+                    className="flex items-center gap-3 bg-gray-50 p-2 rounded-md hover:bg-gray-100 transition"
+                  >
+                    <Avatar size={30} src={avatar} />
+                    <span className="text-sm font-medium text-gray-800">
+                      {name}
+                    </span>
+                    {member.isActive && (
+                      <span className="ml-auto text-xs text-green-600 flex items-center gap-1">
+                        <span className="text-green-500 text-base">●</span>{" "}
+                        Online
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </Panel>
         )}
 
+        {/* Ghim */}
         {isGroupChat && (
           <Panel
-            header={<span className="font-bold">Bảng tin nhóm</span>}
+            header={<span className="font-semibold">📌 Bảng tin nhóm</span>}
             key="2"
           >
-            <h2 className="text-sm mb-2">Tin nhắn ghim:</h2>
-            {/* {ghim.length > 0 ? (
-              ghim.map((msg) => (
-                <p key={msg.id} className="text-sm mb-1">
-                  {members.find((member) => member.id === msg.sender)?.username}
-                  :{" "}
-                  {msg.message.length > 50
-                    ? msg.message.slice(0, 50) + "..."
-                    : msg.message}
-                </p>
-              ))
-            ) : ( */}
-            <p className="text-sm text-gray-500">Chưa có tin nhắn ghim</p>
-            {/* )} */}
-            <p className="text-sm mt-2">Danh sách nhắc hẹn (Chưa có dữ liệu)</p>
-            <p className="text-sm">Ghi chú, bình chọn (Chưa có dữ liệu)</p>
+            <div className="space-y-3 max-h-64 overflow-y-auto pr-2">
+              <h2 className="text-sm font-medium text-gray-700">
+                Tin nhắn ghim:
+              </h2>
+              {ghim.length > 0 ? (
+                ghim.map((msg) => {
+                  const senderName =
+                    members.find((m) => m.id === msg.sender)?.username ||
+                    "Ẩn danh";
+                  const shortMsg =
+                    msg.message.length > 80
+                      ? msg.message.slice(0, 80) + "..."
+                      : msg.message;
+
+                  return (
+                    <div
+                      key={msg.id}
+                      className="bg-gray-100 p-3 rounded-md hover:bg-gray-50"
+                    >
+                      <span className="block text-sm font-medium">
+                        {senderName}:
+                      </span>
+                      <span className="text-sm text-gray-600">{shortMsg}</span>
+                    </div>
+                  );
+                })
+              ) : (
+                <p className="text-gray-500 italic">Chưa có tin nhắn ghim</p>
+              )}
+            </div>
           </Panel>
         )}
 
-        <Panel header={<span className="font-bold">Ảnh/Video</span>} key="3">
-          <div className="overflow-y-auto max-h-72 pr-2">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-              {[...Array(15)].map((_, index) => (
-                <img
-                  key={index}
-                  src={`https://picsum.photos/200/300?random=${index}`}
-                  alt={`Image ${index}`}
-                  className="w-full h-32 object-cover rounded"
-                />
-              ))}
-            </div>
+        {/* Ảnh / Video */}
+        <Panel
+          header={<span className="font-bold">🖼 Ảnh / Video</span>}
+          key="3"
+        >
+          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-64 overflow-y-auto pr-2">
+            {[...Array(9)].map((_, index) => (
+              <img
+                key={index}
+                src={`https://picsum.photos/200/200?random=${index}`}
+                alt={`Image ${index}`}
+                className="w-full h-24 object-cover rounded"
+              />
+            ))}
           </div>
-          <Button type="primary" block shape="round" className="mt-4">
+          <Button type="primary" block className="mt-3 rounded">
             Xem tất cả
           </Button>
         </Panel>
 
-        <Panel header={<span className="font-bold">File</span>} key="4">
-          <div className="flex items-center space-x-2 text-sm mb-2">
-            <img
-              src={`https://picsum.photos/200/300?random=1`}
-              alt="img"
-              width={24}
-              height={24}
-            />
-            <span>153 B</span>
-            <span>29/03/2025</span>
-          </div>
+        {/* File */}
+        <Panel header={<span className="font-bold">📁 File</span>} key="4">
+          <p className="text-sm text-gray-500">Chưa có file được chia sẻ.</p>
         </Panel>
 
-        <Panel header={<span className="font-bold">Link</span>} key="5">
-          <p className="text-sm text-gray-500">
-            Chưa có Link được chia sẻ trong hội thoại này
-          </p>
+        {/* Link */}
+        <Panel header={<span className="font-bold">🔗 Link</span>} key="5">
+          <p className="text-sm text-gray-500">Chưa có link được chia sẻ.</p>
         </Panel>
 
+        {/* Bảo mật */}
         <Panel
-          header={<span className="font-bold">Thiết lập bảo mật</span>}
+          header={<span className="font-bold">🔐 Thiết lập bảo mật</span>}
           key="6"
         >
           <p className="text-sm text-gray-500">
-            Chưa có thiết lập bảo mật nào được chia sẻ trong hội thoại này
+            Chưa có thiết lập bảo mật nào.
           </p>
         </Panel>
       </Collapse>
 
-      <div className="mt-4 space-y-2">
-        <Button onClick={handleReport} icon={<MdOutlineReportProblem />} block>
+      {/* Hành động */}
+      <div className="mt-6 space-y-2">
+        <Button icon={<MdOutlineReportProblem />} block onClick={handleReport}>
           Báo cáo hội thoại
         </Button>
         <Button
-          onClick={handleClearHistory}
           icon={<MdOutlineDelete />}
           block
           danger
+          onClick={handleClearHistory}
         >
-          Xóa lịch sử cuộc trò chuyện
+          Xóa lịch sử trò chuyện
         </Button>
-        {/* if group, have button leave */}
         {isGroupChat && (
-          <Button onClick={handleLeaveGroup} icon={<CiLogout />} block danger>
+          <Button icon={<CiLogout />} block danger onClick={handleLeaveGroup}>
             Rời khỏi nhóm
           </Button>
         )}

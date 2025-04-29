@@ -359,7 +359,7 @@ const MainChatArea = ({
               getTimeDisplay={getTimeDisplay}
               searchTerm={searchTerm}
             />
-            <div ref={chatEndRef} style={{ height: "1px" }} />
+            <div ref={chatEndRef} />
           </div>
         </div>
         {/* Nút cuộn xuống cuối, căn giữa trong main-chat */}

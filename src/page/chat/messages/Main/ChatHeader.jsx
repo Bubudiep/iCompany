@@ -38,6 +38,10 @@ const ChatHeader = ({
     setIsNameModalOpen(true);
   };
 
+  const handleChangeName = () => {
+    console.log("Change name success");
+  };
+
   return (
     <div className="flex items-center justify-between bg-white !h-[60px] p-4 border-b">
       {/* Thông tin đoạn chat */}
@@ -71,10 +75,6 @@ const ChatHeader = ({
                 {receiver?.status || "Đang hoạt động"}
               </span>
             )}
-            <Divider type="vertical" className="h-4 border-black-solid w-2" />
-            <Tooltip title="Phân loại đoạn chat">
-              <FaCubesStacked className="icon-hover cursor-pointer" />
-            </Tooltip>
           </div>
         </div>
       </div>
@@ -134,7 +134,11 @@ const ChatHeader = ({
               Lưu ý: Tên gợi nhớ sẽ chỉ hiện thị với riêng bạn.
             </p>
           )}
-          <Input className="mt-3" value={chatName} />
+          <Input
+            className="mt-3"
+            value={chatName}
+            onChange={(e) => handleChangeName(e.target.value)}
+          />
         </div>
       </Modal>
 

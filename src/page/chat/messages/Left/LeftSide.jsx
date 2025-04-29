@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Avatar, Badge, Input, Button, Modal, message } from "antd";
+import { Badge, Button, Input, Modal, Popover, message } from "antd";
 import { useNavigate } from "react-router-dom";
-import { FaPlus } from "react-icons/fa";
 import app from "../../../../components/app";
 import api from "../../../../components/api";
 import ChatItem from "./ChatItem";
 import CreateGroupModal from "../Functions/handleModal/CreateGroupModal";
+import HeaderLeftSide from "./HeaderLeftside"; // Import component mới
+import { FaChevronDown } from "react-icons/fa";
+import { MdMoreHoriz } from "react-icons/md";
+import DropdownFilter from "./DropdownFilter";
 
 const LeftSide = ({ chatList, setChatList, user }) => {
   const nav = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredChatList, setFilteredChatList] = useState(chatList);
+  // const [filteredChatList, setFilteredChatList] = useState(chatList);
   const [isCreateGroupModalVisible, setIsCreateGroupModalVisible] =
     useState(false);
   const [availableUsers, setAvailableUsers] = useState([]);
@@ -22,40 +25,67 @@ const LeftSide = ({ chatList, setChatList, user }) => {
   const [groupCover, setGroupCover] = useState(null);
   const [groupCoverURL, setGroupCoverURL] = useState(null);
 
+  // "chat_not_read": 0,
+  // "alert_not_read": 0,
+  // "update_not_read": 0,
+  // "approve_not_read": 0,
+  // "member_updated_not_check": 0,
+
   useEffect(() => {
-    if (user?.staff) {
-      const filteredUsers = user.staff
+    if (user?.onlines) {
+      const filteredUsers = user.onlines
         .filter((u) => u.id !== user.id)
         .map((u) => ({
           id: u.id,
-          fullName:
-            u.first_name && u.last_name
-              ? `${u.first_name} ${u.last_name}`
-              : u.username || "Unknown",
-          username: u.username || "Unknown",
+          avatar: u.avatar,
+          fullName: u.info?.fullName || "Unknown",
+          // fullName:
+          //   u.first_name && u.last_name
+          //     ? `${u.first_name} ${u.last_name}`
+          //     : u.username || "Unknown",
+          // username: u.info?.username || "Unknown",
         }));
       setAvailableUsers(filteredUsers);
     }
   }, [user]);
+  console.log("User new", user);
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   if (!searchTerm) {
+  //     setFilteredChatList(chatList);
+  //   } else {
+  //     const filtered = chatList.filter((chat) => {
+  //       if (chat.is_group) {
+  //         return chat.name?.toLowerCase().includes(searchTerm.toLowerCase());
+  //       } else {
+  //         const otherMember = chat.members.find(
+  //           (member) => member.id !== user.id
+  //         );
+  //         const username = otherMember?.username || "";
+  //         return username.toLowerCase().includes(searchTerm.toLowerCase());
+  //       }
+  //     });
+  //     setFilteredChatList(filtered);
+  //   }
+  // }, [searchTerm, chatList, user]);
+  const filteredChatList = React.useMemo(() => {
     if (!searchTerm) {
-      setFilteredChatList(chatList);
-    } else {
-      const filtered = chatList.filter((chat) => {
-        if (chat.is_group) {
-          return chat.name?.toLowerCase().includes(searchTerm.toLowerCase());
-        } else {
-          const otherMember = chat.members.find(
-            (member) => member.id !== user.id
-          );
-          const username = otherMember?.username || "";
-          return username.toLowerCase().includes(searchTerm.toLowerCase());
-        }
-      });
-      setFilteredChatList(filtered);
+      return chatList;
     }
+    return chatList.filter((chat) => {
+      if (chat.is_group) {
+        return chat.name?.toLowerCase().includes(searchTerm.toLowerCase());
+      } else {
+        const otherMember = chat.members.find(
+          (member) => member.id !== user.id
+        );
+        const username = otherMember?.username || "";
+        return username.toLowerCase().includes(searchTerm.toLowerCase());
+      }
+    });
   }, [searchTerm, chatList, user]);
+
+  // Bỏ setFilteredChatList và useEffect tương ứng
 
   useEffect(() => {
     if (window.socket) {
@@ -176,29 +206,36 @@ const LeftSide = ({ chatList, setChatList, user }) => {
   const totalUnreadMessages = chatList.reduce((total, chat) => {
     return total + (chat.not_read || 0);
   }, 0);
+  const [activeTab, setActiveTab] = useState("Ưu tiên");
+  // Nội dung của Popover
+  const popoverContent = (
+    <div className="flex flex-col">
+      <Button
+        type="text"
+        className="text-left hover:bg-gray-100"
+        onClick={() => console.log("Đánh dấu đã đọc!")}
+      >
+        Đánh dấu đã đọc
+      </Button>
+      <Button
+        type="text"
+        className="text-left hover:bg-gray-100"
+        onClick={() => console.log("Đánh dấu đã đọc!")}
+      >
+        Đánh dấu
+      </Button>
+    </div>
+  );
 
   return (
     <div className="left-side bg-white w-1/5 flex flex-col min-w-[300px] overflow-hidden">
-      <div className="flex items-center p-4 justify-between">
-        <div className="flex items-center">
-          <Avatar
-            alt="User Avatar"
-            className="rounded-full"
-            size={40}
-            src="https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
-          />
-          <span className="ml-2 text-xl font-bold">
-            {localStorage.getItem("username")}
-          </span>
-        </div>
-        <Button
-          type="primary"
-          shape="circle"
-          icon={<FaPlus />}
-          onClick={() => setIsCreateGroupModalVisible(true)}
-        />
-      </div>
+      {/* Header */}
+      <HeaderLeftSide
+        username={localStorage.getItem("username")}
+        onCreateGroup={() => setIsCreateGroupModalVisible(true)}
+      />
 
+      {/* Nội dung còn lại */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="flex p-2 items-center">
           <Input
@@ -209,24 +246,62 @@ const LeftSide = ({ chatList, setChatList, user }) => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
+        {/* show total unread */}
+
+        {/* Button */}
         <div className="flex p-3 items-center justify-between">
-          <span className="font-bold flex items-center">
-            Chat
+          {/* <div className="flex gap-6"> */}
+          <span
+            className={`cursor-pointer pb-2 border-b-2 transition-all ${
+              activeTab === "Ưu tiên"
+                ? "text-blue-500 font-bold border-blue-500"
+                : "text-gray-600 border-transparent hover:text-blue-500 hover:border-blue-300"
+            }`}
+            onClick={() => setActiveTab("Ưu tiên")}
+          >
+            Ưu tiên
             {totalUnreadMessages > 0 && (
               <Badge
-                // count={totalUnreadMessages > 9 ? "9+" : totalUnreadMessages}
                 count={totalUnreadMessages > 99 ? "99+" : totalUnreadMessages}
                 offset={[10, 0]}
                 style={{ backgroundColor: "#ff4d4f" }}
               />
             )}
           </span>
-          <span className="text-sm">Khác</span>
+
+          <span
+            className={`cursor-pointer pb-2 border-b-2 transition-all ${
+              activeTab === "Khác"
+                ? "text-blue-500 font-bold border-blue-500"
+                : "text-gray-600 border-transparent hover:text-blue-500 hover:border-blue-300"
+            }`}
+            onClick={() => setActiveTab("Khác")}
+          >
+            Khác
+          </span>
+          {/* </div> */}
+
+          {/* <div className="flex gap-3 items-center text-sm text-gray-700">
+            <DropdownFilter />
+            <Popover
+              content={popoverContent}
+              trigger="click"
+              placement="bottomLeft"
+            >
+              <MdMoreHoriz
+                size={24}
+                className="cursor-pointer hover:text-gray-100 hover:bg-blue-500 rounded-full"
+              />
+            </Popover>
+          </div> */}
         </div>
-        <h1 className="text-center">
+
+        {/* Not found chat list */}
+        <h1 className="pt-2 text-center">
           {filteredChatList.length === 0 &&
-            "Không tìm thấy cuộc trò chuyện. Hãy bắt đầu 1 cuộc trò chuyện."}
+            "Không tìm thấy kết quả. Vui lòng tìm kiếm khác.."}
         </h1>
+        {/* Chat list */}
         <div className="h-full overflow-auto">
           <div className="p-2 mt-2">
             {filteredChatList
