@@ -399,6 +399,8 @@ const MainChatArea = ({
           members={members}
         />
         <Modal
+          title="Audio call"
+          // className="popupcontent"
           open={isCallModalVisible}
           onCancel={handleEndCall}
           footer={null}

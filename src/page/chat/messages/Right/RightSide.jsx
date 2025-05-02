@@ -43,7 +43,6 @@ const RightSide = ({ members, avatar, chatName, isGroupChat, ghim }) => {
   const handleLeaveGroup = () => {
     message.success("Bạn đã rời khỏi cuộc trò chuyện nây!");
   };
-  // console.log("ghim", ghim);
 
   return (
     <div className="w-full md:w-[350px] bg-white dark:bg-gray-900 text-black dark:text-white p-4 rounded-lg shadow-lg overflow-y-auto h-full max-h-screen">

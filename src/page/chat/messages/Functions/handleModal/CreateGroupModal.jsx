@@ -92,7 +92,7 @@ const CreateGroupModal = ({
 
   return (
     <Modal
-      className="create-group-modal text-center"
+      className="popupcontent create-group-modal text-center"
       title="Tạo nhóm"
       open={visible}
       onCancel={onCancel}

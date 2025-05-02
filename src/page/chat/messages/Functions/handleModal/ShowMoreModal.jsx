@@ -14,6 +14,7 @@ const { TabPane } = Tabs;
 const ShowMoreModal = ({ visible, onClose, onAction }) => {
   return (
     <Modal
+      // className="popupcontent"
       style={{ top: 300 }}
       title={null}
       open={visible}
