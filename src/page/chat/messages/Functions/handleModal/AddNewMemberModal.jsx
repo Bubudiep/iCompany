@@ -62,7 +62,7 @@ const AddNewMemberModal = ({ visible, onClose }) => {
 
   return (
     <Modal
-      className="text-center"
+      className="popupcontent text-center"
       title="Thêm thành viên"
       open={visible}
       onCancel={onClose}

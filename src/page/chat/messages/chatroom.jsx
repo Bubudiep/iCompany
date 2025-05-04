@@ -9,6 +9,7 @@ import api from "../../../components/api";
 const Chat_room = () => {
   const { setChatList } = useOutletContext();
   const { id_room } = useParams();
+  // const [messages, setMessages] = useState("");
   const [messages, setMessages] = useState({
     id: null,
     not_read: 0,
@@ -82,7 +83,6 @@ const Chat_room = () => {
       }
     }
   };
-  console.log("User is online: ", user.onlines);
 
   const fetchOlderMessages = async (lastId) => {
     if (id_room && lastId && !loadingOlder) {
@@ -195,17 +195,7 @@ const Chat_room = () => {
     }
   };
 
-  // Debug thông tin tin nhắn
-  console.log("messages.message.data:", messages?.message?.data);
-  // console.log("messages.message.total:", messages?.message?.total);
-  // console.log(
-  //   "all id message:",
-  //   messages?.message?.data.map((item) => item.id)
-  // );
-  // console.log(
-  //   "first id to fetch older message:",
-  //   messages?.message?.data[0]?.id
-  // );
+  // console.log("messages.message.data:", messages?.message?.data);
 
   return (
     <div className="flex flex-1">
