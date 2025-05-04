@@ -463,7 +463,12 @@ const Operator_news = () => {
                     placeholder="Phân loại"
                     showSearch={true}
                     value={op.type}
-                    onChange={(e) => handleChange(index, "type", e)}
+                    onChange={(e) => {
+                      {
+                        handleChange(index, "type", e);
+                        handleChange(index, "staff", null);
+                      }
+                    }}
                     options={["Người mới", "Người của vendor"].map((type) => ({
                       value: type,
                       label: type,
@@ -474,8 +479,11 @@ const Operator_news = () => {
                       placeholder="Người tuyển"
                       showSearch={true}
                       value={op.staff}
-                      onChange={(e) => handleChange(index, "staff", e)}
-                      options={user?.staff?.map((staff) => ({
+                      onChange={(e) => {
+                        handleChange(index, "nguoituyen", e);
+                      }}
+                      allowClear={true}
+                      options={user?.company?.Staff?.map((staff) => ({
                         value: staff.id,
                         label: `${staff.username} (${staff.cardID})`,
                       }))}
@@ -490,11 +498,11 @@ const Operator_news = () => {
                       placeholder="Chọn vendor"
                       showSearch={true}
                       value={op.staff}
-                      onChange={(e) => handleChange(index, "staff", e)}
-                      options={user?.staff?.map((staff) => ({
-                        value: staff.id,
-                        label: `${staff.username} (${staff.cardID})`,
+                      options={user?.company?.Vendor?.map((ven) => ({
+                        value: ven.id,
+                        label: `${ven.name}`,
                       }))}
+                      onChange={(e) => handleChange(index, "nhachinh", e)}
                       filterOption={(input, option) =>
                         option?.label
                           ?.toLowerCase()
@@ -502,11 +510,22 @@ const Operator_news = () => {
                       }
                     />
                   )}
-                  <Input
-                    placeholder="Ghi chú"
-                    value={op.note}
-                    onChange={(e) =>
-                      handleChange(index, "note", e.target.value)
+                  <Select
+                    placeholder="Quản lý"
+                    showSearch={true}
+                    value={op.staff}
+                    onChange={(e) => {
+                      handleChange(index, "nguoibaocao", e);
+                    }}
+                    allowClear={true}
+                    options={user?.company?.Staff?.filter(
+                      (staff) => staff.isAdmin
+                    )?.map((staff) => ({
+                      value: staff.id,
+                      label: `${staff.username} (${staff.cardID})`,
+                    }))}
+                    filterOption={(input, option) =>
+                      option?.label?.toLowerCase().includes(input.toLowerCase())
                     }
                   />
                 </div>
@@ -527,9 +546,9 @@ const Operator_news = () => {
                     placeholder="Công ty"
                     value={op.customer}
                     onChange={(e) => handleChange(index, "customer", e)}
-                    options={["Công ty A", "Công ty B"].map((cc) => ({
-                      value: cc,
-                      label: cc,
+                    options={user?.company?.Customer?.map((cus) => ({
+                      value: cus.name,
+                      label: cus.name,
                     }))}
                     className="w-[160px]"
                   />
@@ -542,18 +561,18 @@ const Operator_news = () => {
                     }
                   />
                 </div>
-                <div className="flex h-full flex-col justify-start gap-1 min-w-[160px]">
+                {/* <div className="flex h-full flex-col justify-start gap-1 min-w-[160px]">
                   <Select
                     placeholder="Nhà chính"
                     value={op.supplier}
                     onChange={(e) => handleChange(index, "supplier", e)}
-                    options={["Nhà chính A", "Nhà chính B"].map((cc) => ({
-                      value: cc,
-                      label: cc,
+                    options={user?.company?.Vendor?.map((ven) => ({
+                      value: ven.name,
+                      label: ven.name,
                     }))}
                     className="w-[160px]"
                   />
-                </div>
+                </div> */}
                 <div className="ml-auto flex items-center gap-3">
                   {op.fullname === null && (
                     <Tooltip
