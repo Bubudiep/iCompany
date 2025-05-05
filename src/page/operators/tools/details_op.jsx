@@ -133,8 +133,30 @@ const Details_op = () => {
                           value={op.congty_danglam || "Chưa đi làm"}
                         />
                         <Info label="Phân loại" value={0} />
-                        <Info label="Đang ứng" value="0đ" />
-                        <Info label="Đang giữ lương" value={"0đ"} />
+                        <Info
+                          label="Đang ứng"
+                          value={
+                            op?.baoung?.reduce((sum, item) => {
+                              return item.payment_status === "done" &&
+                                item.retrieve_status === "not"
+                                ? sum + parseInt(item.amount)
+                                : sum;
+                            }, 0) + " vnđ"
+                          }
+                        />
+                        <Info label="Đang giữ lương" value={"0 vnđ"} />
+                        <Info
+                          label="Chờ duyệt ứng"
+                          value={
+                            op?.baoung
+                              ?.reduce((sum, item) => {
+                                return item.payment_status === "not"
+                                  ? sum + parseInt(item.amount)
+                                  : sum;
+                              }, 0)
+                              .toLocaleString() + " vnđ"
+                          }
+                        />
                         <Info label="Ghi chú" value={op.ghichu || "Không có"} />
                       </div>
                     </div>
@@ -143,7 +165,18 @@ const Details_op = () => {
                     <div className="header">Thống kê</div>
                     <div className="md:col-span-2 space-y-3 p-3">
                       <div className="grid grid-cols-2 sm:grid-cols-2 gap-2">
-                        <Info label="Tổng ứng" value="0đ" />
+                        <Info
+                          label="Tổng ứng"
+                          value={
+                            op?.baoung
+                              ?.reduce((sum, item) => {
+                                return item.payment_status === "done"
+                                  ? sum + parseInt(item.amount)
+                                  : sum;
+                              }, 0)
+                              .toLocaleString() + " vnđ"
+                          }
+                        />
                         <Info label="Tổng thanh toán" value="0đ" />
                         <Info
                           label="Tổng giờ làm việc (hành chính)"
@@ -190,54 +223,116 @@ const Details_op = () => {
             </div>
             <div className="his-items p-2 gap-2 flex flex-col">
               <Modal
+                className="popupcontent text-center !w-[900px]"
                 title="Chi tiết lịch sử tác động"
                 open={modalData}
                 onCancel={() => setModalData(false)}
                 footer={null}
               >
-                <div className="w-full">
-                  <Descriptions column={1} bordered>
-                    {modalData?.new_data &&
-                      Object.keys(modalData?.new_data).map((newDT) => (
-                        <Descriptions.Item
-                          label={newDT === "ho_ten" ? "Họ tên" : newDT}
-                          key={newDT}
-                          className="!p-2 text-nowrap"
-                        >
-                          <div className="flex gap-2 items-center">
-                            <div className="text-nowrap">
-                              {modalData?.old_data?.[newDT]}
-                            </div>
-                            <FaArrowRight />
-                            <div className="text-nowrap">
-                              {modalData?.new_data?.[newDT]}
-                            </div>
-                          </div>
-                        </Descriptions.Item>
-                      ))}
-                  </Descriptions>
+                <div className="w-full overflow-hidden max-h-[600px] flex flex-col">
+                  <div className="overflow-auto">
+                    <Descriptions column={2} bordered>
+                      {modalData?.new_data &&
+                        Object.keys(modalData?.new_data).map((newDT) => {
+                          return (
+                            ![
+                              "id",
+                              "created_at",
+                              "updated_at",
+                              "cccd_back",
+                              "avatar",
+                              "cccd_front",
+                            ].includes(newDT) &&
+                            modalData?.old_data?.[newDT] !=
+                              modalData?.new_data?.[newDT] && (
+                              <Descriptions.Item
+                                label={
+                                  newDT === "ho_ten"
+                                    ? "Họ tên"
+                                    : newDT === "sdt"
+                                    ? "Điện thoại"
+                                    : newDT === "ghichu"
+                                    ? "Ghi chú"
+                                    : newDT === "vendor"
+                                    ? "Vendor"
+                                    : newDT === "quequan"
+                                    ? "Quê quán"
+                                    : newDT === "ten_goc"
+                                    ? "Tên gốc"
+                                    : newDT === "ngaysinh"
+                                    ? "Ngày sinh"
+                                    : newDT === "gioi_tinh"
+                                    ? "Giới tính"
+                                    : newDT === "so_cccd"
+                                    ? "Số CCCD"
+                                    : newDT === "diachi"
+                                    ? "Địa chỉ"
+                                    : newDT === "ngay_phongvan"
+                                    ? "Ngày phỏng vấn"
+                                    : newDT === "congty_danglam"
+                                    ? "Công ty đang làm"
+                                    : newDT === "nguoituyen"
+                                    ? "Người tuyển"
+                                    : newDT === "nguoibaocao"
+                                    ? "Người báo cáo"
+                                    : newDT === "chu_taikhoan"
+                                    ? "Chủ tài khoản"
+                                    : newDT === "company"
+                                    ? "Công ty"
+                                    : newDT === "nganhang"
+                                    ? "Ngân hàng"
+                                    : newDT === "nhachinh"
+                                    ? "Nhà chính"
+                                    : newDT === "trangthai"
+                                    ? "Trạng thái"
+                                    : newDT === "ma_nhanvien"
+                                    ? "Mã nhân viên"
+                                    : newDT === "so_taikhoan"
+                                    ? "Số tài khoản"
+                                    : newDT === "ghichu_taikhoan"
+                                    ? "Ghi chú tài khoản"
+                                    : newDT
+                                }
+                                key={newDT}
+                                className="!p-2 text-nowrap"
+                              >
+                                <div className="flex gap-2 items-center">
+                                  <div className="text-nowrap">
+                                    {modalData?.old_data?.[newDT]}
+                                  </div>
+                                  <FaArrowRight />
+                                  <div className="text-nowrap">
+                                    {modalData?.new_data?.[newDT]}
+                                  </div>
+                                </div>
+                              </Descriptions.Item>
+                            )
+                          );
+                        })}
+                    </Descriptions>
+                  </div>
                 </div>
               </Modal>
               {op?.history?.map((his) => (
                 <div
                   key={his.id}
                   color="white"
-                  className="item bg-[#eee] rounded-md max-w-none"
+                  className="item bg-[#d0e3f1] rounded-md max-w-none cursor-pointer"
                   onClick={() => setModalData(his)}
                 >
                   <div
                     className="title flex text-[11px] justify-between 
-                    p-2 pb-1 text-[#999]"
+                    p-2 pb-1 text-[#424d6d]"
                   >
-                    <div className="name">
+                    <div className="name text-[#0045ac] font-bold">
                       {his?.changed_by?.full_name || "Hệ thống"}
                     </div>
                     <div className="time">
                       {app.timeSince(his?.changed_at) || "-"}
                     </div>
                   </div>
-                  <div className="content text-[13px] px-2 pb-2">
-                    - {his?.notes || "..."}
+                  <div className="content text-[13px] px-2 pb-2 text-[#03132b]">
+                    {his?.notes || "..."}
                   </div>
                 </div>
               ))}

@@ -31,11 +31,10 @@ const Baoung_OP = ({ op, onClose, open, update, user }) => {
   const handleSave = async () => {
     try {
       const values = await form.validateFields();
-      console.log(values, op);
-      // update?.(data);
-      // onClose();
       api.post(`/ops/${op.id}/baoung/`, values, user.token).then((res) => {
         console.log(res);
+        update(res);
+        message.success("Báo ứng thành công!");
       });
     } catch (err) {
       message.warning("Vui lòng điền đầy đủ thông tin bắt buộc!");
