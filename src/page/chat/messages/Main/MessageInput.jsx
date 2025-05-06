@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   FaSmile,
   FaPaperclip,
@@ -18,15 +18,62 @@ import {
   Menu,
 } from "antd";
 import Picker from "emoji-picker-react"; // Thư viện chọn emoji
+import { CiFaceSmile, CiImageOn } from "react-icons/ci";
 
-const MessageInput = ({ value, onChange, onSend, onKeyDown }) => {
+const { TextArea } = Input;
+
+const MessageInput = ({ value: propValue, onChange: propOnChange, onSend }) => {
   const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
+  const [localValue, setLocalValue] = useState(propValue || ""); // Quản lý giá trị nội bộ
+  const textAreaRef = useRef(null);
 
-  // Xử lý chọn emoji (cho phép chọn nhiều emoji)
+  // Đồng bộ giá trị từ props và nội bộ
+  React.useEffect(() => {
+    setLocalValue(propValue || "");
+  }, [propValue]);
+
+  const handleChange = (e) => {
+    const newValue = e.target.value;
+    setLocalValue(newValue);
+    propOnChange(e); // Gọi onChange từ props
+  };
+
+  // Xử lý chọn emoji
   const handleEmojiClick = (emojiObject) => {
-    const newMessage = value + emojiObject.emoji;
-    onChange({ target: { value: newMessage } });
-    // Không đóng bảng chọn emoji, cho phép chọn tiếp
+    const newValue = localValue + emojiObject.emoji;
+    setLocalValue(newValue);
+    propOnChange({ target: { value: newValue } }); // Cập nhật giá trị cho component cha
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault(); // Ngăn xuống dòng khi chỉ nhấn Enter
+      if (localValue.trim() !== "") {
+        console.log("Sending with Enter:", localValue); // Debug giá trị gửi
+        onSend(localValue); // Gửi giá trị nội bộ
+        setLocalValue("");
+        propOnChange({ target: { value: "" } }); // Reset giá trị
+        if (textAreaRef.current) {
+          textAreaRef.current.resizableTextArea.textArea.style.height = "auto"; // Reset chiều cao
+        }
+      } else {
+        message.warning("Vui lòng nhập tin nhắn!");
+      }
+    }
+  };
+
+  const handleSend = () => {
+    if (localValue.trim() !== "") {
+      console.log("Sending with Button:", localValue); // Debug giá trị gửi
+      onSend(localValue); // Gửi giá trị nội bộ
+      setLocalValue("");
+      propOnChange({ target: { value: "" } }); // Reset giá trị
+      if (textAreaRef.current) {
+        textAreaRef.current.resizableTextArea.textArea.style.height = "auto"; // Reset chiều cao
+      }
+    } else {
+      message.warning("Vui lòng nhập tin nhắn!");
+    }
   };
 
   // Xử lý upload file
@@ -87,33 +134,10 @@ const MessageInput = ({ value, onChange, onSend, onKeyDown }) => {
         >
           <Tooltip title="Chọn biểu cảm">
             <div className="p-2 rounded-full hover:bg-gray-100 cursor-pointer transition-colors">
-              <FaSmile className="text-gray-600" />
+              <CiFaceSmile size={20} />
             </div>
           </Tooltip>
         </Popover>
-
-        {/* Nút Paperclip (Upload file) */}
-        <Upload
-          showUploadList={false}
-          beforeUpload={() => false}
-          onChange={handleFileUpload}
-        >
-          <Tooltip title="Đính kèm file">
-            <div className="p-2 rounded-full hover:bg-gray-100 cursor-pointer transition-colors">
-              <FaPaperclip className="text-gray-600" />
-            </div>
-          </Tooltip>
-        </Upload>
-
-        {/* Nút Microphone (Ghi âm) */}
-        <Tooltip title="Ghi âm">
-          <div
-            className="p-2 rounded-full hover:bg-gray-100 cursor-pointer transition-colors"
-            onClick={handleMicrophoneClick}
-          >
-            <FaMicrophone className="text-gray-600" />
-          </div>
-        </Tooltip>
 
         {/* Nút Image (Upload hình ảnh) */}
         <Upload
@@ -124,14 +148,37 @@ const MessageInput = ({ value, onChange, onSend, onKeyDown }) => {
         >
           <Tooltip title="Gửi hình ảnh">
             <div className="p-2 rounded-full hover:bg-gray-100 cursor-pointer transition-colors">
-              <FaImage className="text-gray-600" />
+              <CiImageOn size={20} />
             </div>
           </Tooltip>
         </Upload>
 
+        {/* Nút Paperclip (Upload file) */}
+        <Upload
+          showUploadList={false}
+          beforeUpload={() => false}
+          onChange={handleFileUpload}
+        >
+          <Tooltip title="Đính kèm file">
+            <div className="p-2 rounded-full hover:bg-gray-100 cursor-pointer transition-colors">
+              <FaPaperclip size={20} className="text-gray-400" />
+            </div>
+          </Tooltip>
+        </Upload>
+
+        {/* Nút Microphone (Ghi âm) */}
+        <Tooltip title="Ghi âm">
+          <div
+            className="p-2 rounded-full hover:bg-gray-100 cursor-pointer transition-colors"
+            onClick={handleMicrophoneClick}
+          >
+            <FaMicrophone size={20} className="text-gray-500" />
+          </div>
+        </Tooltip>
+
         {/* Nút More (Tùy chọn bổ sung) */}
         <Dropdown overlay={moreMenu} trigger={["click"]}>
-          <Tooltip title="Tùy chọn khác">
+          <Tooltip title="Thêm tùy chọn">
             <div className="p-2 rounded-full hover:bg-gray-100 cursor-pointer transition-colors">
               <FaEllipsisH size={20} className="text-gray-600" />
             </div>
@@ -140,19 +187,20 @@ const MessageInput = ({ value, onChange, onSend, onKeyDown }) => {
       </div>
 
       <div className="flex items-center">
-        <Input
-          className="flex-1 p-2 rounded-lg border border-gray-300 focus:border-blue-500 transition-colors"
+        <TextArea
+          ref={textAreaRef}
+          className="flex-1 p-2 rounded-lg border border-gray-300 focus:border-blue-500 transition-colors resize-none"
           placeholder="Nhập tin nhắn..."
-          value={value}
-          onChange={(e) => onChange(e)}
-          onKeyDown={onKeyDown}
-          style={{ height: "40px" }}
+          value={localValue}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          autoSize={{ minRows: 1, maxRows: 10 }} // Tự động giãn dòng
         />
         <Button
           type="primary"
           shape="circle"
           icon={<FaPaperPlane />}
-          onClick={onSend}
+          onClick={handleSend}
           className="ml-2"
           style={{
             height: "40px",

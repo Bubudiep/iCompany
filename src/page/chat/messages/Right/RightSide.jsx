@@ -8,6 +8,8 @@ import {
   SettingOutlined,
   FolderOutlined,
   FileImageOutlined,
+  PlusOutlined,
+  EyeOutlined,
 } from "@ant-design/icons";
 import { useUser } from "../../../../components/context/userContext";
 import { MdOutlineDelete, MdOutlineReportProblem } from "react-icons/md";
@@ -43,6 +45,13 @@ const RightSide = ({ members, avatar, chatName, isGroupChat, ghim }) => {
   const handleLeaveGroup = () => {
     message.success("Bạn đã rời khỏi cuộc trò chuyện nây!");
   };
+  const handleViewAllMembers = () => {
+    message.success("Xem các người hội thoại trong nhóm!");
+  };
+
+  const handleShowPinnedMessages = () => {
+    message.success("Xem tin nhóm ghim!");
+  };
 
   return (
     <div className="w-full md:w-[350px] bg-white dark:bg-gray-900 text-black dark:text-white p-4 rounded-lg shadow-lg overflow-y-auto h-full max-h-screen">
@@ -51,13 +60,12 @@ const RightSide = ({ members, avatar, chatName, isGroupChat, ghim }) => {
       </h1>
 
       {/* Avatar và tên */}
-      <div className="flex flex-col items-center mb-6">
+      <div className="flex flex-col items-center mb-6 cursor-pointer">
         <Avatar
           size={72}
           src={
             avatar || "https://storage.googleapis.com/a1aa/image/default.jpg"
           }
-          className="mb-2"
         />
         <div className="font-semibold text-lg text-center">
           {isGroupChat
@@ -125,10 +133,10 @@ const RightSide = ({ members, avatar, chatName, isGroupChat, ghim }) => {
             header={<span className="font-semibold">👥 Thành viên nhóm</span>}
             key="1"
           >
-            <p className="text-gray-600 text-center mb-2">
+            <p className="text-gray-600 text-center mt-0">
               {members.length} thành viên
             </p>
-            <div className="space-y-2 max-h-64 overflow-y-auto pr-2">
+            <div className="space-y-0 max-h-64 overflow-y-auto pr-2 cursor-pointer">
               {members.map((member) => {
                 const avatar =
                   member.profile?.avatar ||
@@ -155,6 +163,25 @@ const RightSide = ({ members, avatar, chatName, isGroupChat, ghim }) => {
                 );
               })}
             </div>
+            <div className="flex justify-center mt-2">
+              <Button
+                size="small"
+                type="text"
+                icon={<PlusOutlined />}
+                onClick={handleAddMember}
+              >
+                Thêm thành viên
+              </Button>
+              {/* Xem tất cả thành viên */}
+              <Button
+                size="small"
+                type="text"
+                icon={<EyeOutlined />}
+                onClick={handleViewAllMembers}
+              >
+                Xem tất cả
+              </Button>
+            </div>
           </Panel>
         )}
 
@@ -179,9 +206,11 @@ const RightSide = ({ members, avatar, chatName, isGroupChat, ghim }) => {
                       : msg.message;
 
                   return (
+                    /* Tin nhắn đã ghim */
                     <div
                       key={msg.id}
-                      className="bg-gray-100 p-3 rounded-md hover:bg-gray-50"
+                      onClick={() => handleShowPinnedMessages(msg)}
+                      className="bg-gray-100 p-3 rounded-md hover:bg-gray-300 cursor-pointer"
                     >
                       <span className="block text-sm font-medium">
                         {senderName}:
@@ -208,7 +237,7 @@ const RightSide = ({ members, avatar, chatName, isGroupChat, ghim }) => {
                 key={index}
                 src={`https://picsum.photos/200/200?random=${index}`}
                 alt={`Image ${index}`}
-                className="w-full h-24 object-cover rounded"
+                className="w-full h-24 object-cover rounded cursor-pointer hover:opacity-80"
               />
             ))}
           </div>

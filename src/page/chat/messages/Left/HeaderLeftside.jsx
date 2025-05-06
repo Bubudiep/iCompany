@@ -13,6 +13,9 @@ const HeaderLeftSide = ({ username, onCreateGroup }) => {
           src="https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
         />
         <span className="ml-2 text-xl font-bold">{username}</span>
+        <span className="ml-2 text-xl font-bold">
+          {/* {localStorage.getItem("username")} */}
+        </span>
       </div>
       <Button
         type="primary"

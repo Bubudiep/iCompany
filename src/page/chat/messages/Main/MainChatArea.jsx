@@ -254,8 +254,8 @@ const MainChatArea = ({
     setIsVideoCallActive(false);
   };
 
-  const handleLikeMessage = (msg) => {
-    message.success(`Bạn đã thích tin nhắn: "${msg.message}"`);
+  const handleReactionMessage = (msg) => {
+    message.success(`Bạn đã bày tỏ cảm xúc cho tin nhắn: "${msg.message}"`);
   };
 
   const handleReplyMessage = (msg) => {
@@ -273,7 +273,7 @@ const MainChatArea = ({
   };
 
   const sendMessageWithScroll = () => {
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim()) return message.warning("Vui lòng nhập tin nhắn!");
     const messageToSend = replyingTo
       ? { message: newMessage, reply_to: replyingTo.id }
       : { message: newMessage };
@@ -351,7 +351,7 @@ const MainChatArea = ({
               isGroupChat={isGroupChat}
               receiver={receiver}
               pinnedMessages={pinnedMessages}
-              handleLikeMessage={handleLikeMessage}
+              handleReactionMessage={handleReactionMessage}
               handleReplyMessage={handleReplyMessage}
               handleMoreActions={handleMoreActions}
               handlePinMessage={handlePinMessage}
@@ -366,7 +366,7 @@ const MainChatArea = ({
         {showScrollToBottomButton && (
           <button
             onClick={scrollToBottom}
-            className="absolute bottom-27 left-1/2 transform -translate-x-1/2 bg-gray-500 text-white rounded-full p-3 shadow-xl hover:bg-gray-600 transition-all duration-300 cursor-pointer flex items-center justify-center"
+            className="absolute bottom-30 left-1/2 transform -translate-x-1/2 bg-gray-400 text-white rounded-full p-3 shadow-xl hover:bg-gray-600 transition-all duration-300 cursor-pointer flex items-center justify-center"
             style={{
               zIndex: 20,
               width: "50px",
@@ -395,7 +395,7 @@ const MainChatArea = ({
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           onSend={sendMessageWithScroll}
-          onKeyDown={handleKeyDown}
+          // onKeyDown={handleKeyDown}
           members={members}
         />
         <Modal

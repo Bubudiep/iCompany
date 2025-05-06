@@ -5,7 +5,7 @@ import app from "../../../../components/app";
 import api from "../../../../components/api";
 import ChatItem from "./ChatItem";
 import CreateGroupModal from "../Functions/handleModal/CreateGroupModal";
-import HeaderLeftSide from "./HeaderLeftside";
+import HeaderLeftSide from "./HeaderLeftSide";
 
 const LeftSide = ({ chatList, setChatList, user }) => {
   const nav = useNavigate();
@@ -23,17 +23,20 @@ const LeftSide = ({ chatList, setChatList, user }) => {
   const [activeTab, setActiveTab] = useState("Ưu tiên");
 
   useEffect(() => {
-    if (user?.onlines) {
-      const filteredUsers = user.onlines
-        .filter((u) => u.id !== user.id)
-        .map((u) => ({
-          id: u.id,
-          avatar: u.avatar,
-          fullName: u.info?.fullName || "Unknown",
-        }));
+    if (user?.company.Staff) {
+      const filteredUsers = user.company.Staff.filter(
+        (u) => u.id !== user.id
+      ).map((u) => ({
+        id: u.id,
+        username: u.username || "Unknown",
+        avatar: u.profile?.avatar || "",
+        full_name: u.profile?.full_name || "Unknown",
+        gender: u.profile?.gender || "",
+      }));
       setAvailableUsers(filteredUsers);
     }
   }, [user]);
+  console.log("Available users in left side:", availableUsers);
 
   const filteredChatList = React.useMemo(() => {
     if (!searchTerm) {
