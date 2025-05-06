@@ -24,6 +24,7 @@ const List_operators = () => {
       content: "Tất cả thông tin của người lao động này sẽ bị xóa!",
       onOk: () => {
         console.log(op);
+        message.warning("Chưa được phép");
       },
     });
   };

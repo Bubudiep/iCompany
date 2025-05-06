@@ -44,7 +44,7 @@ const Details_op = () => {
     }
   }, []);
   return (
-    <div className="flex flex-col overflow-hidden fadeInLeft flex-1 gap-2">
+    <div className="relative flex flex-col overflow-hidden flex-1 gap-2">
       <Baoung_OP
         user={user}
         op={op}
@@ -54,13 +54,16 @@ const Details_op = () => {
           setOp(data);
         }}
       />
-      {loading ? (
-        <div className="whitebox">
-          <Spin size="large" />
+      {loading && (
+        <div className="p-1 absolute w-full h-full">
+          <div className="flex items-center-safe justify-center !p-5">
+            <Spin size="large" />
+          </div>
         </div>
-      ) : (
+      )}
+      {!loading && (
         <div className="flex flex-1 overflow-hidden">
-          <div className="flex flex-col gap-2 flex-1 p-2 pr-1 pb-0 overflow-hidden">
+          <div className="flex flex-col gap-2 flex-1 p-2 pr-1 pb-0 overflow-hidden fadeInTop">
             <div className="flex gap-2 flex-1 items-start overflow-hidden">
               <div className="flex flex-col w-[240px] min-w-[240px] gap-2">
                 <div onClick={() => navigate(-1)} className="whitebox back-btn">
@@ -216,7 +219,7 @@ const Details_op = () => {
               </div>
             </div>
           </div>
-          <div className="op-left-tools !w-0 !min-w-0 2xl:!min-w-[300px] 2xl:!w-[300px]">
+          <div className="op-left-tools !w-0 !min-w-0 2xl:!min-w-[300px] 2xl:!w-[300px] fadeInLeft">
             <div className="hd-1 font-[500] py-3 px-3 flex justify-between">
               Lịch sử tác động
               <FaHistory />
