@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Avatar, Spin, Tooltip, Button, Popover, Modal } from "antd";
 import {
   FaThumbtack,
@@ -34,6 +34,8 @@ const MessageList = ({
   getTimeDisplay,
   searchTerm,
 }) => {
+  const [reactions, setReactions] = useState({}); // Lưu trữ reaction cho từng message
+  const [hoveredMessageId, setHoveredMessageId] = useState(null); // Theo dõi tin nhắn đang hover
   const formatTimestampForDivider = (timestamp) => {
     const date = new Date(timestamp);
     return date.toLocaleString("vi-VN", {
@@ -63,7 +65,7 @@ const MessageList = ({
       </button>
       <button
         className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 text-left cursor-pointer"
-        // onClick={() => handleForward(message)}
+        onClick={() => handleForward(message)}
       >
         <FaShare />
         Chuyển tiếp
@@ -108,6 +110,56 @@ const MessageList = ({
       },
     });
   };
+  const handleForward = (message) => {
+    console.log("Forward:", message);
+  };
+  const reactionIcons = [
+    { icon: "👍", type: "like" },
+    { icon: "❤️", type: "love" },
+    { icon: "😂", type: "laugh" },
+    { icon: "😮", type: "surprise" },
+    { icon: "😢", type: "cry" },
+    { icon: "😡", type: "angry" },
+  ];
+  const handleReactionSelect = ({ id: messageId }, reactionType) => {
+    setReactions((prev) => {
+      const currentReactions = prev[messageId] || {};
+      const updatedCount = (currentReactions[reactionType] || 0) + 1;
+      return {
+        ...prev,
+        [messageId]: {
+          ...currentReactions,
+          [reactionType]: updatedCount,
+        },
+      };
+    });
+    handleReactionMessage(messageId, reactionType); // Gọi hàm để gửi reaction lên server
+  };
+
+  const getReactionCount = (messageId, reactionType) => {
+    return reactions[messageId]?.[reactionType] || 0;
+  };
+
+  const reactionContent = (messageId) => (
+    <div className="flex space-x-2 p-1 bg-white rounded-lg shadow-md border border-gray-300">
+      {reactionIcons.map(({ icon, type }) => (
+        <Tooltip key={type} title={type}>
+          <span
+            className="text-2xl cursor-pointer hover:scale-125 transition-transform"
+            onClick={() => handleReactionSelect(messageId, type)}
+          >
+            {icon}
+          </span>
+        </Tooltip>
+      ))}
+    </div>
+  );
+  const reactionUsers = (messageId, reactionType) => (
+    <div>
+      <p>User 1</p>
+      <p>User 2</p>
+    </div>
+  );
 
   return (
     <>
@@ -118,9 +170,11 @@ const MessageList = ({
       )}
       {messages?.message?.total === 0 && (
         <div className="flex justify-center my-4">
-          <p className="text-gray-500 text-sm">
+          <h1 className="text-gray-900 text-lg text-center justify-between mt-60">
             Hãy nhắn gì đó để bắt đầu cuộc trò chuyện...
-          </p>
+            <br />
+            🌷🌼🌸
+          </h1>
         </div>
       )}
       {filteredMessages
@@ -254,10 +308,16 @@ const MessageList = ({
                           } flex space-x-2 bg-white p-1 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity`}
                         >
                           <Tooltip title="Bày tỏ cảm xúc">
-                            <FaRegFaceSmile
-                              className="text-gray-600 cursor-pointer hover:text-blue-500"
-                              onClick={() => handleReactionMessage(message)}
-                            />
+                            <Popover
+                              content={reactionContent(message.id)}
+                              trigger="click"
+                              placement="top"
+                            >
+                              <FaRegFaceSmile
+                                className="text-gray-600 cursor-pointer hover:text-blue-500"
+                                onClick={() => handleReactionMessage(message)}
+                              />
+                            </Popover>
                           </Tooltip>
                           <Tooltip title="Trả lời">
                             <FaReply

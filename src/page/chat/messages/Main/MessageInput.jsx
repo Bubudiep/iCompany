@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   FaSmile,
   FaPaperclip,
@@ -20,25 +20,59 @@ import {
 import Picker from "emoji-picker-react"; // Thư viện chọn emoji
 import { CiFaceSmile, CiImageOn } from "react-icons/ci";
 
-const MessageInput = ({ value, onChange, onSend }) => {
-  const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
+const { TextArea } = Input;
 
-  // Xử lý chọn emoji (cho phép chọn nhiều emoji)
+const MessageInput = ({ value: propValue, onChange: propOnChange, onSend }) => {
+  const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
+  const [localValue, setLocalValue] = useState(propValue || ""); // Quản lý giá trị nội bộ
+  const textAreaRef = useRef(null);
+
+  // Đồng bộ giá trị từ props và nội bộ
+  React.useEffect(() => {
+    setLocalValue(propValue || "");
+  }, [propValue]);
+
+  const handleChange = (e) => {
+    const newValue = e.target.value;
+    setLocalValue(newValue);
+    propOnChange(e); // Gọi onChange từ props
+  };
+
+  // Xử lý chọn emoji
   const handleEmojiClick = (emojiObject) => {
-    const newMessage = value + emojiObject.emoji;
-    onChange({ target: { value: newMessage } });
-    // Không đóng bảng chọn emoji, cho phép chọn tiếp
+    const newValue = localValue + emojiObject.emoji;
+    setLocalValue(newValue);
+    propOnChange({ target: { value: newValue } }); // Cập nhật giá trị cho component cha
   };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault(); // Ngăn xuống dòng khi chỉ nhấn Enter
-      if (value.trim() !== "") {
-        onSend(); // Gửi tin nhắn
+      if (localValue.trim() !== "") {
+        console.log("Sending with Enter:", localValue); // Debug giá trị gửi
+        onSend(localValue); // Gửi giá trị nội bộ
+        setLocalValue("");
+        propOnChange({ target: { value: "" } }); // Reset giá trị
+        if (textAreaRef.current) {
+          textAreaRef.current.resizableTextArea.textArea.style.height = "auto"; // Reset chiều cao
+        }
       } else {
         message.warning("Vui lòng nhập tin nhắn!");
-        // console.log("Vui lòng nhập tin nhắn!");
       }
+    }
+  };
+
+  const handleSend = () => {
+    if (localValue.trim() !== "") {
+      console.log("Sending with Button:", localValue); // Debug giá trị gửi
+      onSend(localValue); // Gửi giá trị nội bộ
+      setLocalValue("");
+      propOnChange({ target: { value: "" } }); // Reset giá trị
+      if (textAreaRef.current) {
+        textAreaRef.current.resizableTextArea.textArea.style.height = "auto"; // Reset chiều cao
+      }
+    } else {
+      message.warning("Vui lòng nhập tin nhắn!");
     }
   };
 
@@ -153,19 +187,20 @@ const MessageInput = ({ value, onChange, onSend }) => {
       </div>
 
       <div className="flex items-center">
-        <Input.TextArea
+        <TextArea
+          ref={textAreaRef}
           className="flex-1 p-2 rounded-lg border border-gray-300 focus:border-blue-500 transition-colors resize-none"
           placeholder="Nhập tin nhắn..."
-          value={value}
-          onChange={(e) => onChange(e)}
+          value={localValue}
+          onChange={handleChange}
           onKeyDown={handleKeyDown}
-          autoSize={{ minRows: 1, maxRows: 10 }} // tự động giãn dòng
+          autoSize={{ minRows: 1, maxRows: 10 }} // Tự động giãn dòng
         />
         <Button
           type="primary"
           shape="circle"
           icon={<FaPaperPlane />}
-          onClick={onSend}
+          onClick={handleSend}
           className="ml-2"
           style={{
             height: "40px",

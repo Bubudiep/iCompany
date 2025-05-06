@@ -366,7 +366,7 @@ const MainChatArea = ({
         {showScrollToBottomButton && (
           <button
             onClick={scrollToBottom}
-            className="absolute bottom-27 left-1/2 transform -translate-x-1/2 bg-gray-500 text-white rounded-full p-3 shadow-xl hover:bg-gray-600 transition-all duration-300 cursor-pointer flex items-center justify-center"
+            className="absolute bottom-30 left-1/2 transform -translate-x-1/2 bg-gray-400 text-white rounded-full p-3 shadow-xl hover:bg-gray-600 transition-all duration-300 cursor-pointer flex items-center justify-center"
             style={{
               zIndex: 20,
               width: "50px",
