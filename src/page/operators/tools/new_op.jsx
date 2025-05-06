@@ -44,40 +44,38 @@ const Operator_news = () => {
     const headers = [
       [
         "Họ tên",
+        "Số điện thoại",
+        "Giới tính",
         "Số CCCD",
         "Ngày sinh",
-        "Giới tính",
         "Địa chỉ",
-        "Số điện thoại",
         "Mã ngân hàng",
         "Số tài khoản",
-        "Loại tài khoản",
-        "Loại",
+        "Chủ tài khoản",
         "Người tuyển",
         "Vendor",
-        "Ghi chú",
+        "Nhà chính",
         "Ngày vào làm",
         "Công ty vào làm",
-        "Tên đi làm",
-        "Nhà chính",
+        "Mã nhân viên",
+        "Ghi chú",
       ],
       [
         "Nguyễn Văn A",
+        "0912345678",
+        "Nam",
         "123456789012",
         "1990-01-01",
-        "Nam",
         "123 Đường ABC, HN",
-        "0912345678",
         "970415",
         "1234567890",
-        "Chính chủ",
-        "Người mới",
-        "MNV-000001",
+        "Nguyễn Văn A",
+        "",
         "",
         "",
         "2025-05-15",
         "Compal",
-        "Nguyễn Văn A",
+        "V0000132",
         "",
       ],
     ];
@@ -114,24 +112,23 @@ const Operator_news = () => {
               (row) => row["Họ tên"] !== "" && row["Họ tên"] !== "Hướng dẫn"
             )
             .map((row) => ({
-              fullname: row["Họ tên"] || null,
-              cardid: row["Số CCCD"] || null,
-              address: row["Địa chỉ"] || null,
-              old: row["Ngày sinh"] || null,
-              sex: row["Giới tính"] || null,
-              phone: row["Số điện thoại"] || null,
-              bank_code: row["Mã ngân hàng"] || null,
-              bank_number: row["Số tài khoản"] || null,
-              bank_type: row["Loại tài khoản"] || "Chính chủ",
               avatar: null,
               cccd_img: null,
-              note: row["Ghi chú"] || null,
-              staff: null,
-              type: "Người mới",
-              customer: row["Công ty vào làm"] || null,
+              fullname: row["Họ tên"] || null,
+              phone: row["Số điện thoại"] || null,
+              sex: row["Giới tính"] || null,
+              cardid: row["Số CCCD"] || null,
+              birthday: row["Ngày sinh"] || null,
+              address: row["Địa chỉ"] || null,
+              bank_code: row["Mã ngân hàng"] || null,
+              bank_number: row["Số tài khoản"] || null,
+              bank_name: row["Chủ tài khoản"] || null,
+              staff: row["Người tuyển"] || null,
+              vendor: row["Vendor"] || null,
+              nhachinh: row["Nhà chính"] || null,
               work_date: row["Ngày vào làm"] || null,
-              work_name: row["Tên đi làm"] || null,
-              supplier: row["Nhà chính"] || null,
+              customer: row["Công ty vào làm"] || null,
+              work_code: row["Mã nhân viên"] || null,
             }));
           setListUser((prev) => [...prev, ...newUsers]);
           e.target.value = "";
@@ -148,20 +145,23 @@ const Operator_news = () => {
     setListUser((prev) => [
       ...prev,
       {
+        avatar: null,
+        cccd_img: null,
         fullname: null,
+        phone: null,
+        sex: null,
+        cardid: null,
+        birthday: null,
+        address: null,
         bank_code: null,
         bank_number: null,
-        cccd_img: null,
-        phone: null,
-        cardid: null,
-        address: null,
-        old: null,
-        sex: null,
-        avatar: null,
+        bank_name: null,
         staff: null,
-        note: null,
-        bank_type: null,
-        type: "Người mới",
+        vendor: null,
+        nhachinh: null,
+        work_date: null,
+        customer: null,
+        work_code: null,
       },
     ]);
   };
@@ -221,7 +221,7 @@ const Operator_news = () => {
         handleChange(index, "cardid", qr.so_cccd);
         handleChange(index, "address", qr.que_quan);
         handleChange(index, "sex", qr.gioi_tinh);
-        handleChange(index, "old", qr.ngay_sinh);
+        handleChange(index, "birthday", qr.ngay_sinh);
         reader.readAsDataURL(file);
       } else {
         message.error("Không có mã QR hoặc mã QR không phải CCCD!");
@@ -380,27 +380,6 @@ const Operator_news = () => {
                       handleChange(index, "phone", e.target.value)
                     }
                   />
-                  <Input
-                    placeholder="CMND/CCCD"
-                    value={op.cardid}
-                    onChange={(e) =>
-                      handleChange(index, "cardid", e.target.value)
-                    }
-                  />
-                </div>
-                <div className="flex flex-col gap-1 min-w-[120px]">
-                  <DatePicker
-                    placeholder="Ngày sinh"
-                    className="w-[120px]"
-                    format="YYYY-MM-DD"
-                    value={op.old ? dayjs(op.old, "YYYY-MM-DD") : null}
-                    onChange={(date, dateString) =>
-                      handleChange(index, "old", dateString)
-                    }
-                    disabledDate={(current) => {
-                      return current && current > dayjs().endOf("day");
-                    }}
-                  />
                   <Select
                     placeholder="Giới tính"
                     value={op.sex}
@@ -411,10 +390,34 @@ const Operator_news = () => {
                     }))}
                     className="w-[120px]"
                   />
+                </div>
+                <div className="flex flex-col gap-1 min-w-[120px]">
+                  <Input
+                    placeholder="CMND/CCCD"
+                    value={op.cardid}
+                    className="!w-[150px]"
+                    onChange={(e) =>
+                      handleChange(index, "cardid", e.target.value)
+                    }
+                  />
+                  <DatePicker
+                    placeholder="Ngày sinh"
+                    className="w-[150px]"
+                    format="YYYY-MM-DD"
+                    value={
+                      op.birthday ? dayjs(op.birthday, "YYYY-MM-DD") : null
+                    }
+                    onChange={(date, dateString) =>
+                      handleChange(index, "birthday", dateString)
+                    }
+                    disabledDate={(current) => {
+                      return current && current > dayjs().endOf("day");
+                    }}
+                  />
                   <Input
                     placeholder="Địa chỉ"
                     value={op.address}
-                    className="!w-[120px]"
+                    className="!w-[150px]"
                     onChange={(e) =>
                       handleChange(index, "address", e.target.value)
                     }
@@ -431,6 +434,7 @@ const Operator_news = () => {
                         value: bank.bin,
                         label: `${bank.shortName} - ${bank.name}`,
                       }))}
+                      allowClear={true}
                       filterOption={(input, option) =>
                         option?.label
                           ?.toLowerCase()
@@ -438,18 +442,6 @@ const Operator_news = () => {
                       }
                     />
                   </Tooltip>
-                  <Select
-                    placeholder="Loại tài khoản"
-                    value={op.bank_type}
-                    defaultValue="Chính chủ"
-                    onChange={(e) => handleChange(index, "bank_type", e)}
-                    options={["Chính chủ", "Người thân", "Mượn"].map(
-                      (type) => ({
-                        value: type,
-                        label: type,
-                      })
-                    )}
-                  />
                   <Input
                     placeholder="Số tài khoản"
                     value={op.bank_number}
@@ -457,56 +449,60 @@ const Operator_news = () => {
                       handleChange(index, "bank_number", e.target.value)
                     }
                   />
+                  <Input
+                    placeholder="Chủ tài khoản"
+                    value={op.bank_name}
+                    onChange={(e) =>
+                      handleChange(index, "bank_name", e.target.value)
+                    }
+                  />
                 </div>
                 <div className="flex flex-col gap-1 min-w-[160px]">
                   <Select
-                    placeholder="Phân loại"
+                    placeholder="Người tuyển"
                     showSearch={true}
-                    value={op.type}
-                    onChange={(e) => handleChange(index, "type", e)}
-                    options={["Người mới", "Người của vendor"].map((type) => ({
-                      value: type,
-                      label: type,
+                    value={op.staff}
+                    className="!w-[150px]"
+                    onChange={(e) => {
+                      handleChange(index, "staff", e);
+                    }}
+                    allowClear={true}
+                    options={user?.company?.Staff?.map((staff) => ({
+                      value: staff.id,
+                      label: `${staff.username} (${staff.cardID})`,
                     }))}
+                    filterOption={(input, option) =>
+                      option?.label?.toLowerCase().includes(input.toLowerCase())
+                    }
                   />
-                  {op.type === "Người mới" ? (
-                    <Select
-                      placeholder="Người tuyển"
-                      showSearch={true}
-                      value={op.staff}
-                      onChange={(e) => handleChange(index, "staff", e)}
-                      options={user?.staff?.map((staff) => ({
-                        value: staff.id,
-                        label: `${staff.username} (${staff.cardID})`,
-                      }))}
-                      filterOption={(input, option) =>
-                        option?.label
-                          ?.toLowerCase()
-                          .includes(input.toLowerCase())
-                      }
-                    />
-                  ) : (
-                    <Select
-                      placeholder="Chọn vendor"
-                      showSearch={true}
-                      value={op.staff}
-                      onChange={(e) => handleChange(index, "staff", e)}
-                      options={user?.staff?.map((staff) => ({
-                        value: staff.id,
-                        label: `${staff.username} (${staff.cardID})`,
-                      }))}
-                      filterOption={(input, option) =>
-                        option?.label
-                          ?.toLowerCase()
-                          .includes(input.toLowerCase())
-                      }
-                    />
-                  )}
-                  <Input
-                    placeholder="Ghi chú"
-                    value={op.note}
-                    onChange={(e) =>
-                      handleChange(index, "note", e.target.value)
+                  <Select
+                    placeholder="Vendor"
+                    value={op.vendor}
+                    className="!w-[150px]"
+                    options={user?.company?.Vendor?.map((ven) => ({
+                      value: ven.id,
+                      label: `${ven.name}`,
+                    }))}
+                    onChange={(e) => handleChange(index, "vendor", e)}
+                    showSearch={true}
+                    allowClear={true}
+                    filterOption={(input, option) =>
+                      option?.label?.toLowerCase().includes(input.toLowerCase())
+                    }
+                  />
+                  <Select
+                    placeholder="Nhà chính"
+                    showSearch={true}
+                    value={op.nhachinh}
+                    allowClear={true}
+                    className="!w-[150px]"
+                    options={user?.company?.Vendor?.map((ven) => ({
+                      value: ven.id,
+                      label: `${ven.name}`,
+                    }))}
+                    onChange={(e) => handleChange(index, "nhachinh", e)}
+                    filterOption={(input, option) =>
+                      option?.label?.toLowerCase().includes(input.toLowerCase())
                     }
                   />
                 </div>
@@ -515,7 +511,9 @@ const Operator_news = () => {
                     placeholder="Ngày vào làm"
                     className="w-[160px]"
                     format="YYYY-MM-DD"
-                    value={op.old ? dayjs(op.work_date, "YYYY-MM-DD") : null}
+                    value={
+                      op.work_date ? dayjs(op.work_date, "YYYY-MM-DD") : ""
+                    }
                     onChange={(date, dateString) =>
                       handleChange(index, "work_date", dateString)
                     }
@@ -527,31 +525,20 @@ const Operator_news = () => {
                     placeholder="Công ty"
                     value={op.customer}
                     onChange={(e) => handleChange(index, "customer", e)}
-                    options={["Công ty A", "Công ty B"].map((cc) => ({
-                      value: cc,
-                      label: cc,
+                    options={user?.company?.Customer?.map((cus) => ({
+                      value: cus.name,
+                      label: cus.name,
                     }))}
                     className="w-[160px]"
+                    allowClear={true}
                   />
                   <Input
                     className="!w-[160px]"
-                    placeholder="Tên đi làm"
-                    value={op.work_name}
+                    placeholder="Mã nhân viên"
+                    value={op.work_code}
                     onChange={(e) =>
-                      handleChange(index, "work_name", e.target.value)
+                      handleChange(index, "work_code", e.target.value)
                     }
-                  />
-                </div>
-                <div className="flex h-full flex-col justify-start gap-1 min-w-[160px]">
-                  <Select
-                    placeholder="Nhà chính"
-                    value={op.supplier}
-                    onChange={(e) => handleChange(index, "supplier", e)}
-                    options={["Nhà chính A", "Nhà chính B"].map((cc) => ({
-                      value: cc,
-                      label: cc,
-                    }))}
-                    className="w-[160px]"
                   />
                 </div>
                 <div className="ml-auto flex items-center gap-3">

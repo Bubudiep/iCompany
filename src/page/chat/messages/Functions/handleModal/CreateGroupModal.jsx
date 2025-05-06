@@ -9,10 +9,11 @@ import {
   Button,
   message,
 } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import { FaCamera } from "react-icons/fa";
 
 const { TabPane } = Tabs;
+
 const CreateGroupModal = ({
   visible,
   onCancel,
@@ -34,11 +35,22 @@ const CreateGroupModal = ({
   handleCreateGroup,
   user,
 }) => {
-  const filteredMembers = availableUsers.filter((u) =>
-    u.fullName.toLowerCase().includes(memberSearchTerm.toLowerCase())
-  );
+  // Debug để kiểm tra dữ liệu
+  useEffect(() => {
+    console.log("Available users:", availableUsers);
+    console.log("User:", user);
+    console.log("Selected members:", selectedMembers);
+  }, [availableUsers, user, selectedMembers]);
+
+  // Lọc danh sách thành viên dựa trên memberSearchTerm
+  const filteredMembers =
+    availableUsers?.filter((u) =>
+      u?.fullName?.toLowerCase().includes(memberSearchTerm.toLowerCase())
+    ) || [];
+
+  // Sắp xếp danh sách thành viên theo alphabet
   const sortedMembersByAlphabet = [...filteredMembers].sort((a, b) =>
-    a.fullName.localeCompare(b.fullName, "vi", { sensitivity: "base" })
+    a?.fullName?.localeCompare(b?.fullName, "vi", { sensitivity: "base" })
   );
 
   const handleMemberSelect = (memberId) => {
@@ -50,7 +62,7 @@ const CreateGroupModal = ({
   };
 
   const handleRemoveMember = (memberId) => {
-    if (memberId === user.id || memberId === host) {
+    if (memberId === user?.id || memberId === host) {
       message.warning("Không thể xóa host hoặc chính bạn!");
       return;
     }
@@ -80,7 +92,7 @@ const CreateGroupModal = ({
 
   return (
     <Modal
-      className="create-group-modal text-center"
+      className="popupcontent create-group-modal text-center"
       title="Tạo nhóm"
       open={visible}
       onCancel={onCancel}
@@ -140,18 +152,18 @@ const CreateGroupModal = ({
             </span>
             {selectedMembers.map((memberId) => {
               const member = availableUsers.find((u) => u.id === memberId) || {
-                id: user.id,
-                fullName: user.username,
+                id: user?.id,
+                fullName: user?.username || "Bạn",
               };
-              const isCreator = memberId === user.id;
+              const isCreator = memberId === user?.id;
               return (
                 <div
                   key={memberId}
                   className="flex items-center bg-blue-500 text-white rounded-full px-2 py-1 m-1"
                 >
                   <span className="text-sm">
-                    {member.fullName}
-                    {isCreator && "Bạn"}
+                    {member?.fullName}
+                    {isCreator && ""}
                     {admins.includes(memberId) && " (Admin)"}
                   </span>
                   <button
@@ -171,48 +183,68 @@ const CreateGroupModal = ({
               <div className="text-sm text-left text-gray-500 mb-2">
                 Trò chuyện gần đây
               </div>
-              {filteredMembers.map((u) => (
-                <div
-                  key={u.id}
-                  className="flex items-center p-2 hover:bg-gray-100 rounded cursor-pointer"
-                  onClick={() => handleMemberSelect(u.id)}
-                >
-                  <Checkbox
-                    checked={selectedMembers.includes(u.id)}
-                    onChange={() => handleMemberSelect(u.id)}
-                  />
-                  <Avatar
-                    size={40}
-                    src="https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
-                    alt="Avatar"
-                    className="ml-2"
-                  />
-                  <span className="ml-2">{u.fullName}</span>
+              {availableUsers.length === 0 ? (
+                <div className="text-center text-gray-500">
+                  Không có người dùng nào để hiển thị.
                 </div>
-              ))}
+              ) : filteredMembers.length === 0 ? (
+                <div className="text-center text-gray-500">
+                  Không tìm thấy người dùng nào.
+                </div>
+              ) : (
+                filteredMembers.map((u) => (
+                  <div
+                    key={u.id}
+                    className="flex items-center p-2 hover:bg-gray-100 rounded cursor-pointer"
+                    onClick={() => handleMemberSelect(u.id)}
+                  >
+                    <Checkbox
+                      checked={selectedMembers.includes(u.id)}
+                      onChange={() => handleMemberSelect(u.id)}
+                    />
+                    <Avatar
+                      size={40}
+                      src="https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
+                      alt="Avatar"
+                      className="ml-2"
+                    />
+                    <span className="ml-2">{u.fullName}</span>
+                  </div>
+                ))
+              )}
             </div>
           </TabPane>
           <TabPane tab="Alphabet" key="2">
             <div className="max-h-60 overflow-y-auto">
               <div className="text-sm text-gray-500 mb-2">Theo Alphabet</div>
-              {sortedMembersByAlphabet.map((u) => (
-                <div
-                  key={u.id}
-                  className="flex items-center p-2 hover:bg-gray-100 rounded cursor-pointer"
-                  onClick={() => handleMemberSelect(u.id)}
-                >
-                  <Checkbox
-                    checked={selectedMembers.includes(u.id)}
-                    onChange={() => handleMemberSelect(u.id)}
-                  />
-                  <Avatar
-                    size={40}
-                    src="https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
-                    className="ml-2"
-                  />
-                  <span className="ml-2">{u.fullName}</span>
+              {availableUsers.length === 0 ? (
+                <div className="text-center text-gray-500">
+                  Không có người dùng nào để hiển thị.
                 </div>
-              ))}
+              ) : sortedMembersByAlphabet.length === 0 ? (
+                <div className="text-center text-gray-500">
+                  Không tìm thấy người dùng nào.
+                </div>
+              ) : (
+                sortedMembersByAlphabet.map((u) => (
+                  <div
+                    key={u.id}
+                    className="flex items-center p-2 hover:bg-gray-100 rounded cursor-pointer"
+                    onClick={() => handleMemberSelect(u.id)}
+                  >
+                    <Checkbox
+                      checked={selectedMembers.includes(u.id)}
+                      onChange={() => handleMemberSelect(u.id)}
+                    />
+                    <Avatar
+                      size={40}
+                      src="https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
+                      className="ml-2"
+                    />
+                    <span className="ml-2">{u.fullName}</span>
+                  </div>
+                ))
+              )}
             </div>
           </TabPane>
           <TabPane tab="Bạn thân" key="3">

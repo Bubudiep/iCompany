@@ -3,6 +3,7 @@ import { Popover } from "antd";
 
 const PopoverMore = ({ onAction = handleAction, children }) => {
   const ACTIONS = {
+    "Ghim hội thoại": () => console.log("Ghim hội thoại"),
     "Bỏ ghim hội thoại": () => console.log("Bỏ ghim"),
     "Chuyển sang mục Khác": () => console.log("Chuyển mục"),
     "Phân loại": () => console.log("Phân loại hội thoại"),
@@ -13,6 +14,7 @@ const PopoverMore = ({ onAction = handleAction, children }) => {
     "Xóa hội thoại": () => console.log("Xóa hội thoại"),
     "Báo xấu": () => console.log("Báo cáo xấu"),
   };
+  // handleAction
 
   function handleAction(item) {
     const action = ACTIONS[item];

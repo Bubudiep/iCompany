@@ -359,7 +359,7 @@ const MainChatArea = ({
               getTimeDisplay={getTimeDisplay}
               searchTerm={searchTerm}
             />
-            <div ref={chatEndRef} style={{ height: "1px" }} />
+            <div ref={chatEndRef} />
           </div>
         </div>
         {/* Nút cuộn xuống cuối, căn giữa trong main-chat */}
@@ -399,6 +399,8 @@ const MainChatArea = ({
           members={members}
         />
         <Modal
+          title="Audio call"
+          // className="popupcontent"
           open={isCallModalVisible}
           onCancel={handleEndCall}
           footer={null}

@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Avatar, Badge, Input, Button, Modal, message } from "antd";
+import { Badge, Button, Input, Modal, Popover, message } from "antd";
 import { useNavigate } from "react-router-dom";
-import { FaPlus } from "react-icons/fa";
 import app from "../../../../components/app";
 import api from "../../../../components/api";
 import ChatItem from "./ChatItem";
 import CreateGroupModal from "../Functions/handleModal/CreateGroupModal";
+import HeaderLeftSide from "./HeaderLeftside";
 
 const LeftSide = ({ chatList, setChatList, user }) => {
   const nav = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredChatList, setFilteredChatList] = useState(chatList);
   const [isCreateGroupModalVisible, setIsCreateGroupModalVisible] =
     useState(false);
   const [availableUsers, setAvailableUsers] = useState([]);
@@ -21,40 +20,36 @@ const LeftSide = ({ chatList, setChatList, user }) => {
   const [memberSearchTerm, setMemberSearchTerm] = useState("");
   const [groupCover, setGroupCover] = useState(null);
   const [groupCoverURL, setGroupCoverURL] = useState(null);
+  const [activeTab, setActiveTab] = useState("Ưu tiên");
 
   useEffect(() => {
-    if (user?.staff) {
-      const filteredUsers = user.staff
+    if (user?.onlines) {
+      const filteredUsers = user.onlines
         .filter((u) => u.id !== user.id)
         .map((u) => ({
           id: u.id,
-          fullName:
-            u.first_name && u.last_name
-              ? `${u.first_name} ${u.last_name}`
-              : u.username || "Unknown",
-          username: u.username || "Unknown",
+          avatar: u.avatar,
+          fullName: u.info?.fullName || "Unknown",
         }));
       setAvailableUsers(filteredUsers);
     }
   }, [user]);
 
-  useEffect(() => {
+  const filteredChatList = React.useMemo(() => {
     if (!searchTerm) {
-      setFilteredChatList(chatList);
-    } else {
-      const filtered = chatList.filter((chat) => {
-        if (chat.is_group) {
-          return chat.name?.toLowerCase().includes(searchTerm.toLowerCase());
-        } else {
-          const otherMember = chat.members.find(
-            (member) => member.id !== user.id
-          );
-          const username = otherMember?.username || "";
-          return username.toLowerCase().includes(searchTerm.toLowerCase());
-        }
-      });
-      setFilteredChatList(filtered);
+      return chatList;
     }
+    return chatList.filter((chat) => {
+      if (chat.is_group) {
+        return chat.name?.toLowerCase().includes(searchTerm.toLowerCase());
+      } else {
+        const otherMember = chat.members.find(
+          (member) => member.id !== user.id
+        );
+        const username = otherMember?.username || "";
+        return username.toLowerCase().includes(searchTerm.toLowerCase());
+      }
+    });
   }, [searchTerm, chatList, user]);
 
   useEffect(() => {
@@ -179,25 +174,10 @@ const LeftSide = ({ chatList, setChatList, user }) => {
 
   return (
     <div className="left-side bg-white w-1/5 flex flex-col min-w-[300px] overflow-hidden">
-      <div className="flex items-center p-4 justify-between">
-        <div className="flex items-center">
-          <Avatar
-            alt="User Avatar"
-            className="rounded-full"
-            size={40}
-            src="https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
-          />
-          <span className="ml-2 text-xl font-bold">
-            {localStorage.getItem("username")}
-          </span>
-        </div>
-        <Button
-          type="primary"
-          shape="circle"
-          icon={<FaPlus />}
-          onClick={() => setIsCreateGroupModalVisible(true)}
-        />
-      </div>
+      <HeaderLeftSide
+        username={localStorage.getItem("username")}
+        onCreateGroup={() => setIsCreateGroupModalVisible(true)}
+      />
 
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="flex p-2 items-center">
@@ -209,23 +189,41 @@ const LeftSide = ({ chatList, setChatList, user }) => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
+
         <div className="flex p-3 items-center justify-between">
-          <span className="font-bold flex items-center">
-            Chat
+          <span
+            className={`cursor-pointer pb-2 border-b-2 transition-all ${
+              activeTab === "Ưu tiên"
+                ? "text-blue-500 font-bold border-blue-500"
+                : "text-gray-600 border-transparent hover:text-blue-500 hover:border-blue-300"
+            }`}
+            onClick={() => setActiveTab("Ưu tiên")}
+          >
+            Ưu tiên
             {totalUnreadMessages > 0 && (
               <Badge
-                // count={totalUnreadMessages > 9 ? "9+" : totalUnreadMessages}
                 count={totalUnreadMessages > 99 ? "99+" : totalUnreadMessages}
                 offset={[10, 0]}
                 style={{ backgroundColor: "#ff4d4f" }}
               />
             )}
           </span>
-          <span className="text-sm">Khác</span>
+
+          <span
+            className={`cursor-pointer pb-2 border-b-2 transition-all ${
+              activeTab === "Khác"
+                ? "text-blue-500 font-bold border-blue-500"
+                : "text-gray-600 border-transparent hover:text-blue-500 hover:border-blue-300"
+            }`}
+            onClick={() => setActiveTab("Khác")}
+          >
+            Khác
+          </span>
         </div>
-        <h1 className="text-center">
+
+        <h1 className="pt-2 text-center">
           {filteredChatList.length === 0 &&
-            "Không tìm thấy cuộc trò chuyện. Hãy bắt đầu 1 cuộc trò chuyện."}
+            "Không tìm thấy kết quả. Vui lòng tìm kiếm khác.."}
         </h1>
         <div className="h-full overflow-auto">
           <div className="p-2 mt-2">

@@ -54,15 +54,15 @@ const AddNewMemberModal = ({ visible, onClose }) => {
 
   // xử lý thêm mới thành viên
   const handleAddNewMembers = () => {
-    if (selectedMembers.length < 2) {
-      message.error("Vui lý nhập thêm tối thieu 2 người");
+    if (selectedMembers.length < 1) {
+      message.error("Vui lòng thêm tối thieu 1 người");
       return;
     }
   };
 
   return (
     <Modal
-      className="text-center"
+      className="popupcontent text-center"
       title="Thêm thành viên"
       open={visible}
       onCancel={onClose}
@@ -71,7 +71,7 @@ const AddNewMemberModal = ({ visible, onClose }) => {
     >
       <div className="space-y-4 mt-5">
         <Input
-          placeholder="Nhập tên, số điện thoại, email..."
+          placeholder="Tìm kiếm tên người, số điện thoại, email..."
           value={memberSearchTerm}
           onChange={(e) => setMemberSearchTerm(e.target.value)}
           allowClear
@@ -95,7 +95,7 @@ const AddNewMemberModal = ({ visible, onClose }) => {
                 >
                   <span className="text-sm">
                     {member.fullName}
-                    {isCreator && " (Bạn)"}
+                    {isCreator && "Bạn"}
                     {admins.includes(memberId) && " (Admin)"}
                   </span>
                   <button

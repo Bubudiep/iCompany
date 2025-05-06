@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { Avatar, Badge, Popover } from "antd";
 import { FaUsers, FaThumbtack } from "react-icons/fa";
 import { IoIosMore } from "react-icons/io";
-import ShowMoreModal from "../Functions/handleModal/ShowMoreModal";
 import PopoverMore from "../Functions/handleModal/PopoverMore";
 
 const ChatItem = ({ chat, user, getTimeDisplay }) => {
