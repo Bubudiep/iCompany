@@ -1,9 +1,22 @@
 import React from "react";
-import { Avatar, Spin, Tooltip, Button } from "antd";
-import { FaThumbtack, FaReply, FaEllipsisH } from "react-icons/fa";
+import { Avatar, Spin, Tooltip, Button, Popover, Modal } from "antd";
+import {
+  FaThumbtack,
+  FaReply,
+  FaEllipsisH,
+  FaShare,
+  FaExclamationTriangle,
+  FaTrash,
+  FaRegCopy,
+} from "react-icons/fa";
 import { AiOutlineLike } from "react-icons/ai";
 import { BsPinAngleFill } from "react-icons/bs";
 import { RiUnpinFill } from "react-icons/ri";
+import {
+  FaRegFaceSmile,
+  FaRegFaceSmileBeam,
+  FaThumbtackSlash,
+} from "react-icons/fa6";
 
 const MessageList = ({
   messages,
@@ -13,7 +26,7 @@ const MessageList = ({
   isGroupChat,
   receiver,
   pinnedMessages,
-  handleLikeMessage,
+  handleReactionMessage,
   handleReplyMessage,
   handleMoreActions,
   handlePinMessage,
@@ -29,6 +42,70 @@ const MessageList = ({
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
+    });
+  };
+
+  const moreActionsContent = (message) => (
+    <div className="flex flex-col text-sm cursor-pointer">
+      <button
+        className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 text-left cursor-pointer"
+        onClick={() => handleCopyMessage(message)}
+      >
+        <FaRegCopy />
+        Sao chép
+      </button>
+      <button
+        className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 text-left cursor-pointer"
+        // onClick={() => handlePin(message)}
+      >
+        <FaThumbtackSlash />
+        Ghim
+      </button>
+      <button
+        className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 text-left cursor-pointer"
+        // onClick={() => handleForward(message)}
+      >
+        <FaShare />
+        Chuyển tiếp
+      </button>
+
+      <button
+        className="flex items-center gap-2 px-4 py-2 hover:bg-red-100 text-red-600 text-left transition-all duration-200 hover:scale-105 cursor-pointer"
+        onClick={() => handleReport(message)}
+      >
+        <FaExclamationTriangle className="group transition-transform duration-200 group-hover:rotate-12" />
+        Báo cáo
+      </button>
+
+      <button
+        className="group flex items-center gap-2 px-4 py-2 text-left text-red-600 hover:bg-red-100 transition-all duration-200 cursor-pointer"
+        onClick={() => handleDelete(message)}
+      >
+        <FaTrash className="transition-transform duration-300 group-hover:-rotate-20 group-hover:scale-110" />
+        <span className="group-hover:text-red-700">Xóa</span>
+      </button>
+    </div>
+  );
+
+  const handleCopyMessage = (message) => {
+    navigator.clipboard.writeText(message.content);
+  };
+
+  const handleReport = (message) => {
+    message.success("Báo cáo thành công!");
+  };
+
+  const handleDelete = (message) => {
+    Modal.confirm({
+      title: "Xác nhận xóa tin nhắn",
+      content: "Bạn có chắc chắn muốn xóa tin nhắn này?",
+      okText: "Xóa",
+      cancelText: "Hủy",
+      okType: "danger",
+      onOk() {
+        // TODO: thực hiện xóa thật
+        console.log("Deleted:", message);
+      },
     });
   };
 
@@ -167,17 +244,19 @@ const MessageList = ({
                             )}
                           </span>
                         </div>
+                        {/* actions menu */}
                         <div
-                          className={`absolute top-1/2 transform -translate-y-1/2 ${
+                          className={`absolute top-1/2 transform -translate-y-1/2 z-10
+                          ${
                             message.sender === user.id
-                              ? "left-0 -ml-25"
+                              ? "left-0 -ml-25 flex-row-reverse"
                               : "right-0 -mr-25"
                           } flex space-x-2 bg-white p-1 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity`}
                         >
-                          <Tooltip title="Thích">
-                            <AiOutlineLike
+                          <Tooltip title="Bày tỏ cảm xúc">
+                            <FaRegFaceSmile
                               className="text-gray-600 cursor-pointer hover:text-blue-500"
-                              onClick={() => handleLikeMessage(message)}
+                              onClick={() => handleReactionMessage(message)}
                             />
                           </Tooltip>
                           <Tooltip title="Trả lời">
@@ -206,12 +285,16 @@ const MessageList = ({
                               onClick={() => handlePinMessage(message)}
                             />
                           </Tooltip>
-                          <Tooltip title="More actions">
-                            <FaEllipsisH
-                              className="text-gray-600 cursor-pointer hover:text-blue-500"
-                              onClick={() => handleMoreActions(message)}
-                            />
-                          </Tooltip>
+                          <Popover
+                            content={moreActionsContent(message)}
+                            trigger="click"
+                            placement="bottomLeft"
+                            className="mr-2"
+                          >
+                            <Tooltip title="Xem thêm">
+                              <FaEllipsisH className="text-gray-600 cursor-pointer hover:text-blue-500" />
+                            </Tooltip>
+                          </Popover>
                         </div>
                       </div>
                     </div>

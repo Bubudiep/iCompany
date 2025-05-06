@@ -18,8 +18,9 @@ import {
   Menu,
 } from "antd";
 import Picker from "emoji-picker-react"; // Thư viện chọn emoji
+import { CiFaceSmile, CiImageOn } from "react-icons/ci";
 
-const MessageInput = ({ value, onChange, onSend, onKeyDown }) => {
+const MessageInput = ({ value, onChange, onSend }) => {
   const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
 
   // Xử lý chọn emoji (cho phép chọn nhiều emoji)
@@ -27,6 +28,18 @@ const MessageInput = ({ value, onChange, onSend, onKeyDown }) => {
     const newMessage = value + emojiObject.emoji;
     onChange({ target: { value: newMessage } });
     // Không đóng bảng chọn emoji, cho phép chọn tiếp
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault(); // Ngăn xuống dòng khi chỉ nhấn Enter
+      if (value.trim() !== "") {
+        onSend(); // Gửi tin nhắn
+      } else {
+        message.warning("Vui lòng nhập tin nhắn!");
+        // console.log("Vui lòng nhập tin nhắn!");
+      }
+    }
   };
 
   // Xử lý upload file
@@ -87,33 +100,10 @@ const MessageInput = ({ value, onChange, onSend, onKeyDown }) => {
         >
           <Tooltip title="Chọn biểu cảm">
             <div className="p-2 rounded-full hover:bg-gray-100 cursor-pointer transition-colors">
-              <FaSmile className="text-gray-600" />
+              <CiFaceSmile size={20} />
             </div>
           </Tooltip>
         </Popover>
-
-        {/* Nút Paperclip (Upload file) */}
-        <Upload
-          showUploadList={false}
-          beforeUpload={() => false}
-          onChange={handleFileUpload}
-        >
-          <Tooltip title="Đính kèm file">
-            <div className="p-2 rounded-full hover:bg-gray-100 cursor-pointer transition-colors">
-              <FaPaperclip className="text-gray-600" />
-            </div>
-          </Tooltip>
-        </Upload>
-
-        {/* Nút Microphone (Ghi âm) */}
-        <Tooltip title="Ghi âm">
-          <div
-            className="p-2 rounded-full hover:bg-gray-100 cursor-pointer transition-colors"
-            onClick={handleMicrophoneClick}
-          >
-            <FaMicrophone className="text-gray-600" />
-          </div>
-        </Tooltip>
 
         {/* Nút Image (Upload hình ảnh) */}
         <Upload
@@ -124,14 +114,37 @@ const MessageInput = ({ value, onChange, onSend, onKeyDown }) => {
         >
           <Tooltip title="Gửi hình ảnh">
             <div className="p-2 rounded-full hover:bg-gray-100 cursor-pointer transition-colors">
-              <FaImage className="text-gray-600" />
+              <CiImageOn size={20} />
             </div>
           </Tooltip>
         </Upload>
 
+        {/* Nút Paperclip (Upload file) */}
+        <Upload
+          showUploadList={false}
+          beforeUpload={() => false}
+          onChange={handleFileUpload}
+        >
+          <Tooltip title="Đính kèm file">
+            <div className="p-2 rounded-full hover:bg-gray-100 cursor-pointer transition-colors">
+              <FaPaperclip size={20} className="text-gray-400" />
+            </div>
+          </Tooltip>
+        </Upload>
+
+        {/* Nút Microphone (Ghi âm) */}
+        <Tooltip title="Ghi âm">
+          <div
+            className="p-2 rounded-full hover:bg-gray-100 cursor-pointer transition-colors"
+            onClick={handleMicrophoneClick}
+          >
+            <FaMicrophone size={20} className="text-gray-500" />
+          </div>
+        </Tooltip>
+
         {/* Nút More (Tùy chọn bổ sung) */}
         <Dropdown overlay={moreMenu} trigger={["click"]}>
-          <Tooltip title="Tùy chọn khác">
+          <Tooltip title="Thêm tùy chọn">
             <div className="p-2 rounded-full hover:bg-gray-100 cursor-pointer transition-colors">
               <FaEllipsisH size={20} className="text-gray-600" />
             </div>
@@ -140,13 +153,13 @@ const MessageInput = ({ value, onChange, onSend, onKeyDown }) => {
       </div>
 
       <div className="flex items-center">
-        <Input
-          className="flex-1 p-2 rounded-lg border border-gray-300 focus:border-blue-500 transition-colors"
+        <Input.TextArea
+          className="flex-1 p-2 rounded-lg border border-gray-300 focus:border-blue-500 transition-colors resize-none"
           placeholder="Nhập tin nhắn..."
           value={value}
           onChange={(e) => onChange(e)}
-          onKeyDown={onKeyDown}
-          style={{ height: "40px" }}
+          onKeyDown={handleKeyDown}
+          autoSize={{ minRows: 1, maxRows: 10 }} // tự động giãn dòng
         />
         <Button
           type="primary"
