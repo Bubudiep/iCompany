@@ -85,6 +85,7 @@ const Homepage_layout = () => {
           }
           if (res) {
             window.socket = io(SOCKET_SERVER_URL, {
+              transports: ["websocket"],
               extraHeaders: {
                 ApplicationKey: api.key,
                 Authorization: "Bearer " + token,
