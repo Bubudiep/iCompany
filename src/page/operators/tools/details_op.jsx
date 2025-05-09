@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { FaArrowLeft, FaArrowRight, FaHistory, FaTrash } from "react-icons/fa";
+import {
+  FaArrowLeft,
+  FaArrowRight,
+  FaHistory,
+  FaTrash,
+  FaUser,
+} from "react-icons/fa";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../../../components/api";
 import { useUser } from "../../../components/context/userContext";
@@ -7,8 +13,12 @@ import { Button, Descriptions, message, Modal, Spin, Tooltip } from "antd";
 import { IoCaretDown } from "react-icons/io5";
 import { TbMessage2Check, TbMessage2X, TbMessageReport } from "react-icons/tb";
 import { LuMessageSquareDot, LuMessageSquareLock } from "react-icons/lu";
-import app from "../../../components/app";
-import Baoung_OP from "./op_tools/baoung";
+import Staff_view from "../../../components/by_id/staff_view";
+import OP_dilam from "../../../components/op/bao_dilam";
+import Customer_view from "../../../components/by_id/customer_view";
+import OP_nghiviec from "../../../components/op/bao_nghiviec";
+import TimeSinceText from "../../../components/ui/timesinceText";
+import OP_baoung from "../../../components/op/bao_ung";
 
 const Details_op = () => {
   const [loading, setLoading] = useState(true);
@@ -21,7 +31,7 @@ const Details_op = () => {
   const Info = ({ label, value }) => (
     <div>
       <p className="text-gray-600 text-sm">{label}</p>
-      <p className="text-gray-900 font-medium">{value || "—"}</p>
+      <p className="text-[#000102] font-[400]">{value || "—"}</p>
     </div>
   );
   useEffect(() => {
@@ -30,7 +40,6 @@ const Details_op = () => {
       api
         .get(`/ops/${op_id}/`, user.token)
         .then((res) => {
-          console.log(res);
           setOp(res);
         })
         .catch((e) => {
@@ -45,15 +54,6 @@ const Details_op = () => {
   }, []);
   return (
     <div className="relative flex flex-col overflow-hidden flex-1 gap-2">
-      <Baoung_OP
-        user={user}
-        op={op}
-        open={modalBaoung}
-        onClose={() => setmodalBaoung(false)}
-        update={(data) => {
-          setOp(data);
-        }}
-      />
       {loading && (
         <div className="p-1 absolute w-full h-full">
           <div className="flex items-center-safe justify-center !p-5">
@@ -72,43 +72,73 @@ const Details_op = () => {
                 </div>
                 <div className="whitebox !p-3">
                   <div className="flex flex-col justify-center flex-1 items-center">
-                    <img
-                      src={op.avatar ? `${op.avatar}` : "/no-avatar.png"}
-                      alt="Avatar"
-                      className="w-32 h-32 rounded-[16px] object-cover border-3 border-[#fff] shadow-md"
-                    />
+                    {op.avatar ? (
+                      <img
+                        src={op.avatar ? `${op.avatar}` : "/no-avatar.png"}
+                        alt="Avatar"
+                        className="w-32 h-32 rounded-[16px] object-cover border-3 border-[#fff] shadow-md"
+                      />
+                    ) : (
+                      <div
+                        className="w-32 h-32 rounded-[16px] object-cover border-3 border-[#fff] shadow-md
+                        flex items-center justify-center bg-[#67a6ff] text-white text-[50px]"
+                      >
+                        <FaUser />
+                      </div>
+                    )}
                     <div className="text-center mt-2">
-                      <p className="text-sm text-gray-500">
-                        {op.ma_nhanvien || "Chưa có mã NV"}
+                      <p className="text-sm text-[#0477b9] text-[17px] font-[600] mb-1">
+                        {op.ho_ten || "Chưa có tên"}
                       </p>
-                      <p className="text-sm text-gray-500">
-                        {op.congty_danglam ? <></> : "Chưa đi làm"}
+                      <p className="text-sm text-[#00407c] text-[13px] font-[600]">
+                        ID: {op.ma_nhanvien || "Chưa có mã NV"}
                       </p>
                     </div>
                   </div>
                 </div>
+                {op?.congty_danglam ? (
+                  <div className="flex justify-center p-2 bg-[#008cff] rounded-sm text-[#fff]">
+                    Đang đi làm
+                  </div>
+                ) : (
+                  <div className="flex justify-center p-2 bg-[#ff7b00] rounded-sm text-[#fff]">
+                    Chưa đi làm
+                  </div>
+                )}
                 <div className="whitebox op-right-tools">
-                  <div className="item" onClick={() => setmodalBaoung(true)}>
+                  <OP_baoung
+                    op={op}
+                    user={user}
+                    className="item"
+                    callback={(data) => setOp((old) => ({ ...old, ...data }))}
+                  >
                     <div className="icon">
                       <LuMessageSquareDot />
                     </div>
                     Báo ứng lương
-                  </div>
-                  <div className="item">
+                  </OP_baoung>
+                  <OP_dilam
+                    op={op}
+                    user={user}
+                    className="item"
+                    callback={(data) => setOp((old) => ({ ...old, ...data }))}
+                  >
                     <div className="icon">
                       <TbMessage2Check />
                     </div>
                     Báo đi làm
-                  </div>
-                  <Tooltip
-                    title={op.congty_danglam ? false : "Chưa đi làm"}
+                  </OP_dilam>
+                  <OP_nghiviec
+                    op={op}
+                    user={user}
                     className="item"
+                    callback={(data) => setOp((old) => ({ ...old, ...data }))}
                   >
                     <div className="icon">
                       <TbMessage2X />
                     </div>
                     Báo nghỉ việc
-                  </Tooltip>
+                  </OP_nghiviec>
                   <div className="item">
                     <div className="icon">
                       <LuMessageSquareLock />
@@ -133,7 +163,16 @@ const Details_op = () => {
                         <Info label="Thâm niên" value={0} />
                         <Info
                           label="Trạng thái"
-                          value={op.congty_danglam || "Chưa đi làm"}
+                          value={
+                            op?.congty_danglam ? (
+                              <>
+                                Làm việc tại{" "}
+                                <Customer_view id={op?.congty_danglam} />
+                              </>
+                            ) : (
+                              "Chưa đi làm"
+                            )
+                          }
                         />
                         <Info label="Phân loại" value={0} />
                         <Info
@@ -208,8 +247,14 @@ const Details_op = () => {
                     <div className="header">Thông tin tài khoản</div>
                     <div className="md:col-span-2 space-y-3 p-3">
                       <div className="grid grid-cols-2 sm:grid-cols-2 gap-2">
-                        <Info label="Người tuyển" value={0} />
-                        <Info label="Người quản lý" value={0} />
+                        <Info
+                          label="Người tuyển"
+                          value={<Staff_view id={op.nguoituyen} />}
+                        />
+                        <Info
+                          label="Người quản lý"
+                          value={<Staff_view id={op.nguoibaocao} />}
+                        />
                         <Info label="Ngày cập nhập" value={0} />
                         <Info label="Ngày khởi tạo" value={0} />
                       </div>
@@ -219,13 +264,13 @@ const Details_op = () => {
               </div>
             </div>
           </div>
-          <div className="op-left-tools !w-0 !min-w-0 2xl:!min-w-[300px] 2xl:!w-[300px] fadeInLeft">
-            <div className="hd-1 font-[500] py-3 px-3 flex justify-between">
-              Lịch sử tác động
+          <div className="op-left-tools overflow-hidden !w-0 !min-w-0 2xl:!min-w-[300px] 2xl:!w-[300px] fadeInLeft">
+            <div className="hd-1 font-[500] items-center px-3 flex justify-between h-[50px]">
+              <div>Lịch sử tác động</div>
               <FaHistory />
             </div>
-            <div className="his-items p-2 gap-2 flex flex-col">
-              <Modal
+            <div className="his-items pl-2 pb-1 pr-1  gap-2 flex flex-1 flex-col h-[calc(100%-54px)] overflow-auto mr-1">
+              {/* <Modal
                 className="popupcontent text-center !w-[900px]"
                 title="Chi tiết lịch sử tác động"
                 open={modalData}
@@ -315,23 +360,31 @@ const Details_op = () => {
                     </Descriptions>
                   </div>
                 </div>
-              </Modal>
+              </Modal> */}
               {op?.history?.map((his) => (
                 <div
                   key={his.id}
                   color="white"
                   className="item bg-[#d0e3f1] rounded-md max-w-none cursor-pointer"
-                  onClick={() => setModalData(his)}
+                  // onClick={() => setModalData(his)}
                 >
                   <div
                     className="title flex text-[11px] justify-between 
                     p-2 pb-1 text-[#424d6d]"
                   >
-                    <div className="name text-[#0045ac] font-bold">
-                      {his?.changed_by?.full_name || "Hệ thống"}
+                    <div className="name text-[#0045ac] font-[600]">
+                      {his?.changed_by?.id ? (
+                        <Staff_view id={his?.changed_by?.id} />
+                      ) : (
+                        "Hệ thống"
+                      )}
                     </div>
                     <div className="time">
-                      {app.timeSince(his?.changed_at) || "-"}
+                      {his?.changed_at ? (
+                        <TimeSinceText createdAt={his?.changed_at} />
+                      ) : (
+                        <>-</>
+                      )}
                     </div>
                   </div>
                   <div className="content text-[13px] px-2 pb-2 text-[#03132b]">

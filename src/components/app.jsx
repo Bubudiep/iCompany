@@ -1,6 +1,8 @@
+import { message } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
 import jsQR from "jsqr";
+import { useEffect, useState } from "react";
 
 const random = (length) => {
   const characters =
@@ -103,6 +105,50 @@ function timeSince(createdAt) {
   if (quarters < 4) return `${quarters} quý ${suffix}`;
   return `${years} năm ${suffix}`;
 }
+function getTimeDiff(createdAt) {
+  const orderDate = new Date(createdAt);
+  const now = new Date();
+
+  const diffMs = orderDate - now;
+  const isFuture = diffMs > 0;
+
+  const diffAbsMs = Math.abs(diffMs);
+  const seconds = Math.floor(diffAbsMs / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  const weeks = Math.floor(days / 7);
+  const months = Math.floor(days / 30);
+  const quarters = Math.floor(months / 3);
+  const years = Math.floor(months / 12);
+
+  const suffix = isFuture ? "nữa" : "trước";
+
+  if (seconds < 60) return [`${seconds} giây ${suffix}`, 1000];
+  if (minutes < 60) return [`${minutes} phút ${suffix}`, 60 * 1000];
+  if (hours < 24) return [`${hours} giờ ${suffix}`, 60 * 60 * 1000];
+  if (days < 7) return [`${days} ngày ${suffix}`, 24 * 60 * 60 * 1000];
+  if (weeks < 4) return [`${weeks} tuần ${suffix}`, 7 * 24 * 60 * 60 * 1000];
+  if (months < 12)
+    return [`${months} tháng ${suffix}`, 30 * 24 * 60 * 60 * 1000];
+  if (quarters < 4)
+    return [`${quarters} quý ${suffix}`, 90 * 24 * 60 * 60 * 1000];
+  return [`${years} năm ${suffix}`, 365 * 24 * 60 * 60 * 1000];
+}
+
+const TimeSinceText = ({ createdAt }) => {
+  const [[text, delay], setDisplay] = useState(() => getTimeDiff(createdAt));
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDisplay(getTimeDiff(createdAt));
+    }, delay);
+
+    return () => clearInterval(interval);
+  }, [createdAt, delay]);
+
+  return <span>{text}</span>;
+};
 function removeSpecial(str) {
   console.log(str);
   if (str) {
@@ -271,6 +317,7 @@ const handleReadQR = (file) => {
   });
 };
 export default {
+  TimeSinceText,
   stringToColor,
   getRandomColorFromString,
   handleReadQR,

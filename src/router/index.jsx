@@ -33,6 +33,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/app" element={<Homepage_layout />}>
+            <Route index element={<Chat_layout />} />
             <Route path="chat" element={<Chat_layout />}>
               <Route index element={<Chat_room />} />
               <Route path=":id_room" element={<Chat_room />} />

@@ -1,6 +1,6 @@
 import { Button, Input, Modal, Form, message, Upload } from "antd";
 import React, { useEffect, useState } from "react";
-import { FaPlus } from "react-icons/fa";
+import { FaEdit, FaPlus } from "react-icons/fa";
 import { useOutletContext } from "react-router-dom";
 import api from "../../components/api";
 import { useUser } from "../../components/context/userContext";
@@ -146,7 +146,7 @@ const Company_partner = () => {
         setIsModalOpen(false);
       })
       .catch((e) => {
-        message.error("Có lỗi xảy ra!");
+        message.error(e?.response?.data?.detail || "Có lỗi xảy ra!");
         console.log(e);
       });
   };
@@ -240,7 +240,12 @@ const Company_partner = () => {
                       <td className="p-2">{p?.email ?? "-"}</td>
                       <td className="p-2">{p?.hotline ?? "-"}</td>
                       <td className="p-2">
-                        <Button onClick={() => handleEdit(p)}>Sửa</Button>
+                        <button
+                          className="cursor-pointer transition-all duration-300 hover:text-[#4164ff] text-[#a8a8a8]"
+                          onClick={() => handleEdit(p)}
+                        >
+                          <FaEdit />
+                        </button>
                       </td>
                     </tr>
                   ))}

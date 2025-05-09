@@ -2025,3 +2025,18 @@ label {
     }
   }
 }
+.card-format {
+  .ant-descriptions-item {
+    padding-bottom: 0px !important;
+  }
+  .ant-descriptions-item-content {
+    display: flex !important;
+    margin-left: auto;
+    justify-content: flex-end;
+  }
+}
+.thinform {
+  .ant-form-item {
+    margin-bottom: 8px;
+  }
+}

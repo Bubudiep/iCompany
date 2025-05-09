@@ -1,3 +1,4 @@
+import { message } from "antd";
 import axios from "axios";
 
 const key = import.meta.env.VITE_KEY;
@@ -200,7 +201,11 @@ export const debounceDelete = (url, token, delay = DEFAULT_DELAY) => {
     }, delay);
   });
 };
+const error = (e) => {
+  message.error(e?.response?.data?.detail || "Có lỗi xảy ra!");
+};
 export default {
+  error,
   get: debounceGet,
   gets: debounceGets,
   post: debouncePost,
