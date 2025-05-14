@@ -7,6 +7,7 @@ import { useUser } from "../../../components/context/userContext";
 import app from "../../../components/app";
 import { FaEllipsisH, FaTrash } from "react-icons/fa";
 import { GrMoney } from "react-icons/gr";
+import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
 
 const List_operators = () => {
   const [filterText, setFilterText] = useState("");
@@ -28,6 +29,7 @@ const List_operators = () => {
       },
     });
   };
+  const handleExport = () => {};
   const getOP = () => {
     setLoading(true);
     api.get("/banks/").then((res) => {
@@ -71,7 +73,7 @@ const List_operators = () => {
             />
           </div>
         </div>
-        <div className="flex p-1 gap-2">
+        <div className="flex p-1 gap-2 flex-1">
           <Select
             className="w-30 !h-[40px]"
             placeholder="Trạng thái"
@@ -89,6 +91,14 @@ const List_operators = () => {
             <Select.Option value="companyA">Công ty A</Select.Option>
             <Select.Option value="companyB">Công ty B</Select.Option>
           </Select>
+          <Button
+            icon={<PiMicrosoftExcelLogoFill size={20} className="mt-1" />}
+            type="primary"
+            className="ml-auto !h-[40px]"
+            onClick={handleExport}
+          >
+            Xuất Excel
+          </Button>
         </div>
       </div>
       <div className="whitebox h-full flex flex-col overflow-hidden">

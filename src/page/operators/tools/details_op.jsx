@@ -174,9 +174,9 @@ const Details_op = () => {
                             )
                           }
                         />
-                        <Info label="Phân loại" value={0} />
+                        <Info label="Báo giữ lương" value={0} />
                         <Info
-                          label="Đang ứng"
+                          label="Đã ứng (chưa thu hồi)"
                           value={
                             op?.baoung?.reduce((sum, item) => {
                               return item.payment_status === "done" &&
@@ -186,9 +186,9 @@ const Details_op = () => {
                             }, 0) + " vnđ"
                           }
                         />
-                        <Info label="Đang giữ lương" value={"0 vnđ"} />
+                        <Info label="Đã giải ngân giữ lương" value={"0 vnđ"} />
                         <Info
-                          label="Chờ duyệt ứng"
+                          label="Chờ duyệt & giải ngân"
                           value={
                             op?.baoung
                               ?.reduce((sum, item) => {
@@ -208,7 +208,7 @@ const Details_op = () => {
                     <div className="md:col-span-2 space-y-3 p-3">
                       <div className="grid grid-cols-2 sm:grid-cols-2 gap-2">
                         <Info
-                          label="Tổng ứng"
+                          label="Tổng ứng (đã thu hồi)"
                           value={
                             op?.baoung
                               ?.reduce((sum, item) => {
