@@ -25,6 +25,8 @@ import List_operators from "../page/operators/tools/list_ops";
 import Company_partner from "../page/company/comapny_parner";
 import Company_customer from "../page/company/company_customer";
 import Mobile_layout from "../mobile/layout";
+import Chat_page from "../page/chats/page";
+import Chat_rooms from "../page/chats/rooms/page";
 
 function App() {
   return (
@@ -33,10 +35,10 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/app" element={<Homepage_layout />}>
-            <Route index element={<Chat_layout />} />
-            <Route path="chat" element={<Chat_layout />}>
-              <Route index element={<Chat_room />} />
-              <Route path=":id_room" element={<Chat_room />} />
+            <Route index element={<Chat_page />} />
+            <Route path="chat" element={<Chat_page />}>
+              <Route index element={<Chat_rooms />} />
+              <Route path=":id_room" element={<Chat_rooms />} />
             </Route>
             <Route path="companys" element={<Company_layout />}>
               <Route index element={<Company_accounts />} />

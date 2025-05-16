@@ -27,6 +27,9 @@ const Homepage_layout = () => {
   const [listOnline, setListOnline] = useState([]);
   const mapLinks = {
     app: "Trang chủ",
+    companys: "Công ty",
+    roles: "Phòng ban & chức vụ",
+    accounts: "Quản lý tài khoản",
     chat: "Trò chuyện",
     contacts: "Danh bạ",
     settings: "Cài đặt",
@@ -37,6 +40,9 @@ const Homepage_layout = () => {
     group: "Nhóm",
     department: "Bộ phận",
     chatted: "Đã nhắn tin",
+    partners: "Công ty cung ứng",
+    customers: "Khách hàng",
+    permission: "Phân quyền",
   };
   useEffect(() => {
     const basePath = "/app";

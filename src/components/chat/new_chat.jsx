@@ -1,0 +1,74 @@
+import React, { useEffect, useState } from "react";
+import { Modal, List } from "antd";
+import { useUser } from "../context/userContext";
+import { FaAddressBook, FaUser } from "react-icons/fa";
+import api from "../api";
+
+const New_chats = ({ children }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { user, setUser } = useUser();
+  const [contacts, setContacts] = useState([]);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+  const handleChat = (staff) => {
+    api.post(`/staff/${staff}/chat/`, {}, user.token).then((res) => {
+      console.log(res);
+      setUser((old) => ({
+        ...old,
+        chatbox: [res, ...old.chatbox.filter((chatb) => chatb.id !== res.id)],
+      }));
+    });
+  };
+  useEffect(() => {
+    setContacts(user?.company?.Staff);
+  }, [user]);
+  return (
+    <>
+      <div onClick={showModal}>{children}</div>
+      <Modal
+        title={
+          <div className="flex gap-3 ml-1 items-center">
+            <FaAddressBook size={20} /> Danh bạ
+          </div>
+        }
+        className="popupcontent"
+        open={isModalOpen}
+        onCancel={handleCancel}
+        footer={null}
+      >
+        <div className="flex flex-col gap-1 list-one">
+          {contacts.map((staff) => (
+            <div
+              key={staff.id}
+              className="item select-none"
+              onClick={() => {
+                handleChat(staff.id);
+              }}
+            >
+              <div className="avatar">
+                {staff?.avatar ? <img src={staff.avatar} /> : <FaUser />}
+              </div>
+              <div className="name">
+                {staff?.profile?.full_name || "Chưa có profile"} (
+                {staff?.cardID})
+              </div>
+              <div className="ml-auto">
+                {staff?.department_name && (
+                  <>
+                    {staff?.department_name} ({staff?.possition_name})
+                  </>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </Modal>
+    </>
+  );
+};
+
+export default New_chats;
