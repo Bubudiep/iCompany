@@ -6,6 +6,7 @@ import { BsChatSquareText } from "react-icons/bs";
 import { LuChevronsRightLeft } from "react-icons/lu";
 import { IoGitCommitOutline } from "react-icons/io5";
 import { FaUser } from "react-icons/fa";
+import Message_chat_box from "./message_box";
 
 const Chat_rooms = () => {
   const id = useParams();
@@ -63,7 +64,7 @@ const Chat_rooms = () => {
                 </div>
               </div>
             </div>
-            <div className="chat_view"></div>
+            <Message_chat_box message={messs} />
             <div className="send_tool"></div>
           </div>
           <div className="room_config">

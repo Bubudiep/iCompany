@@ -10,11 +10,15 @@ import {
   Modal,
   Form,
   Input,
+  message,
 } from "antd"; // Thêm Descriptions và Modal từ Ant Design
 import { FaPencil } from "react-icons/fa6";
+import { FaEdit, FaUser } from "react-icons/fa";
+import { AiFillSignature } from "react-icons/ai";
+import Update_profile from "../components/user/Update_profile";
 
 const Profile = () => {
-  const { user } = useUser();
+  const { user, setUser } = useUser();
   const navigate = useNavigate();
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [form] = Form.useForm();
@@ -65,120 +69,154 @@ const Profile = () => {
       </div>
     );
   }
-  useEffect(() => {
-    console.log(user);
-  }, []);
   return (
     <>
-      <div className="flex w-full h-full overflow-hidden bg-white">
-        <div className="flex flex-1 flex-col overflow-y-auto p-6">
-          <div className="flex justify-center mb-6">
-            <Avatar
-              size={120}
-              src={
-                user.avatar ||
-                "https://storage.googleapis.com/a1aa/image/RtLv4dlHyyndA-ZLn4qCkJ-q3cFMfic7sYoyL19xHlc.jpg"
-              }
-              className="border-4 border-blue-500 shadow-md"
-            />
-          </div>
-          <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-center text-gray-800">
-              Thông tin cá nhân
-              <Button
-                icon={<FaPencil />}
-                type="edit"
-                onClick={handleEditClick}
-              ></Button>
-            </h2>
-            <Divider className="my-2" />
-            <div className="flex gap-2 justify-center">
-              <div className="emp-card">
-                <Descriptions bordered column={1}>
-                  <Descriptions.Item label="Mã nhân viên">
-                    {user.info.cardID}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Phòng ban">
-                    {user.info.department_name || "Không có thông tin"}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Chức vụ">
-                    {user.info.possition_name || "Không có thông tin"}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Quyền Admin" span={2}>
-                    <span
-                      className={
-                        user.info.isAdmin || user.info.isSuperAdmin
-                          ? "text-green-600"
-                          : "text-gray-600"
-                      }
-                    >
-                      {user.info.isSuperAdmin
-                        ? "Super Admin"
-                        : user.info.isAdmin
-                        ? "Admin"
-                        : "Không có"}
-                    </span>
-                  </Descriptions.Item>
-                </Descriptions>
-              </div>
-              <Descriptions bordered column={2}>
-                <Descriptions.Item label="Họ và tên">
-                  {user.info?.profile?.full_name || "Không có thông tin"}
-                </Descriptions.Item>
-                <Descriptions.Item label="Email">
-                  {user.info.email || "Không có thông tin"}
-                </Descriptions.Item>
-                <Descriptions.Item label="Số điện thoại">
-                  {user.info.phone || "Không có thông tin"}
-                </Descriptions.Item>
-                <Descriptions.Item label="Địa chỉ">
-                  {user.info.address || "Không có thông tin"}
-                </Descriptions.Item>
-                <Descriptions.Item label="Trạng thái" span={2}>
-                  <span
-                    className={
-                      user.info.isActive ? "text-green-600" : "text-red-600"
-                    }
-                  >
-                    {user.info.isActive ? "Hoạt động" : "Không hoạt động"}
-                  </span>
-                </Descriptions.Item>
-                <Descriptions.Item label="Ngày tạo">
-                  {formatDate(user.info.created_at)}
-                </Descriptions.Item>
-                <Descriptions.Item label="Ngày cập nhật">
-                  {formatDate(user.info.updated_at)}
-                </Descriptions.Item>
-              </Descriptions>
+      <div className="flex w-full h-full overflow-hidden">
+        <div className="flex flex-col w-[260px] items-center py-2 bg-white border-r-1 border-[#0003]">
+          <div className="avatar">
+            <div
+              className="box w-[120px] h-[120px] bg-[#6991be] rounded-2xl
+              flex items-center justify-center text-white"
+            >
+              {user?.info?.profile?.avatar ? (
+                <></>
+              ) : (
+                <>
+                  <FaUser size={50} />
+                </>
+              )}
             </div>
+            <div className="name text-center text-[16px] mt-2 text-[#000407]">
+              {user?.info?.profile?.full_name || "Chưa có tên"}
+            </div>
+          </div>
+          <div className="flex justify-between w-full px-4 mt-2">
+            <div>Bộ phận</div>
+            <div>{user?.info?.department_name || "-"}</div>
+          </div>
+          <div className="flex justify-between w-full px-4">
+            <div>Chức vụ</div>
+            <div>{user?.info?.possition_name || "-"}</div>
+          </div>
+        </div>
+        <div className="flex flex-1 flex-col p-2 gap-2">
+          <div className="whitebox">
+            <div className="flex justify-between items-center px-2 mt-1 mb-3">
+              <div className="flex items-center font-[500] text-[13px] gap-1">
+                <AiFillSignature />
+                Thông tin cá nhân
+              </div>
+              <div className="flex items-center gap-1">
+                <Update_profile user={user} setUser={setUser}>
+                  <Button
+                    className="!text-[#999] hover:!text-[#09f]"
+                    icon={<FaEdit />}
+                  ></Button>
+                </Update_profile>
+              </div>
+            </div>
+            <Descriptions column={2} bordered>
+              <Descriptions.Item label="Họ và tên">
+                {user?.info?.profile?.full_name || (
+                  <div className="text-[#999]">Chưa cập nhập</div>
+                )}
+              </Descriptions.Item>
+              <Descriptions.Item label="Điện thoại">
+                {user?.info?.profile?.phone || (
+                  <div className="text-[#999]">Chưa cập nhập</div>
+                )}
+              </Descriptions.Item>
+              <Descriptions.Item label="Sinh nhật">
+                {user?.info?.profile?.date_of_birth || (
+                  <div className="text-[#999]">Chưa cập nhập</div>
+                )}
+              </Descriptions.Item>
+              <Descriptions.Item label="Giới tính">
+                {user?.info?.profile?.gender ? (
+                  <>{user?.info?.profile?.gender === "male" ? "Nam" : "Nữ"}</>
+                ) : (
+                  <div className="text-[#999]">Chưa cập nhập</div>
+                )}
+              </Descriptions.Item>
+              <Descriptions.Item label="Link zalo">
+                {user?.info?.profile?.zalo || (
+                  <div className="text-[#999]">Chưa cập nhập</div>
+                )}
+              </Descriptions.Item>
+              <Descriptions.Item label="Link facebook">
+                {user?.info?.profile?.facebook || (
+                  <div className="text-[#999]">Chưa cập nhập</div>
+                )}
+              </Descriptions.Item>
+            </Descriptions>
+          </div>
+          <div className="whitebox">
+            <div className="flex justify-between items-center px-2 mt-1 mb-3">
+              <div className="flex items-center font-[500] text-[13px] gap-1">
+                <AiFillSignature />
+                Thông tin thanh toán và chuyển khoản
+              </div>
+              <div className="flex gap-2"></div>
+            </div>
+            <Descriptions column={2} bordered>
+              <Descriptions.Item label="Số tài khoản">
+                {user?.info?.profile?.so_taikhoan || (
+                  <div className="text-[#999]">Chưa cập nhập</div>
+                )}
+              </Descriptions.Item>
+              <Descriptions.Item label="Ngân hàng">
+                {user?.info?.profile?.nganhang || (
+                  <div className="text-[#999]">Chưa cập nhập</div>
+                )}
+              </Descriptions.Item>
+              <Descriptions.Item label="Chủ tài khoản">
+                {user?.info?.profile?.chu_taikhoan || (
+                  <div className="text-[#999]">Chưa cập nhập</div>
+                )}
+              </Descriptions.Item>
+              <Descriptions.Item label="Ghi chú">
+                {user?.info?.profile?.ghichu_nganhang || (
+                  <div className="text-[#999]">Chưa cập nhập</div>
+                )}
+              </Descriptions.Item>
+            </Descriptions>
+          </div>
+          <div className="whitebox">
+            <div className="flex font-[500] text-[13px] gap-1 items-center px-2 mt-1 mb-3">
+              <AiFillSignature />
+              Thông tin khác
+            </div>
+            <Descriptions column={2} bordered>
+              <Descriptions.Item label="Mã nhân viên">
+                {user?.info?.cardID || (
+                  <div className="text-[#999]">Chưa cập nhập</div>
+                )}
+              </Descriptions.Item>
+              <Descriptions.Item label="Phân loại">
+                {user?.info?.isSuperAdmin
+                  ? "Tài khoản BOSS"
+                  : user?.info?.isAdmin
+                  ? "Tài khoản Admin"
+                  : "Nhân viên"}
+              </Descriptions.Item>
+              <Descriptions.Item label="Tên tài khoản">
+                {user?.info?.username || (
+                  <div className="text-[#999]">Chưa cập nhập</div>
+                )}
+              </Descriptions.Item>
+              <Descriptions.Item label="Mật khẩu">
+                <Button
+                  onClick={() => {
+                    message.warning("Tính năng đang phát triển!");
+                  }}
+                >
+                  Đặt lại mật khẩu?
+                </Button>
+              </Descriptions.Item>
+            </Descriptions>
           </div>
         </div>
       </div>
-
-      {/* Modal chỉnh sửa */}
-      <Modal
-        title="Chỉnh sửa thông tin cá nhân"
-        open={isEditModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        okText="Lưu"
-        cancelText="Hủy"
-      >
-        <Form form={form} layout="vertical">
-          <Form.Item label="Họ và tên" name="name">
-            <Input />
-          </Form.Item>
-          <Form.Item label="Email" name="email">
-            <Input />
-          </Form.Item>
-          <Form.Item label="Số điện thoại" name="phone">
-            <Input />
-          </Form.Item>
-          <Form.Item label="Địa chỉ" name="address">
-            <Input />
-          </Form.Item>
-        </Form>
-      </Modal>
     </>
   );
 };
