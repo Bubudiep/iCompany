@@ -2015,6 +2015,7 @@ label {
   }
 }
 .emoji {
+  right: -60px;
   .epr_-6npj90 {
     --epr-category-navigation-button-size: 23px !important;
   }

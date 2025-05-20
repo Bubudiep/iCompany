@@ -19,19 +19,7 @@ const Message_send = () => {
   return (
     <div className="send_tool fadeInTop flex flex-col mt-auto">
       <div className="flex justify-between items-center p-1 border-b-1 border-b-[#d6d6d6] shadow-2xl">
-        <div className="left flex gap-1">
-          <EmojiShow
-            callback={handleEmoji}
-            refocus={() => inputRef?.current?.focus()}
-          >
-            <Button
-              type="text"
-              icon={
-                <MdEmojiEmotions size={20} className="mt-1 !text-gray-600" />
-              }
-            ></Button>
-          </EmojiShow>
-        </div>
+        <div className="left flex gap-1"></div>
         <div className="right"></div>
       </div>
       <div className="flex flex-1 justify-between items-center px-2 py-2 gap-2 bg-white">
@@ -54,6 +42,17 @@ const Message_send = () => {
               }
             }}
           />
+        </div>
+        <div className="">
+          <EmojiShow
+            callback={handleEmoji}
+            refocus={() => inputRef?.current?.focus()}
+          >
+            <Button
+              type="text"
+              icon={<MdEmojiEmotions size={20} className="mt-1 !text-[#999]" />}
+            ></Button>
+          </EmojiShow>
         </div>
         <div
           className="send text-[#65b6ec] hover:text-[#0099ff] cursor-pointer transition-all duration-300 
