@@ -3,7 +3,7 @@ import { Modal, Input, Button, Select, message, Tooltip, Spin } from "antd";
 import { useUser } from "../context/userContext";
 import api from "../api";
 import { FaEdit } from "react-icons/fa";
-const Card_bank_user = ({ user_id, user_type, sotien }) => {
+const User_bank = ({ user_id, user_type, sotien }) => {
   const { user, setUser } = useUser();
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -173,4 +173,4 @@ const Card_bank_user = ({ user_id, user_type, sotien }) => {
   );
 };
 
-export default Card_bank_user;
+export default User_bank;

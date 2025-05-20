@@ -147,29 +147,26 @@ const Company_roles = () => {
               return (
                 <div key={dept.id} className="flex flex-col">
                   <div
-                    className={`flex gap-2 items-center p-2 py-1.5 border-b-1  border-l-1 rounded-[12px] border-[#669fe9]
-                    relative hover:bg-[#f4f7fd] transition-all text-[13px] border-r-1 border-t-1 ${
-                      dept?.Possition?.length > 0 ? "rounded-br-[0px]" : ""
-                    }`}
+                    className={`flex gap-2 items-center p-2 py-1.5 rounded-[8px] 
+                    relative bg-[#f1f3f8] border-1 border-[#a8a8a8] transition-all text-[13px]`}
                   >
                     <div className="flex flex-col w-[50px] items-center">
-                      <div className="avatar w-[40px] h-[40px] bg-[#0003] rounded-xl"></div>
-                    </div>
-                    <div className="flex flex-col w-[160px]">
-                      <div className="name">Bộ phận: {dept?.name}</div>
-                      <div className="name">
-                        Chức vụ: {dept?.Possition?.length}
+                      <div
+                        className="avatar text-[20px] w-[44px] h-[44px] bg-[#0084ff] rounded-xl flex 
+                        items-center justify-center text-[#fff] font-[700]"
+                      >
+                        {dept?.name}
                       </div>
                     </div>
                     <div className="flex flex-col w-[180px]">
-                      <div className="name">
-                        Trạng thái: {dept?.isActive ? "Hoạt động" : "Đã tắt"}
-                      </div>
-                      <div className="name">
+                      <div className="name font-[500]">
                         {dept?.description ?? "/ Không có mô tả"}
                       </div>
+                      <div className="name text-[#777]">
+                        {dept?.isActive ? "Active" : "Not active"}
+                      </div>
                     </div>
-                    <div className="flex flex-col w-[120px] ml-auto">
+                    <div className="flex flex-col w-[120px] ml-auto text-[#999]">
                       <div className="name">
                         Sửa {app.timeSince(dept?.updated_at)}
                       </div>
@@ -205,20 +202,19 @@ const Company_roles = () => {
                     </div>
                   </div>
                   {dept?.Possition?.length > 0 && (
-                    <div
-                      className="flex overflow-hidden flex-col ml-20 rounded-br-[12px] rounded-bl-[12px] border-b-1 
-                    border-r-1 border-l-1 border-[#669fe9]"
-                    >
+                    <div className="flex flex-col gap-1 ml-10 py-1 border-l-2 pl-4 border-[#b9e3ff]">
                       {dept.Possition.map((pos) => {
                         return (
                           <div
                             key={pos.id}
-                            className="flex gap-2 pl-3 items-center border-b-1 last:border-none p-2 hover:text-[#0059ff] 
-                          border-[#669fe9] transition-all text-[1]"
+                            className="flex gap-1 pl-3 items-center p-2 text-[#999] role-item
+                            transition-all bg-[#f3f5f8] rounded-[4px] border-[#c9c9c9] border-1"
                           >
-                            <div className="name">{pos.name}</div>
+                            <div className="name font-[600] text-[14px]">
+                              {pos.name}
+                            </div>
                             <div className="flex ml-auto gap-5">
-                              <div className="name">
+                              <div className="name text-[13px]">
                                 {pos?.description ?? "/ Không có mô tả"}
                               </div>
                               <Button

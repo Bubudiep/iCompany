@@ -1961,21 +1961,20 @@ label {
 }
 .room_main {
   display: flex;
+  overflow: hidden;
   flex: 1;
+  position: relative;
   .room_info {
     display: flex;
     flex-direction: column;
     flex: 1;
     .send_tool {
-      height: 80px;
       background-color: #fff;
       border-top: 1px solid #d6d6d6;
     }
     .chat_view {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      overflow-y: auto;
+      display: flex;
+      flex: 1;
     }
     .top_info {
       display: flex;
@@ -2015,12 +2014,69 @@ label {
     }
   }
 }
-
+.emoji {
+  .epr_-6npj90 {
+    --epr-category-navigation-button-size: 23px !important;
+  }
+  .epr-category-nav {
+    padding: 8px 8px 8px 8px;
+    border-top: 1px solid #cccccc;
+    box-shadow: 0px -2px 3px #0003;
+  }
+  h2 {
+    font-size: 12px;
+    font-weight: 600;
+    background-color: #fff;
+    height: auto !important;
+    padding-bottom: 3px;
+    padding-top: 8px;
+    /* position: relative !important; */
+  }
+  aside {
+    flex-direction: column-reverse;
+    box-shadow: 0px 0px 4px #0003;
+  }
+  aside > div:last-child {
+    display: none;
+  }
+  .epr-emoji-category[data-name="objects"],
+  .epr-emoji-category[data-name="travel_places"],
+  .epr-emoji-category[data-name="symbols"],
+  .epr-emoji-category[data-name="flags"] {
+    display: none !important;
+  }
+  button {
+    transition: all 0.3s;
+    border: none !important;
+    &:active {
+      color: #003c91;
+    }
+    &.epr-btn[aria-label="Travel & Places"],
+    &.epr-btn[aria-label="Objects"],
+    &.epr-btn[aria-label="Symbols"],
+    &.epr-btn[aria-label="Flags"] {
+      display: none !important;
+    }
+  }
+}
+.role-item {
+  position: relative;
+  &::before {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    left: -22px;
+    background-color: #0099ff;
+    border: 1px solid #fff;
+    content: "";
+    position: absolute;
+  }
+}
 .chat_items {
   display: flex;
   flex-direction: column;
-  padding: 2px 6px;
-  gap: 2px;
+  padding: 4px 4px;
+  gap: 4px;
   .item {
     display: flex;
     padding: 8px;
@@ -2039,7 +2095,6 @@ label {
       border-radius: 10px;
       overflow: hidden;
       transition: all 0.3s;
-      box-shadow: 1px 2px 3px #0003;
       background-color: #359eff;
       color: #fff;
     }
@@ -2053,6 +2108,15 @@ label {
     &.active {
       background-color: #c8e4ff;
     }
+  }
+}
+.chat-input {
+  border: none !important;
+  background-color: transparent;
+  resize: none !important;
+  box-shadow: none !important;
+  &::placeholder {
+    color: #bbbbbb;
   }
 }
 .list-one {
@@ -2169,5 +2233,25 @@ label {
 .thinform {
   .ant-form-item {
     margin-bottom: 8px;
+  }
+}
+button {
+  &.chat_tools {
+    border: 1px solid #fff;
+    padding: 6px;
+    border-radius: 6px;
+    color: #999;
+    transition: all 0.3s;
+    cursor: pointer;
+    &:hover {
+      color: #0099ff;
+      border: 1px solid #0099ff;
+      background-color: #daf0ff;
+    }
+    &.active {
+      color: #fff;
+      border: 1px solid #0099ff;
+      background-color: #0099ff;
+    }
   }
 }

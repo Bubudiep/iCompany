@@ -5,12 +5,12 @@ import { AiOutlineAppstoreAdd } from "react-icons/ai";
 
 const Message_chat_box = ({ message }) => {
   return (
-    <div className="chat_view">
+    <div className="chat_view fadeInTop">
       {message.length > 0 ? (
         <></>
       ) : (
-        <div className="flex flex-1 items-center justify-center mt-6">
-          <div className="whitebox !p-6 gap-4">
+        <div className="flex flex-1 items-center justify-center">
+          <div className="whitebox !p-6 gap-4 !px-12">
             <div className="flex flex-col gap-4">
               <div className="icon flex gap-4">
                 <div className="icon max-w-[100px] flex items-center">

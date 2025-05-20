@@ -76,7 +76,7 @@ const Chat_page = () => {
           </div>
         )}
       </LeftNav>
-      <Outlet context={{ chat: activeChat }} />
+      <Outlet context={{ chat: activeChat }} key={location.pathname} />
     </div>
   );
 };

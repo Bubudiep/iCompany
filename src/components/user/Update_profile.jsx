@@ -91,7 +91,6 @@ const Update_profile = ({ user, setUser }) => {
             <Select>
               <Option value="male">Nam</Option>
               <Option value="female">Nữ</Option>
-              <Option value="Khác">Khác</Option>
             </Select>
           </Form.Item>
           <Form.Item label="Link Zalo" name="zalo">
