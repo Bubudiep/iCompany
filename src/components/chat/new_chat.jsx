@@ -3,11 +3,13 @@ import { Modal, List } from "antd";
 import { useUser } from "../context/userContext";
 import { FaAddressBook, FaUser } from "react-icons/fa";
 import api from "../api";
+import { useNavigate } from "react-router-dom";
 
 const New_chats = ({ children }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user, setUser } = useUser();
   const [contacts, setContacts] = useState([]);
+  const navigate = useNavigate();
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -16,11 +18,12 @@ const New_chats = ({ children }) => {
   };
   const handleChat = (staff) => {
     api.post(`/staff/${staff}/chat/`, {}, user.token).then((res) => {
-      console.log(res);
       setUser((old) => ({
         ...old,
         chatbox: [res, ...old.chatbox.filter((chatb) => chatb.id !== res.id)],
       }));
+      navigate(`/app/chat/${res.id}`);
+      setIsModalOpen(false);
     });
   };
   useEffect(() => {

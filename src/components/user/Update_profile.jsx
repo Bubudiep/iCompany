@@ -49,6 +49,7 @@ const Update_profile = ({ user, setUser }) => {
               profile: { ...old?.info?.profile, ...res },
             },
           }));
+          setOpen(false);
         })
         .catch((e) => {
           console.log(e);

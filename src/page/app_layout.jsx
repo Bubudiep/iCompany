@@ -90,9 +90,10 @@ const Homepage_layout = () => {
             });
           }
           if (res) {
+            console.log("Connectting to socket...");
             window.socket = io(SOCKET_SERVER_URL, {
               transports: ["websocket"],
-              extraHeaders: {
+              query: {
                 ApplicationKey: api.key,
                 Authorization: "Bearer " + token,
               },
@@ -179,36 +180,38 @@ const Homepage_layout = () => {
         console.log("Data from socket messages: ", data);
         if (data.type === "message") {
           const sender = user?.company?.Staff.find(
-            (staff) => staff.id === data.data.sender
+            (staff) => staff?.id === data?.data?.sender
           );
           const room_link = `/app/chat/${data.data.room}`;
-
-          if (!location.pathname.includes(room_link) && sender) {
-            window?.electron?.send("Notice", {
-              appname: APP_NAME,
-              silent: true,
-              icon: sender?.profile?.avatar || undefined,
-              click_data: {
-                type: "user_chat",
-                data: data.data,
-              },
-              title:
-                sender?.profile?.full_name ||
-                `${sender?.username} (${sender?.cardID})`,
-              body: data?.data?.message,
+          if (!location.pathname.includes(room_link)) {
+            // Chỉ tăng chat_not_read nếu không ở trong phòng chat hiện tại
+            setUser((old) => {
+              const config = old.app_config || {};
+              return {
+                ...old,
+                app_config: {
+                  ...config,
+                  chat_not_read: (config.chat_not_read || 0) + 1,
+                },
+              };
             });
+            // Gửi thông báo
+            if (sender) {
+              window?.electron?.send("Notice", {
+                appname: APP_NAME,
+                silent: true,
+                icon: sender?.profile?.avatar || undefined,
+                click_data: {
+                  type: "user_chat",
+                  data: data.data,
+                },
+                title:
+                  sender?.profile?.full_name ||
+                  `${sender?.username} (${sender?.cardID})`,
+                body: data?.data?.message,
+              });
+            }
           }
-          // Chỉ tăng chat_not_read nếu không ở trong phòng chat hiện tại
-          setUser((old) => {
-            const config = old.app_config || {};
-            return {
-              ...old,
-              app_config: {
-                ...config,
-                chat_not_read: (config.chat_not_read || 0) + 1,
-              },
-            };
-          });
         }
       });
       return () => {

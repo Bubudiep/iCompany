@@ -7,16 +7,17 @@ import { LuChevronsRightLeft, LuListTodo, LuMailCheck } from "react-icons/lu";
 import { IoGitCommitOutline } from "react-icons/io5";
 import { FaUser } from "react-icons/fa";
 import Message_chat_box from "./message_box";
-import { Button, Tooltip } from "antd";
+import { Button, Spin, Tooltip } from "antd";
 import Message_send from "./message_send";
 
 const Chat_rooms = () => {
   const id = useParams();
+  const [loading, setLoading] = useState(true);
   const { user, setUser } = useUser();
   const [leftTab, setLeftTab] = useState(false);
   const [isGroup, setIsGroup] = useState(false);
   const [room, setRoom] = useState({});
-  const [messs, setMesss] = useState([]);
+  const [messs, setMesss] = useState(false);
   const [to, setTo] = useState({});
   const tools = [
     {
@@ -36,92 +37,125 @@ const Chat_rooms = () => {
     },
   ];
   const syncMess = (id) => {
-    api.get(`/chatbox/${id}/`, user.token).then((res) => {
-      setIsGroup(res?.is_group);
-      setRoom(res);
-      setMesss(res?.message?.data);
-      setTo(res?.members?.find((item) => item.id !== user.id));
-    });
+    setLoading(true);
+    api
+      .get(`/chatbox/${id}/`, user.token)
+      .then((res) => {
+        setIsGroup(res?.is_group);
+        setRoom(res);
+        setMesss(res?.message?.data);
+        setTo(res?.members?.find((item) => item.id !== user.id));
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
   useEffect(() => {
     if (id?.id_room) {
       syncMess(id.id_room);
     }
+    window.socket.on("message", (data) => {
+      if (data.type === "message") {
+        console.log("Data from socket messages: ", data);
+      }
+    });
   }, [id]);
   return (
     <>
       {id?.id_room ? (
         <div className="flex room_main">
-          <div className="room_info">
-            <div className="top_info fadeInBot min-h-[60px]">
-              <div className="avatar">
-                {isGroup ? (
-                  <></>
-                ) : (
-                  <>{to?.profile?.avatar ? <></> : <FaUser />}</>
-                )}
+          {loading ? (
+            <>
+              <div className="flex flex-1 p-10 flex-col gap-3 items-center justify-center">
+                <Spin size="large" />
+                <div className="text-[#999]">Đang tải dữ liệu...</div>
               </div>
-              <div className="flex flex-col">
-                <div className="name text-[16px]">
-                  {isGroup ? (
-                    <></>
-                  ) : (
-                    <>
-                      {to?.profile?.full_name || (
+            </>
+          ) : (
+            <>
+              <div className="room_info">
+                <div className="top_info fadeInBot min-h-[60px]">
+                  <div className="avatar">
+                    {isGroup ? (
+                      <></>
+                    ) : (
+                      <>{to?.profile?.avatar ? <></> : <FaUser />}</>
+                    )}
+                  </div>
+                  <div className="flex flex-col">
+                    <div className="name text-[16px]">
+                      {isGroup ? (
+                        <></>
+                      ) : (
                         <>
-                          {to?.cardID} ({to?.department_name})
+                          {to?.profile?.full_name || (
+                            <>
+                              {to?.cardID} ({to?.department_name})
+                            </>
+                          )}
                         </>
                       )}
-                    </>
-                  )}
-                </div>
-                <div className="remark flex items-center text-[#999]">
-                  <IoGitCommitOutline className="mt-0.5 mr-1" size={18} />
-                  <div className="text-[13px]">
-                    {to?.department_name || "Bộ phận"} (
-                    {to?.possition_name || "Chức vụ"})
+                    </div>
+                    <div className="remark flex items-center text-[#999]">
+                      <IoGitCommitOutline className="mt-0.5 mr-1" size={18} />
+                      <div className="text-[13px]">
+                        {to?.department_name || "Bộ phận"} (
+                        {to?.possition_name || "Chức vụ"})
+                      </div>
+                    </div>
+                  </div>
+                  <div className="tools ml-auto gap-2 flex mr-1">
+                    {tools.map(({ title, icon, tab }) => (
+                      <Tooltip
+                        key={tab}
+                        color="white"
+                        title={<div className="text-[#000]">{title}</div>}
+                      >
+                        <button
+                          className={`chat_tools ${
+                            leftTab === tab ? "active" : ""
+                          }`}
+                          onClick={() => {
+                            if (leftTab === tab) {
+                              setLeftTab(false);
+                            } else {
+                              setLeftTab(tab);
+                            }
+                          }}
+                        >
+                          {icon}
+                        </button>
+                      </Tooltip>
+                    ))}
                   </div>
                 </div>
-              </div>
-              <div className="tools ml-auto gap-2 flex mr-1">
-                {tools.map(({ title, icon, tab }) => (
-                  <Tooltip
-                    key={tab}
-                    color="white"
-                    title={<div className="text-[#000]">{title}</div>}
-                  >
-                    <button
-                      className={`chat_tools ${
-                        leftTab === tab ? "active" : ""
-                      }`}
-                      onClick={() => {
-                        if (leftTab === tab) {
-                          setLeftTab(false);
-                        } else {
-                          setLeftTab(tab);
-                        }
-                      }}
-                    >
-                      {icon}
-                    </button>
-                  </Tooltip>
-                ))}
-              </div>
-            </div>
-            <Message_chat_box message={messs} />
-            <Message_send />
-          </div>
-          {leftTab ? (
-            <div className="room_config fadeInLeft">
-              <div className="title">Tùy chỉnh cuộc trò chuyện</div>
-              <div className="overflow-y-auto h-full">
-                <div className="p-4 py-10 text-center text-[#999]">
-                  Đang phát triển
+                <div className="flex flex-1 p-1 overflow-hidden">
+                  <Message_chat_box user={user} messages={messs} />
                 </div>
+                <Message_send
+                  room_id={id?.id_room}
+                  user={user}
+                  setUser={setUser}
+                  messages={messs}
+                  setMesss={setMesss}
+                />
               </div>
-            </div>
-          ) : (
-            <></>
+              {leftTab ? (
+                <div className="room_config fadeInLeft">
+                  <div className="title">Tùy chỉnh cuộc trò chuyện</div>
+                  <div className="overflow-y-auto h-full">
+                    <div className="p-4 py-10 text-center text-[#999]">
+                      Đang phát triển
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <></>
+              )}
+            </>
           )}
         </div>
       ) : (

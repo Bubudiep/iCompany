@@ -1,21 +1,58 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { BiSend } from "react-icons/bi";
 import { Button, Input } from "antd";
 import EmojiShow from "../../../components/ui/emojiPicker";
 import { MdEmojiEmotions } from "react-icons/md";
+import api from "../../../components/api";
 
-const Message_send = () => {
+const Message_send = ({ room_id, user, setUser, setMesss, messs }) => {
   const [msg, setMsg] = useState("");
   const inputRef = useRef();
+  const [loading, setLoading] = useState(false);
   const [openEmoji, setOpenEmoji] = useState(false);
   const handleEmoji = (e) => {
     setMsg((old) => `${old + e.emoji.trim()}`);
     inputRef?.current?.focus();
   };
   const handleSendMessage = () => {
+    if (!msg || !room_id || !user.token || loading) return;
+    setLoading(true);
+    api
+      .post(
+        `/chatbox/${room_id}/chat/`,
+        {
+          message: msg,
+        },
+        user.token
+      )
+      .then((res) => {
+        setMesss((old) => [...old, res]);
+        setUser((old) => ({
+          ...old,
+          chatbox: old.chatbox.map((chat) =>
+            chat.id == room_id
+              ? {
+                  ...chat,
+                  not_read: 0,
+                  last_message: res,
+                  last_have_message_at: res.created_at,
+                }
+              : chat
+          ),
+        }));
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
     setMsg("");
     inputRef?.current?.focus();
   };
+  useEffect(() => {
+    inputRef?.current?.focus();
+  }, [inputRef]);
   return (
     <div className="send_tool fadeInTop flex flex-col mt-auto">
       <div className="flex justify-between items-center p-1 border-b-1 border-b-[#d6d6d6] shadow-2xl">
