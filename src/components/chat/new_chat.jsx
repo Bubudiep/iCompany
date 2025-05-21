@@ -44,30 +44,32 @@ const New_chats = ({ children }) => {
         footer={null}
       >
         <div className="flex flex-col gap-1 list-one">
-          {contacts.map((staff) => (
-            <div
-              key={staff.id}
-              className="item select-none"
-              onClick={() => {
-                handleChat(staff.id);
-              }}
-            >
-              <div className="avatar">
-                {staff?.avatar ? <img src={staff.avatar} /> : <FaUser />}
+          {contacts
+            .filter((staff) => staff.id !== user?.info?.id)
+            .map((staff) => (
+              <div
+                key={staff.id}
+                className="item select-none"
+                onClick={() => {
+                  handleChat(staff.id);
+                }}
+              >
+                <div className="avatar">
+                  {staff?.avatar ? <img src={staff.avatar} /> : <FaUser />}
+                </div>
+                <div className="name">
+                  {staff?.profile?.full_name || "Chưa có profile"} (
+                  {staff?.cardID})
+                </div>
+                <div className="ml-auto">
+                  {staff?.department_name && (
+                    <>
+                      {staff?.department_name} ({staff?.possition_name})
+                    </>
+                  )}
+                </div>
               </div>
-              <div className="name">
-                {staff?.profile?.full_name || "Chưa có profile"} (
-                {staff?.cardID})
-              </div>
-              <div className="ml-auto">
-                {staff?.department_name && (
-                  <>
-                    {staff?.department_name} ({staff?.possition_name})
-                  </>
-                )}
-              </div>
-            </div>
-          ))}
+            ))}
         </div>
       </Modal>
     </>

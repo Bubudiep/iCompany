@@ -17,6 +17,9 @@ const removeQueryParam = (key) => {
 const Homepage_layout = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const all_rooms = JSON.parse(localStorage.getItem("rooms") || "[]").filter(
+    (r) => r != null && r != undefined
+  );
   const { user, setUser } = useUser();
   const [cookies] = useCookies(["newversion_token"]);
   const [breadcrumbs, setBreadcrumbs] = useState([]);
@@ -183,18 +186,44 @@ const Homepage_layout = () => {
             (staff) => staff?.id === data?.data?.sender
           );
           const room_link = `/app/chat/${data.data.room}`;
-          if (!location.pathname.includes(room_link)) {
-            // Chỉ tăng chat_not_read nếu không ở trong phòng chat hiện tại
+          const oldchat = user.chatbox.find((box) => box.id === data.data.room);
+          if (oldchat) {
+            // Cập nhập tin nhắn
             setUser((old) => {
-              const config = old.app_config || {};
               return {
                 ...old,
-                app_config: {
-                  ...config,
-                  chat_not_read: (config.chat_not_read || 0) + 1,
-                },
+                chatbox: old.chatbox.map((box) =>
+                  box.id === data?.data?.room
+                    ? {
+                        ...box,
+                        last_message: data.data,
+                        new_message: [...(old?.new_message || []), data?.data],
+                      }
+                    : box
+                ),
               };
             });
+          } else {
+            // Thêm chatbox đó
+          }
+          setUser((old) => {
+            const config = old.app_config || {};
+            return {
+              ...old,
+              chatbox: oldchat
+                ? old.chatbox.map((item) =>
+                    item.id === data?.data?.room
+                      ? { ...item, not_read: item?.not_read + 1 }
+                      : item
+                  )
+                : old.chatbox,
+              app_config: {
+                ...config,
+                chat_not_read: (config.chat_not_read || 0) + 1,
+              },
+            };
+          });
+          if (!location.pathname.includes(room_link)) {
             // Gửi thông báo
             if (sender) {
               window?.electron?.send("Notice", {

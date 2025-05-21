@@ -1,12 +1,21 @@
 import EmojiPicker from "emoji-picker-react";
 import React, { useEffect, useRef, useState } from "react";
 
-const EmojiShow = ({ children, callback, refocus }) => {
+const EmojiShow = ({
+  children,
+  callback,
+  refocus,
+  openEmoji,
+  setOpenEmoji,
+}) => {
   const [visible, setVisible] = useState(false);
   const pickerRef = useRef(null);
   const handleEmojiClick = (e) => {
     callback(e);
   };
+  useEffect(() => {
+    setVisible(openEmoji);
+  }, [openEmoji]);
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (pickerRef?.current && !pickerRef?.current?.contains(event.target)) {
@@ -21,6 +30,7 @@ const EmojiShow = ({ children, callback, refocus }) => {
       <div
         onClick={() => {
           setVisible(!visible);
+          setOpenEmoji(!visible);
           refocus();
         }}
       >

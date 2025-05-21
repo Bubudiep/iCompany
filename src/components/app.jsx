@@ -77,6 +77,21 @@ function resizeImage(img, maxSize, outputFormat = "image/jpeg", quality = 0.8) {
   ctx.drawImage(img, 0, 0, width, height);
   return canvas.toDataURL(outputFormat, quality);
 }
+function timeDiff(datetime) {
+  const input = dayjs(datetime);
+  const today = dayjs();
+  const yesterday = today.subtract(1, "day");
+
+  if (input.isSame(today, "day")) {
+    return "Hôm nay";
+  } else if (input.isSame(yesterday, "day")) {
+    return "Hôm qua";
+  } else {
+    const weekday = input.format("dddd"); // ví dụ: "Thứ hai"
+    const dateStr = input.format("DD-MM-YYYY");
+    return `${weekday} - Ngày ${dateStr}`;
+  }
+}
 function timeSince(createdAt) {
   const orderDate = new Date(createdAt);
   const now = new Date();
@@ -333,5 +348,6 @@ export default {
   getCookie,
   setCookie,
   download,
+  timeDiff,
   random: random,
 };

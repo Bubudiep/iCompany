@@ -11,7 +11,7 @@ import Alert_box from "../../components/alert-box";
 
 const Company_customer = () => {
   const { menu } = useOutletContext();
-  const { user } = useUser();
+  const { user, setUser } = useUser();
   const page_size = 100;
   const [total, setTotal] = useState(0);
   const [customers, setCustomers] = useState(user?.company?.Customer);
@@ -96,29 +96,27 @@ const Company_customer = () => {
           return;
         }
 
-        let successCount = 0;
-        let errorCount = 0;
-        filteredCustomers.forEach((vendor) => {
-          api
-            .post("/customers/", vendor, user.token)
-            .then((res) => {
-              successCount += 1;
-              setCustomers((old) => [...old, res]);
-              setTotal((old) => old + 1);
-            })
-            .catch(() => {
-              errorCount += 1;
-            })
-            .finally(() => {
-              if (successCount + errorCount === filteredCustomers.length) {
-                if (errorCount) {
-                  message.warning(`Đã thêm ${successCount}, lỗi ${errorCount}`);
-                } else {
-                  message.success("Thêm tất cả vendor thành công!");
-                }
-              }
-            });
-        });
+        api
+          .post(
+            "/customers/multi_create/",
+            { data: filteredCustomers },
+            user.token
+          )
+          .then((res) => {
+            setCustomers((old) => [...old, res]);
+            setTotal((old) => old + 1);
+            setUser((old) => ({
+              ...old,
+              company: {
+                ...old?.company,
+                Customer: [...user?.company?.Customer, res],
+              },
+            }));
+          })
+          .catch((e) => {
+            console.log(e?.response?.data?.detail || "Phát sinh lỗi");
+          })
+          .finally(() => {});
       } catch (error) {
         console.error("Lỗi khi xử lý file Excel:", error);
         message.error("Không thể đọc file Excel.");
@@ -128,10 +126,7 @@ const Company_customer = () => {
     reader.readAsArrayBuffer(file);
   };
   useEffect(() => {
-    loadPartners();
-    return () => {
-      setCustomers([]);
-    };
+    setCustomers(user?.company?.Customer || []);
   }, []);
   const handleCreate = (values) => {
     const data = { ...values, company: user?.company?.id };
@@ -140,6 +135,13 @@ const Company_customer = () => {
       .then((res) => {
         message.success("Thêm khách hàng thành công!");
         setCustomers((old) => [res, ...old]); // Thêm customers mới vào đầu danh sách
+        setUser((old) => ({
+          ...old,
+          company: {
+            ...old?.company,
+            Customer: [...user?.company?.Customer, res],
+          },
+        }));
         form.resetFields();
         setIsModalOpen(false);
       })

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { useOutletContext, useParams } from "react-router-dom";
 import api from "../../../components/api";
 import { useUser } from "../../../components/context/userContext";
 import { BsChatSquareText, BsGear } from "react-icons/bs";
@@ -9,10 +9,14 @@ import { FaUser } from "react-icons/fa";
 import Message_chat_box from "./message_box";
 import { Button, Spin, Tooltip } from "antd";
 import Message_send from "./message_send";
+import { GoDotFill } from "react-icons/go";
 
 const Chat_rooms = () => {
   const id = useParams();
-  const [loading, setLoading] = useState(true);
+  const rooms = JSON.parse(localStorage.getItem("rooms") || "[]").filter(
+    (room) => room != null && room != undefined
+  );
+  const [loading, setLoading] = useState(false);
   const { user, setUser } = useUser();
   const [leftTab, setLeftTab] = useState(false);
   const [isGroup, setIsGroup] = useState(false);
@@ -36,15 +40,46 @@ const Chat_rooms = () => {
       tab: 1,
     },
   ];
-  const syncMess = (id) => {
-    setLoading(true);
+  const syncMess = (old_mes = []) => {
     api
-      .get(`/chatbox/${id}/`, user.token)
+      .get(`/chatbox/${id?.id_room}/`, user.token)
       .then((res) => {
         setIsGroup(res?.is_group);
-        setRoom(res);
-        setMesss(res?.message?.data);
         setTo(res?.members?.find((item) => item.id !== user.id));
+        let max = 1;
+        const combined = [...old_mes, ...res?.message?.data];
+        const unique = Array.from(
+          new Map(combined.map((msg) => [msg.id, msg])).values()
+        );
+        setUser((old) => ({
+          ...old,
+          chatbox: old.chatbox.map((box) =>
+            box.id == id?.id_room ? { ...box, not_read: 0 } : box
+          ),
+          app_config: {
+            ...old,
+            chat_not_read:
+              (old.chat_not_read || 0) -
+              (old.chatbox.find((box) => box.id == id?.id_room)?.not_read || 0),
+          },
+        }));
+        setRoom(res);
+        setMesss(unique);
+        max = Math.max(...unique.map((item) => item.id));
+        localStorage.setItem(
+          "rooms",
+          JSON.stringify(
+            rooms.map((r) =>
+              r.id === res.id
+                ? {
+                    ...res,
+                    not_read: 0,
+                    message: { ...res.message, data: unique },
+                  }
+                : r
+            )
+          )
+        );
       })
       .catch((err) => {
         console.log(err);
@@ -55,7 +90,14 @@ const Chat_rooms = () => {
   };
   useEffect(() => {
     if (id?.id_room) {
-      syncMess(id.id_room);
+      const old_data = rooms.find((room) => room && room?.id == id?.id_room);
+      if (old_data) {
+        setRoom(old_data);
+        setMesss(old_data?.message?.data);
+        setIsGroup(old_data?.is_group);
+        setTo(old_data?.members?.find((item) => item.id !== user.id));
+      }
+      syncMess(old_data?.message?.data);
     }
     window.socket.on("message", (data) => {
       if (data.type === "message") {
@@ -67,7 +109,7 @@ const Chat_rooms = () => {
     <>
       {id?.id_room ? (
         <div className="flex room_main">
-          {loading ? (
+          {!room.id ? (
             <>
               <div className="flex flex-1 p-10 flex-col gap-3 items-center justify-center">
                 <Spin size="large" />
@@ -77,7 +119,7 @@ const Chat_rooms = () => {
           ) : (
             <>
               <div className="room_info">
-                <div className="top_info fadeInBot min-h-[60px]">
+                <div className="top_info min-h-[60px]">
                   <div className="avatar">
                     {isGroup ? (
                       <></>
@@ -107,7 +149,16 @@ const Chat_rooms = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="tools ml-auto gap-2 flex mr-1">
+                  <div className="tools ml-auto gap-2 flex mr-1 items-center">
+                    {user?.onlines.find((user) => user.id === to?.id) && (
+                      <div
+                        className="text-[#fff] bg-[#00a2ff] font-[500] flex gap-1 items-center
+                        p-1.5 px-2 rounded-[4px]"
+                      >
+                        <GoDotFill className="mr-1" />
+                        <div className="text-[11px]">Hoạt động</div>
+                      </div>
+                    )}
                     {tools.map(({ title, icon, tab }) => (
                       <Tooltip
                         key={tab}
@@ -132,15 +183,13 @@ const Chat_rooms = () => {
                     ))}
                   </div>
                 </div>
-                <div className="flex flex-1 p-1 overflow-hidden">
-                  <Message_chat_box user={user} messages={messs} />
-                </div>
-                <Message_send
-                  room_id={id?.id_room}
+                <Message_chat_box
                   user={user}
-                  setUser={setUser}
                   messages={messs}
+                  room_id={id?.id_room}
                   setMesss={setMesss}
+                  setUser={setUser}
+                  rooms={rooms}
                 />
               </div>
               {leftTab ? (
