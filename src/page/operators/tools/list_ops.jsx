@@ -164,17 +164,17 @@ const List_operators = () => {
                   </div>
                 </div>
                 <div className="max-w-0 lg:!max-w-[180px] lg:!w-[180px] block">
-                  <div className="flex text-[13px] text-[#5f5f5f]  text-nowrap">
+                  {/* <div className="flex text-[13px] text-[#5f5f5f]  text-nowrap">
                     Thâm niên: 0 ngày
                   </div>
                   <div className="flex text-[13px] text-[#5f5f5f]  text-nowrap">
                     Tổng công: 0 công
-                  </div>
+                  </div> */}
                   <div className="flex text-[13px] text-[#5f5f5f]  text-nowrap">
                     Ngày phỏng vấn: {item?.ngay_phongvan || "-"}
                   </div>
                 </div>
-                <div className="flex flex-col flex-1 ml-4 w-[180px]">
+                {/* <div className="flex flex-col flex-1 ml-4 w-[180px]">
                   <div className="flex text-[13px] text-[#5f5f5f]">
                     Giữ lương: 0đ
                   </div>
@@ -184,7 +184,7 @@ const List_operators = () => {
                   <div className="flex text-[13px] text-[#5f5f5f]">
                     {item?.ghichu || "-"}
                   </div>
-                </div>
+                </div> */}
               </Link>
               <div className="flex items-center tools ml-auto mr-2 gap-2">
                 <Popover

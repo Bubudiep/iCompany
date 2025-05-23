@@ -1,6 +1,6 @@
-import { Button, Input, Modal, Form, message, Upload } from "antd";
+import { Button, Input, Modal, Form, message, Upload, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
-import { FaPlus } from "react-icons/fa";
+import { FaEdit, FaPlus } from "react-icons/fa";
 import { useOutletContext } from "react-router-dom";
 import api from "../../components/api";
 import { useUser } from "../../components/context/userContext";
@@ -103,15 +103,16 @@ const Company_customer = () => {
             user.token
           )
           .then((res) => {
-            setCustomers((old) => [...old, res]);
-            setTotal((old) => old + 1);
+            setCustomers(res);
+            setTotal(res.length);
             setUser((old) => ({
               ...old,
               company: {
                 ...old?.company,
-                Customer: [...user?.company?.Customer, res],
+                Customer: res,
               },
             }));
+            message.success("Cập nhập thành công!");
           })
           .catch((e) => {
             console.log(e?.response?.data?.detail || "Phát sinh lỗi");
@@ -193,9 +194,9 @@ const Company_customer = () => {
               </Button>
             </div>
           </div>
-          <div className="flex flex-1 items-start overflow-auto mr-1 pr-1 mb-1">
-            <table className="table w-full border-collapse text-left relative">
-              <thead className="z-10 sticky top-0 bg-[#fff] shadow-bot">
+          <div className="flex flex-1 items-start overflow-auto mr-1 pr-1 mb-1 px-2">
+            <table className="table w-full border-collapse text-left relative fadeInTop">
+              <thead className="z-10 sticky top-0 bg-[#fff] border-b-1 border-[#999]">
                 <tr>
                   <th className="p-2 !text-[13px] !font-[400] text-[#999] text-nowrap">
                     Tên gọi
@@ -230,14 +231,72 @@ const Company_customer = () => {
                       )
                   )
                   .map((p) => (
-                    <tr key={p.id} className="border-b border-[#0003]">
-                      <td className="p-2 font-semibold">{p?.name ?? "-"}</td>
-                      <td className="p-2">{p?.fullname ?? "-"}</td>
-                      <td className="p-2">{p?.address ?? "-"}</td>
-                      <td className="p-2">{p?.email ?? "-"}</td>
-                      <td className="p-2">{p?.hotline ?? "-"}</td>
+                    <tr
+                      key={p.id}
+                      className="border-b border-[#0003] hover:bg-[#eee] transition-all duration-300"
+                    >
+                      <td className="p-2 max-w-[130px] font-semibold overflow-hidden overflow-ellipsis">
+                        <Tooltip
+                          color="white"
+                          title={
+                            <div className="text-[#000]">
+                              {p?.name?.toUpperCase() || false}
+                            </div>
+                          }
+                        >
+                          <>{p?.name?.toUpperCase() ?? "-"}</>
+                        </Tooltip>
+                      </td>
+                      <td className="p-2 text-[13px]">
+                        <div className="text-clamp-2">{p?.fullname ?? "-"}</div>
+                      </td>
+                      <td className="p-2 text-[13px]">
+                        <Tooltip
+                          color="white"
+                          title={
+                            <div className="text-[#000]">
+                              {p?.address || false}
+                            </div>
+                          }
+                        >
+                          <div className="text-clamp-2">
+                            {p?.address ?? "-"}
+                          </div>
+                        </Tooltip>
+                      </td>
+                      <td
+                        className="p-2 max-w-[130px] text-ellipsis overflow-hidden text-[13px]"
+                        onClick={() =>
+                          p?.email && app.copyToClipboard(p?.email)
+                        }
+                      >
+                        <Tooltip
+                          color="white"
+                          title={
+                            <div className="text-[#000]">
+                              {p?.email || false}
+                            </div>
+                          }
+                        >
+                          <>{p?.email ?? "-"}</>
+                        </Tooltip>
+                      </td>
+                      <td
+                        onClick={() =>
+                          p?.hotline && app.copyToClipboard(p?.hotline)
+                        }
+                        className="p-2 text-nowrap  text-[13px]"
+                      >
+                        {p?.hotline ?? "-"}
+                      </td>
                       <td className="p-2">
-                        <Button onClick={() => handleEdit(p)}>Sửa</Button>
+                        <Button
+                          type="text"
+                          className="!text-[#999]"
+                          onClick={() => handleEdit(p)}
+                        >
+                          <FaEdit />
+                        </Button>
                       </td>
                     </tr>
                   ))}

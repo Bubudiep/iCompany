@@ -80,6 +80,24 @@ const Message_send = ({
   useEffect(() => {
     inputRef?.current?.focus();
   }, [inputRef]);
+
+  const emojiMap = {
+    ":v": "😅",
+    ":D": "😆",
+    ":)": "😊",
+    ":(": "😢",
+    ":w": "🤨",
+    ":@@": "🙄",
+  };
+  const replaceEmojis = (text) => {
+    for (const [key, value] of Object.entries(emojiMap)) {
+      text = text.replaceAll(key, value);
+    }
+    return text;
+  };
+  useEffect(() => {
+    setMsg(replaceEmojis(msg));
+  }, [msg]);
   return (
     <div className="send_tool flex flex-col mt-auto">
       <div className="flex justify-between items-center p-1 border-b-1 border-b-[#d6d6d6] shadow-2xl">

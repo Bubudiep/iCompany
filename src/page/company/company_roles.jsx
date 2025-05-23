@@ -155,15 +155,17 @@ const Company_roles = () => {
                         className="avatar text-[20px] w-[44px] h-[44px] bg-[#0084ff] rounded-xl flex 
                         items-center justify-center text-[#fff] font-[700]"
                       >
-                        {dept?.name}
+                        {`${dept?.name.split(" ")[0][0]}${
+                          dept?.name.split(" ")?.[1]
+                            ? dept?.name.split(" ")?.[1][0]
+                            : dept?.name.split(" ")?.[0]?.[1]
+                        }`.toUpperCase()}
                       </div>
                     </div>
                     <div className="flex flex-col w-[180px]">
+                      <div className="name text-[#777]">{dept?.name}</div>
                       <div className="name font-[500]">
                         {dept?.description ?? "/ Không có mô tả"}
-                      </div>
-                      <div className="name text-[#777]">
-                        {dept?.isActive ? "Active" : "Not active"}
                       </div>
                     </div>
                     <div className="flex flex-col w-[120px] ml-auto text-[#999]">

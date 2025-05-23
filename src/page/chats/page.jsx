@@ -69,7 +69,9 @@ const Chat_page = () => {
                   <Link
                     to={`/app/chat/${chat.id}`}
                     key={chat.id}
-                    className={`item ${id?.id_room == chat.id ? "active" : ""}`}
+                    className={`item fadeInTop ${
+                      id?.id_room == chat.id ? "active" : ""
+                    }`}
                   >
                     <div className="relative">
                       <div className="avatar">

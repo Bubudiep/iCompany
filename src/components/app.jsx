@@ -97,6 +97,16 @@ function timeDiff(datetime) {
     return `${weekday} - Ngày ${dateStr}`;
   }
 }
+function copyToClipboard(text) {
+  navigator.clipboard
+    .writeText(text)
+    .then(() => {
+      message.success("Đã sao chép email vào clipboard!");
+    })
+    .catch(() => {
+      message.error("Sao chép thất bại!");
+    });
+}
 function timeSince(createdAt) {
   const orderDate = new Date(createdAt);
   const now = new Date();
@@ -338,6 +348,7 @@ const handleReadQR = (file) => {
 };
 export default {
   TimeSinceText,
+  copyToClipboard,
   stringToColor,
   getRandomColorFromString,
   handleReadQR,

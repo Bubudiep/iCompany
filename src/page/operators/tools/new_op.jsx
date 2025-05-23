@@ -111,7 +111,7 @@ const Operator_news = () => {
               phone: row["Số điện thoại"] || null,
               sex: row["Giới tính"] || null,
               cardid: row["Số CCCD"] || null,
-              birthday: row["Ngày sinh"] || null,
+              birthday: dayjs(row["Ngày sinh"]).format("YYYY-MM-DD") || null,
               address: row["Địa chỉ"] || null,
               bank_code: row["Mã ngân hàng"] || null,
               bank_number: row["Số tài khoản"] || null,
@@ -119,11 +119,20 @@ const Operator_news = () => {
               staff:
                 user?.company?.Staff?.find(
                   (staff) => staff.cardID === row["Người tuyển"]
-                ).id || null,
-              vendor: row["Vendor"] || null,
-              nhachinh: row["Nhà chính"] || null,
+                )?.id || null,
+              vendor:
+                user?.company?.Vendor?.find(
+                  (cpm) => cpm.name === row["Người tuyển"]
+                )?.id || null,
+              nhachinh:
+                user?.company?.Vendor?.find(
+                  (cpm) => cpm.name === row["Người tuyển"]
+                )?.id || null,
               work_date: row["Ngày vào làm"] || null,
-              customer: row["Công ty vào làm"] || null,
+              customer:
+                user?.company?.Customer?.find(
+                  (cpm) => cpm.name === row["Người tuyển"]
+                )?.id || null,
               work_code: row["Mã nhân viên"] || null,
             }));
           setListUser((prev) => [...prev, ...newUsers]);
@@ -304,7 +313,7 @@ const Operator_news = () => {
               </Button>
             </div>
           </div>
-          <div className="mx-0.5 my-0.5 flex flex-col overflow-y-auto px-1 h-full">
+          <div className="mx-0.5 my-0.5 flex flex-col overflow-y-auto px-1 h-full fadeInTop">
             {listUser.map((op, index) => (
               <div
                 key={index}
@@ -502,7 +511,7 @@ const Operator_news = () => {
                     }
                   />
                 </div>
-                <div className="flex flex-col gap-1 min-w-[160px]">
+                {/* <div className="flex flex-col gap-1 min-w-[160px]">
                   <DatePicker
                     placeholder="Ngày vào làm"
                     className="w-[160px]"
@@ -536,7 +545,7 @@ const Operator_news = () => {
                       handleChange(index, "work_code", e.target.value)
                     }
                   />
-                </div>
+                </div> */}
                 <div className="ml-auto flex items-center gap-3">
                   {op.fullname === null && (
                     <Tooltip

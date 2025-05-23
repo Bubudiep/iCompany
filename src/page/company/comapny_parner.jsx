@@ -11,7 +11,7 @@ import Alert_box from "../../components/alert-box";
 
 const Company_partner = () => {
   const { menu } = useOutletContext();
-  const { user } = useUser();
+  const { user, setUser } = useUser();
   const page_size = 100;
   const [total, setTotal] = useState(0);
   const [partners, setPartners] = useState(user?.company?.Vendor);
@@ -98,29 +98,18 @@ const Company_partner = () => {
           return;
         }
 
-        let successCount = 0;
-        let errorCount = 0;
-        filteredVendors.forEach((vendor) => {
-          api
-            .post("/vendors/", vendor, user.token)
-            .then((res) => {
-              successCount += 1;
-              setPartners((old) => [...old, res]);
-              setTotal((old) => old + 1);
-            })
-            .catch(() => {
-              errorCount += 1;
-            })
-            .finally(() => {
-              if (successCount + errorCount === filteredVendors.length) {
-                if (errorCount) {
-                  message.warning(`Đã thêm ${successCount}, lỗi ${errorCount}`);
-                } else {
-                  message.success("Thêm tất cả vendor thành công!");
-                }
-              }
-            });
-        });
+        api
+          .post("/vendors/multi_create/", { data: filteredVendors }, user.token)
+          .then((res) => {
+            setPartners(res);
+            setTotal(res.length);
+            setUser((old) => ({
+              ...old,
+              company: { ...old.company, Vendor: res },
+            }));
+          })
+          .catch(() => {})
+          .finally(() => {});
       } catch (error) {
         console.error("Lỗi khi xử lý file Excel:", error);
         message.error("Không thể đọc file Excel.");
@@ -130,10 +119,7 @@ const Company_partner = () => {
     reader.readAsArrayBuffer(file);
   };
   useEffect(() => {
-    loadPartners();
-    return () => {
-      setPartners([]);
-    };
+    setPartners(user?.company?.Vendor);
   }, []);
   const handleCreate = (values) => {
     const data = { ...values, company: user?.company?.id };
@@ -196,9 +182,9 @@ const Company_partner = () => {
               </Button>
             </div>
           </div>
-          <div className="flex flex-1 items-start overflow-auto mr-1 pr-1 mb-1">
-            <table className="table w-full border-collapse text-left relative">
-              <thead className="z-10 sticky top-0 bg-[#fff] shadow-bot">
+          <div className="flex flex-1 items-start overflow-auto mr-1 pr-1 mb-1 px-2">
+            <table className="table w-full border-collapse text-left relative fadeInTop">
+              <thead className="z-10 sticky top-0 bg-[#fff] border-b-1 border-[#999]">
                 <tr>
                   <th className="p-2 !text-[13px] !font-[400] text-[#999] text-nowrap">
                     Tên gọi
@@ -233,13 +219,16 @@ const Company_partner = () => {
                       )
                   )
                   .map((p) => (
-                    <tr key={p.id} className="border-b border-[#0003]">
+                    <tr
+                      key={p.id}
+                      className="border-b border-[#0003] text-[13px]"
+                    >
                       <td className="p-2 font-semibold">{p?.name ?? "-"}</td>
                       <td className="p-2">{p?.fullname ?? "-"}</td>
                       <td className="p-2">{p?.address ?? "-"}</td>
                       <td className="p-2">{p?.email ?? "-"}</td>
                       <td className="p-2">{p?.hotline ?? "-"}</td>
-                      <td className="p-2">
+                      <td className="p-2 text-center">
                         <button
                           className="cursor-pointer transition-all duration-300 hover:text-[#4164ff] text-[#a8a8a8]"
                           onClick={() => handleEdit(p)}

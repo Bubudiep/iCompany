@@ -1,5 +1,5 @@
 import { Tooltip } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BsPersonFillAdd } from "react-icons/bs";
 import { FaUserCheck, FaUserClock, FaUserTimes } from "react-icons/fa";
 import { HiOutlineSearch } from "react-icons/hi";
@@ -7,7 +7,7 @@ import { HiMiniUserGroup } from "react-icons/hi2";
 import { LuNotebookText } from "react-icons/lu";
 import { RiBookletFill } from "react-icons/ri";
 import { TiGroup } from "react-icons/ti";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import LeftNav from "../../components/layout/LeftNav";
 
 const Operators_layout = () => {
@@ -26,6 +26,12 @@ const Operators_layout = () => {
       link: "/app/operators/add",
     },
     {
+      id: "his",
+      label: "Cập nhập lịch sử đi làm",
+      icon: <FaUserClock />,
+      link: "/app/operators/work_history",
+    },
+    {
       id: "work",
       label: "Báo cáo đi làm",
       icon: <FaUserCheck />,
@@ -38,6 +44,12 @@ const Operators_layout = () => {
       link: "/app/operators/work_off",
     },
   ];
+  const location = useLocation();
+  useEffect(() => {
+    filterList.map((item) => {
+      if (location.pathname.includes(item.link)) setActiveFilter(item.id);
+    });
+  }, [location]);
   return (
     <div className="flex flex-1 overflow-hidden">
       <LeftNav>
@@ -65,7 +77,6 @@ const Operators_layout = () => {
               key={filter.id}
               to={filter.link}
               className={`item ${activeFilter === filter.id ? "active" : ""}`}
-              onClick={() => setActiveFilter(filter.id)}
             >
               <div className="icon">{filter.icon}</div>
               <div className="name">{filter.label}</div>

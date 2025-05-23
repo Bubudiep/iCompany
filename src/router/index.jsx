@@ -27,6 +27,7 @@ import Company_customer from "../page/company/company_customer";
 import Mobile_layout from "../mobile/layout";
 import Chat_page from "../page/chats/page";
 import Chat_rooms from "../page/chats/rooms/page";
+import Operator_worked_report from "../page/operators/tools/worked_op";
 
 function App() {
   return (
@@ -58,6 +59,7 @@ function App() {
               <Route path="add" element={<Operator_news />} />
               <Route path="work_report" element={<Operator_work_report />} />
               <Route path="work_off" element={<Operator_offwork_report />} />
+              <Route path="work_history" element={<Operator_worked_report />} />
             </Route>
             <Route path="contacts" element={<Contacts_layout />}>
               <Route index element={<Contacts_list />} />
