@@ -27,8 +27,8 @@ const Message_chat_box = ({
     const from = user?.company?.staff?.find((staff) => staff.id === msg.sender);
     return (
       <>
-        {messages?.[index + 1]?.id ? (
-          dayjs(messages?.[index - 1]?.created_at).format("DD") !==
+        {messages?.[index - 1]?.id ? (
+          dayjs(messages?.[index + 1]?.created_at).format("DD") !==
             dayjs(msg?.created_at).format("DD") && (
             <div className="flex justify-center text-[#999] text-[13px]">
               <div className="bg-[#ffffffa2] rounded-[6px] p-1 px-2 my-0.5">
@@ -37,16 +37,18 @@ const Message_chat_box = ({
             </div>
           )
         ) : (
-          <div className="flex justify-center text-[#999] text-[13px]">
-            <div className="bg-[#ffffffa2] rounded-[6px] p-1 px-2 my-0.5">
-              {app.timeDiff(msg?.created_at)}
-            </div>
-          </div>
+          <>
+            {/* <div className="flex justify-center text-[#999] text-[13px]">
+              <div className="bg-[#ffffffa2] rounded-[6px] p-1 px-2 my-0.5">
+                {app.timeDiff(msg?.created_at)}
+              </div>
+            </div> */}
+          </>
         )}
         <div className={`msg ${isMyMsg ? "me" : "other"}`}>
           {isMyMsg ? <></> : <div className="avatar"></div>}
           <div className="box">
-            <div className="text-[15px]">{msg.message}</div>
+            <div className="text-[15px] whitespace-pre-line">{msg.message}</div>
             {messages?.[index - 1]?.sender === msg.sender &&
             dayjs(messages?.[index - 1]?.created_at).diff(
               dayjs(msg?.created_at),
@@ -55,7 +57,7 @@ const Message_chat_box = ({
               <></>
             ) : (
               <div className="time text-[11px] text-[#818181]">
-                {dayjs(msg.created_at).format("hh:mm")}
+                {dayjs(msg.created_at).format("HH:mm")}
               </div>
             )}
           </div>

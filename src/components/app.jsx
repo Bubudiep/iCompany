@@ -3,6 +3,8 @@ import axios from "axios";
 import dayjs from "dayjs";
 import jsQR from "jsqr";
 import { useEffect, useState } from "react";
+import "dayjs/locale/vi"; // import locale tiếng Việt
+dayjs.locale("vi"); // đặt ngôn ngữ mặc định là tiếng Việt
 
 const random = (length) => {
   const characters =
@@ -77,6 +79,9 @@ function resizeImage(img, maxSize, outputFormat = "image/jpeg", quality = 0.8) {
   ctx.drawImage(img, 0, 0, width, height);
   return canvas.toDataURL(outputFormat, quality);
 }
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
 function timeDiff(datetime) {
   const input = dayjs(datetime);
   const today = dayjs();
@@ -87,7 +92,7 @@ function timeDiff(datetime) {
   } else if (input.isSame(yesterday, "day")) {
     return "Hôm qua";
   } else {
-    const weekday = input.format("dddd"); // ví dụ: "Thứ hai"
+    const weekday = capitalizeFirstLetter(input.format("dddd"));
     const dateStr = input.format("DD-MM-YYYY");
     return `${weekday} - Ngày ${dateStr}`;
   }

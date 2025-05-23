@@ -19,6 +19,7 @@ import Customer_view from "../../../components/by_id/customer_view";
 import OP_nghiviec from "../../../components/op/bao_nghiviec";
 import TimeSinceText from "../../../components/ui/timesinceText";
 import OP_baoung from "../../../components/op/bao_ung";
+import OP_giuluong from "../../../components/op/bao_giuluong";
 
 const Details_op = () => {
   const [loading, setLoading] = useState(true);
@@ -117,6 +118,17 @@ const Details_op = () => {
                     </div>
                     Báo ứng lương
                   </OP_baoung>
+                  <OP_giuluong
+                    op={op}
+                    user={user}
+                    className="item"
+                    callback={(data) => setOp((old) => ({ ...old, ...data }))}
+                  >
+                    <div className="icon">
+                      <LuMessageSquareLock />
+                    </div>
+                    Báo giữ lương
+                  </OP_giuluong>
                   <OP_dilam
                     op={op}
                     user={user}
@@ -139,12 +151,6 @@ const Details_op = () => {
                     </div>
                     Báo nghỉ việc
                   </OP_nghiviec>
-                  <div className="item">
-                    <div className="icon">
-                      <LuMessageSquareLock />
-                    </div>
-                    Báo giữ lương
-                  </div>
                   <div className="item text-[#ff5151] hover:!text-[#d60000] hover:!bg-[#ffe8e8]">
                     <div className="icon">
                       <FaTrash />
@@ -174,7 +180,18 @@ const Details_op = () => {
                             )
                           }
                         />
-                        <Info label="Báo giữ lương" value={0} />
+                        <Info
+                          label="Báo giữ lương"
+                          value={
+                            op?.baogiu
+                              ?.reduce((sum, item) => {
+                                return item.payment_status === "not"
+                                  ? sum + parseInt(item.amount)
+                                  : sum;
+                              }, 0)
+                              .toLocaleString() + " vnđ"
+                          }
+                        />
                         <Info
                           label="Đã ứng (chưa thu hồi)"
                           value={

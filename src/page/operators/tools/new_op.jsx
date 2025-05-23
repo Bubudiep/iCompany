@@ -30,14 +30,7 @@ const Operator_news = () => {
   useEffect(() => {
     setListUser([]);
     handleAddRow();
-    api
-      .get("/banks/")
-      .then((res) => {
-        setBanks(res.data);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    setBanks(user?.banks?.data || []);
   }, []);
   const handleDownloadTemplate = () => {
     // Tạo một sheet với tiêu đề
@@ -123,7 +116,10 @@ const Operator_news = () => {
               bank_code: row["Mã ngân hàng"] || null,
               bank_number: row["Số tài khoản"] || null,
               bank_name: row["Chủ tài khoản"] || null,
-              staff: row["Người tuyển"] || null,
+              staff:
+                user?.company?.Staff?.find(
+                  (staff) => staff.cardID === row["Người tuyển"]
+                ).id || null,
               vendor: row["Vendor"] || null,
               nhachinh: row["Nhà chính"] || null,
               work_date: row["Ngày vào làm"] || null,

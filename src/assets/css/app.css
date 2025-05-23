@@ -2151,6 +2151,22 @@ label {
     &:last-child {
       margin-bottom: 6px;
     }
+    .unread {
+      font-family: calibri;
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background-color: red;
+      color: #fff;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+      border-radius: 50%;
+      font-size: 14px;
+    }
     .avatar {
       width: 40px;
       height: 40px;

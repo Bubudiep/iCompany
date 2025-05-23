@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import api from "../../../components/api";
 
-const Add_account = ({ setAccounts, isSuper, isAdmin, user }) => {
+const Add_account = ({ setAccounts, isSuper, isAdmin, user, setUser }) => {
   const [openAddModal, setOpenAddModal] = useState(false);
   const [depart, setDepart] = useState(false);
   const [addForm] = Form.useForm();
@@ -15,6 +15,10 @@ const Add_account = ({ setAccounts, isSuper, isAdmin, user }) => {
         .then((res) => {
           message.success("Tạo tài khoản thành công!");
           setAccounts((old) => [res, ...old]);
+          setUser((old) => ({
+            ...old,
+            company: { ...old.company, Staff: [res, ...old.company.Staff] },
+          }));
           setOpenAddModal(false);
           addForm.resetFields();
         })

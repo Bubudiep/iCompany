@@ -25,7 +25,7 @@ import { length } from "./../../../node_modules/stylis/src/Tokenizer";
 
 const Company_accounts = () => {
   const { menu } = useOutletContext();
-  const { user } = useUser();
+  const { user, setUser } = useUser();
   const [loading, setLoading] = useState(true);
   const [locked, setLocked] = useState(true);
   const [accounts, setAccounts] = useState([]);
@@ -225,6 +225,7 @@ const Company_accounts = () => {
                 <Add_account
                   setAccounts={setAccounts}
                   user={user}
+                  setUser={setUser}
                   isSuper={isSuper}
                   isAdmin={isAdmin}
                 />
@@ -235,6 +236,7 @@ const Company_accounts = () => {
                   selectedAccount={selectedAccount}
                   setAccounts={setAccounts}
                   user={user}
+                  setUser={setUser}
                   isSuper={isSuper}
                   isAdmin={isAdmin}
                 />
