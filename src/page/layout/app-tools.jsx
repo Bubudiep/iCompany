@@ -1,11 +1,12 @@
 import { Modal, Tooltip } from "antd";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { AiOutlineUserSwitch } from "react-icons/ai";
 import { FaDotCircle, FaUser, FaUserAlt } from "react-icons/fa";
 import { GoDotFill } from "react-icons/go";
 
 const App_tools = ({ user }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const searchRef = useRef();
   const showExitConfirm = () => {
     window.electron.send("close");
   };
@@ -13,12 +14,12 @@ const App_tools = ({ user }) => {
     <>
       <div className="document"></div>
       <div className="user-tools">
-        <div className="search">
+        <div className="search" onClick={() => searchRef?.current?.focus()}>
           <div className="searchbox">
             <div className="icon">
               <i className="fa-solid fa-magnifying-glass"></i>
             </div>
-            <input type="text" />
+            <input type="text" ref={searchRef} />
           </div>
         </div>
         <Tooltip

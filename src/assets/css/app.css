@@ -1117,6 +1117,7 @@ body,
   }
   .top-container {
     @apply flex justify-between z-10 bg-white border-b-1 border-[#0003] h-[40px];
+    -webkit-app-region: drag;
     .router {
       @apply flex p-1 px-2;
       -webkit-app-region: drag;
@@ -1124,13 +1125,14 @@ body,
         @apply flex items-center gap-1;
         .breadcrumb {
           @apply flex items-center gap-1 rounded-md flex-nowrap min-w-[300px];
-          -webkit-app-region: no-drag;
+          -webkit-app-region: drag;
           user-select: none;
           .icon {
             @apply text-xs mt-1 text-gray-500 mr-1;
           }
           a {
             @apply px-1 text-left text-[13px] font-medium text-[#0007] no-underline;
+            -webkit-app-region: no-drag;
           }
           div {
             @apply flex flex-nowrap;
@@ -1150,14 +1152,19 @@ body,
           -webkit-app-region: no-drag;
           input {
             outline: none;
-            width: 180px;
+            width: 0px;
             transition: all 0.3s;
             &:focus {
-              width: 200px;
+              width: 120px;
             }
           }
           .icon {
             @apply flex p-1 text-xs text-[#8ca3b3];
+          }
+        }
+        &:hover {
+          input {
+            width: 40px;
           }
         }
       }
