@@ -2246,16 +2246,20 @@ a {
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: #fff;
-      border-radius: 10px;
+      background-color: #359eff;
+      color: #ffffffcb;
+      border-radius: 50%;
       overflow: hidden;
       transition: all 0.3s;
       box-shadow: 1px 2px 3px #0003;
+      svg {
+        filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 1));
+      }
     }
     &:hover {
       background-color: #d6ebff;
       .avatar {
-        color: #0059ff;
+        color: #fff;
       }
     }
   }

@@ -1,4 +1,4 @@
-import { Button, Input, Modal, Form, message, Upload } from "antd";
+import { Button, Input, Modal, Form, message, Upload, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { FaEdit, FaPlus } from "react-icons/fa";
 import { useOutletContext } from "react-router-dom";
@@ -223,18 +223,79 @@ const Company_partner = () => {
                       key={p.id}
                       className="border-b border-[#0003] text-[13px]"
                     >
-                      <td className="p-2 font-semibold">{p?.name ?? "-"}</td>
-                      <td className="p-2">{p?.fullname ?? "-"}</td>
-                      <td className="p-2">{p?.address ?? "-"}</td>
-                      <td className="p-2">{p?.email ?? "-"}</td>
-                      <td className="p-2">{p?.hotline ?? "-"}</td>
-                      <td className="p-2 text-center">
-                        <button
-                          className="cursor-pointer transition-all duration-300 hover:text-[#4164ff] text-[#a8a8a8]"
+                      <td className="p-2 max-w-[130px] font-semibold overflow-hidden overflow-ellipsis">
+                        <Tooltip
+                          color="white"
+                          title={
+                            <div className="text-[#000]">
+                              {p?.name?.toUpperCase() || false}
+                            </div>
+                          }
+                        >
+                          <>{p?.name?.toUpperCase() ?? "-"}</>
+                        </Tooltip>
+                      </td>
+                      <td className="p-2 text-[13px]">
+                        <Tooltip
+                          color="white"
+                          title={
+                            <div className="text-[#000]">
+                              {p?.fullname || false}
+                            </div>
+                          }
+                        >
+                          <div className="text-clamp-2">
+                            {p?.fullname ?? "-"}
+                          </div>
+                        </Tooltip>
+                      </td>
+                      <td className="p-2 text-[13px]">
+                        <Tooltip
+                          color="white"
+                          title={
+                            <div className="text-[#000]">
+                              {p?.address || false}
+                            </div>
+                          }
+                        >
+                          <div className="text-clamp-2">
+                            {p?.address ?? "-"}
+                          </div>
+                        </Tooltip>
+                      </td>
+                      <td
+                        className="p-2 max-w-[130px] text-ellipsis overflow-hidden text-[13px]"
+                        onClick={() =>
+                          p?.email && app.copyToClipboard(p?.email)
+                        }
+                      >
+                        <Tooltip
+                          color="white"
+                          title={
+                            <div className="text-[#000]">
+                              {p?.email || false}
+                            </div>
+                          }
+                        >
+                          <>{p?.email ?? "-"}</>
+                        </Tooltip>
+                      </td>
+                      <td
+                        onClick={() =>
+                          p?.hotline && app.copyToClipboard(p?.hotline)
+                        }
+                        className="p-2 text-nowrap  text-[13px]"
+                      >
+                        {p?.hotline ?? "-"}
+                      </td>
+                      <td className="p-2">
+                        <Button
+                          type="text"
+                          className="!text-[#999]"
                           onClick={() => handleEdit(p)}
                         >
                           <FaEdit />
-                        </button>
+                        </Button>
                       </td>
                     </tr>
                   ))}

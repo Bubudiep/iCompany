@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, List } from "antd";
+import { Modal, List, Tooltip } from "antd";
 import { useUser } from "../context/userContext";
 import { FaAddressBook, FaUser } from "react-icons/fa";
 import api from "../api";
@@ -54,8 +54,18 @@ const New_chats = ({ children }) => {
                   handleChat(staff.id);
                 }}
               >
-                <div className="avatar">
-                  {staff?.avatar ? <img src={staff.avatar} /> : <FaUser />}
+                <div className="relative">
+                  <div className="avatar">
+                    {staff?.avatar ? <img src={staff.avatar} /> : <FaUser />}
+                  </div>
+                  {user?.onlines?.find((user) => user.id === staff?.id) && (
+                    <Tooltip title="Đang hoạt động">
+                      <div
+                        className="absolute -right-0.5 -bottom-0.5
+                            w-[12px] h-[12px] bg-[#07c400] rounded-full border-2 border-[#fff]"
+                      ></div>
+                    </Tooltip>
+                  )}
                 </div>
                 <div className="name">
                   {staff?.profile?.full_name || "Chưa có profile"} (

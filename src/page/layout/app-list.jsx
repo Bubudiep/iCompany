@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/icon/icon.png";
 import { FaGear, FaUser } from "react-icons/fa6";
 import chat_icon from "../../assets/icon/chat_app.png";
+import approve_icon from "../../assets/icon/approve_app.png";
 import contacts_icon from "../../assets/icon/contacts_app.png";
 import company_icon from "../../assets/icon/company_app.png";
 import users_app from "../../assets/icon/user_report.png";
@@ -20,6 +21,13 @@ const menuItems = [
     icon: chat_icon,
     link: "/app/chat",
     unread_field: "chat_not_read",
+  },
+  {
+    id: 6,
+    show: true,
+    name: "Phê duyệt",
+    icon: approve_icon,
+    link: "/app/approve",
   },
   {
     id: 2,
@@ -42,17 +50,13 @@ const menuItems = [
     icon: company_icon,
     link: "/app/companys",
   },
-  {
-    id: 5,
-    show: true,
-    name: "Phân quyền",
-    icon: user_pers,
-    link: "/app/permission",
-  },
-];
-const userItems = [
-  { id: 101, name: "User", icon: <FaUser />, link: "/app/user" },
-  { id: 102, name: "Configs", icon: <FaGear />, link: "/app/config" },
+  // {
+  //   id: 5,
+  //   show: true,
+  //   name: "Phân quyền",
+  //   icon: user_pers,
+  //   link: "/app/permission",
+  // },
 ];
 
 const App_lists = () => {
@@ -63,6 +67,29 @@ const App_lists = () => {
   const [activeItemId, setActiveItemId] = useState(null);
   const [indicatorStyle, setIndicatorStyle] = useState({ top: 0 });
   const itemsRef = useRef({}); // Lưu tham chiếu của các item theo id
+  const userItems = [
+    {
+      id: 101,
+      name: "",
+      icon: (
+        <div
+          className="w-[50px] h-[50px] flex items-center justify-center
+          bg-white rounded-[50%]"
+        >
+          {user?.info?.profile?.avatar ? (
+            <img src={user?.info?.profile?.avatar}></img>
+          ) : (
+            <FaUser
+              size={22}
+              style={{ filter: "drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.5))" }}
+            />
+          )}
+        </div>
+      ),
+      link: "/app/user",
+    },
+    { id: 102, name: "Configs", icon: <FaGear />, link: "/app/config" },
+  ];
 
   // Cập nhật `activeItemId` khi URL thay đổi
   useEffect(() => {
@@ -157,7 +184,9 @@ const App_lists = () => {
               key={item.id}
               to={item.link}
               ref={(el) => (itemsRef.current[item.id] = el)}
-              className={`item ${activeItemId === item.id ? "active" : ""}`}
+              className={`item ${
+                activeItemId === item.id && item.id !== 101 ? "active" : ""
+              }`}
               onClick={() => setActiveItemId(item.id)}
             >
               <div className="icon">{item.icon}</div>
