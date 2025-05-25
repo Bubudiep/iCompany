@@ -81,7 +81,7 @@ const Chat_page = () => {
                           <FaUser size={20} />
                         )}
                       </div>
-                      {user?.onlines.find((user) => user.id === to?.id) && (
+                      {user?.onlines?.find((user) => user.id === to?.id) && (
                         <Tooltip title="Đang hoạt động">
                           <div
                             className="absolute right-0 bottom-0

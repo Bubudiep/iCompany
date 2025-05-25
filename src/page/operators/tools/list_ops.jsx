@@ -53,9 +53,9 @@ const List_operators = () => {
       })
       .finally(() => setLoading(false));
   };
-  useEffect(() => {
-    getOP();
-  }, []);
+  // useEffect(() => {
+  //   getOP();
+  // }, []);
   return (
     <div className="overflow-hidden fadeInTop flex flex-col gap-2 flex-1 p-2 ">
       <div className="flex gap-2 whitebox overflow-hidden">

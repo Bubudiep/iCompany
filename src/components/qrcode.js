@@ -1,3 +1,5 @@
+import app from "./app";
+
 class VietQR {
   constructor() {
     this.payloadFormatIndicator = "000201";
@@ -83,7 +85,6 @@ class VietQR {
 
     var crc = 0xffff;
     var j, i;
-
     for (i = 0; i < str.length; i++) {
       let c = str.charCodeAt(i);
       if (c > 255) {
@@ -92,7 +93,6 @@ class VietQR {
       j = (c ^ (crc >> 8)) & 0xff;
       crc = crcTable[j] ^ (crc << 8);
     }
-
     return (crc ^ 0) & 0xffff;
   }
 
@@ -106,9 +106,8 @@ function taoMaQR(soTaiKhoan, bin, soTien, noiDung = "") {
   const vietQR = new VietQR();
   vietQR
     .setBeneficiaryOrganization(bin, soTaiKhoan)
-    .setTransactionAmount(soTien)
-    .setAdditionalDataFieldTemplate(noiDung);
-  console.log(vietQR.build());
+    .setTransactionAmount(parseInt(soTien))
+    .setAdditionalDataFieldTemplate(app.removeSpecial(noiDung));
   return vietQR.build();
 }
 export default {

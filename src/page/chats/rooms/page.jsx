@@ -150,7 +150,7 @@ const Chat_rooms = () => {
                     </div>
                   </div>
                   <div className="tools ml-auto gap-2 flex mr-1 items-center">
-                    {user?.onlines.find((user) => user.id === to?.id) && (
+                    {user?.onlines?.find((user) => user.id === to?.id) && (
                       <div
                         className="text-[#fff] bg-[#00a2ff] font-[500] flex gap-1 items-center
                         p-1.5 px-2 rounded-[4px]"

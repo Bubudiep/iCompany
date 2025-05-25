@@ -37,7 +37,7 @@ const EmojiShow = ({
         {children}
       </div>
       <div style={{ display: visible ? "block" : "none" }}>
-        <div className="absolute bottom-full m-1 pb-1 emoji">
+        <div className="absolute bottom-full m-1 pb-1 emoji no-drag">
           <EmojiPicker
             onEmojiClick={handleEmojiClick}
             searchDisabled={true}

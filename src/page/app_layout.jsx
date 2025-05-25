@@ -37,6 +37,10 @@ const Homepage_layout = () => {
     contacts: "Danh bạ",
     settings: "Cài đặt",
     all: "Tất cả",
+    approve: "Phê duyệt",
+    baoung: "Báo ứng",
+    giuluong: "Giữ lương",
+    chitieu: "Chi tiêu",
     operators: "Nhân lực",
     add: "Thêm mới",
     work_report: "Báo cáo đi làm",
@@ -292,7 +296,7 @@ const Homepage_layout = () => {
                   </div>
                 </div>
               </div>
-              <div className="app-tools">
+              <div className="app-tools drag">
                 <App_tools user={user} />
               </div>
             </div>

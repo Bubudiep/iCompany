@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import "@fortawesome/fontawesome-free/css/all.min.css"; // Import Font Awesome
 import { UserProvider } from "../components/context/userContext";
 import LandingPage from "../page/landing";
@@ -29,6 +34,8 @@ import Chat_page from "../page/chats/page";
 import Chat_rooms from "../page/chats/rooms/page";
 import Operator_worked_report from "../page/operators/tools/worked_op";
 import Approves_layout from "../page/approve/layout";
+import Approve_all from "../page/approve/tabs/all";
+import Approve_details from "../page/approve/tabs/details";
 
 function App() {
   return (
@@ -63,9 +70,10 @@ function App() {
               <Route path="work_history" element={<Operator_worked_report />} />
             </Route>
             <Route path="approve" element={<Approves_layout />}>
-              {/* <Route index element={<Contacts_list />} />
-              <Route path=":filter" element={<Contacts_list />} /> */}
-              <Route path="*" element={<NotFoundPage />} />
+              <Route index element={<Navigate to="all" replace />} />
+              <Route path="all" element={<Approve_all />}>
+                <Route path=":approve_id" element={<Approve_details />} />
+              </Route>
             </Route>
             <Route path="contacts" element={<Contacts_layout />}>
               <Route index element={<Contacts_list />} />
