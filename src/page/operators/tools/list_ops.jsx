@@ -13,7 +13,7 @@ const List_operators = () => {
   const [filterText, setFilterText] = useState("");
   const [loading, setLoading] = useState(true);
   const { user } = useUser();
-  const [listOP, setListOP] = useState([]);
+  const [listOP, setListOP] = useState(user?.info?.Operator);
   const [banks, setBanks] = useState([]);
   const [page, setPage] = useState({ total: 0, page_now: 1 });
   const filterOperators = () => {
@@ -53,9 +53,9 @@ const List_operators = () => {
       })
       .finally(() => setLoading(false));
   };
-  // useEffect(() => {
-  //   getOP();
-  // }, []);
+  useEffect(() => {
+    getOP();
+  }, []);
   return (
     <div className="overflow-hidden fadeInTop flex flex-col gap-2 flex-1 p-2 ">
       <div className="flex gap-2 whitebox overflow-hidden">

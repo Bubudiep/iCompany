@@ -20,6 +20,7 @@ import OP_nghiviec from "../../../components/op/bao_nghiviec";
 import TimeSinceText from "../../../components/ui/timesinceText";
 import OP_baoung from "../../../components/op/bao_ung";
 import OP_giuluong from "../../../components/op/bao_giuluong";
+import dayjs from "dayjs";
 
 const Details_op = () => {
   const [loading, setLoading] = useState(true);
@@ -161,12 +162,60 @@ const Details_op = () => {
               </div>
               <div className="h-full w-full overflow-y-auto pr-1 pb-2">
                 <div className="flex flex-col gap-2 w-full">
+                  <div className="flex gap-1">
+                    {op?.work?.map((work) => (
+                      <div className="whitebox !p-2" key={work?.id}>
+                        <div className="text-[13px] font-[600]">
+                          <Customer_view id={work?.customer} />
+                        </div>
+                        <div className="flex text-[13px]">
+                          Thời gian:
+                          <div className="flex ml-3 gap-1">
+                            <a className="text-[#09f]">{work?.start_date}</a>
+                            đến <a className="text-[#09f]">{work?.end_date}</a>
+                          </div>
+                        </div>
+                        <div className="flex text-[13px] gap-1">
+                          Mã nhân viên:
+                          <a className="flex ml-auto">
+                            {work?.ma_nhanvien || "N/A"}
+                          </a>
+                        </div>
+                        <div className="flex text-[13px] gap-1">
+                          Công việc:
+                          <a className="flex ml-auto">{work?.vitri || "N/A"}</a>
+                        </div>
+                        <div className="flex text-[13px] gap-1">
+                          Lý do nghỉ:
+                          <a className="flex ml-auto">
+                            {work?.reason || "Không có"}
+                          </a>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                   <div className="whitebox flex-1 !p-0">
                     <div className="header">Thông tin làm việc</div>
                     <div className="md:col-span-2 space-y-3 p-3">
                       <div className="grid grid-cols-2 sm:grid-cols-2 gap-2">
                         <Info label="Ngày phỏng vấn" value={op.ngay_phongvan} />
-                        <Info label="Thâm niên" value={0} />
+                        <Info
+                          label="Thâm niên"
+                          value={
+                            op?.work?.reduce((sum, item) => {
+                              const start =
+                                item?.start_date && dayjs(item?.start_date);
+                              const end =
+                                item?.end_date && dayjs(item?.end_date);
+                              if (start && end) {
+                                const diff = end.diff(start, "day");
+                                return sum + diff;
+                              } else {
+                                return sum + 0;
+                              }
+                            }, 0) + " ngày"
+                          }
+                        />
                         <Info
                           label="Trạng thái"
                           value={

@@ -346,7 +346,21 @@ const handleReadQR = (file) => {
     reader.readAsDataURL(file);
   });
 };
+function excelDateToJSDate(serial) {
+  const excelEpoch = new Date(Date.UTC(1899, 11, 30)); // Excel bắt đầu từ 30/12/1899
+  const days = Math.floor(serial);
+  const msPerDay = 86400 * 1000;
+  const date = new Date(excelEpoch.getTime() + days * msPerDay);
+
+  // xử lý phần thập phân để lấy giờ/phút/giây (nếu có)
+  const fractionalDay = serial - days;
+  const totalSeconds = Math.round(fractionalDay * 86400);
+  date.setUTCSeconds(date.getUTCSeconds() + totalSeconds);
+  return date;
+}
+
 export default {
+  excelDateToJSDate,
   TimeSinceText,
   copyToClipboard,
   stringToColor,

@@ -2503,3 +2503,27 @@ input,
   text-overflow: ellipsis;
   white-space: normal;
 }
+.table_list {
+  thead {
+    tr {
+      th {
+        text-align: left;
+        padding: 8px;
+        font-size: 13px;
+        font-weight: 500 !important;
+        border-bottom: 1px solid #0003;
+      }
+    }
+  }
+  tbody {
+    tr {
+      td {
+        padding: 12px 8px;
+        border-bottom: 1px solid #0003;
+      }
+    }
+  }
+}
+.ant-tooltip {
+  max-width: unset;
+}

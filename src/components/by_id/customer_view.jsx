@@ -12,7 +12,7 @@ const Customer_view = ({ id }) => {
   return customer ? (
     <Tooltip
       title={
-        <div className="flex flex-col w-[200px] text-[#000] gap-2">
+        <div className="flex flex-col !w-[300px] text-[#000] gap-2">
           <div className="fullname p-2 flex flex-1 items-center justify-center flex-col gap-1">
             <div
               className="flex items-center justify-center rounded-full border-[2px] border-[#fff]
@@ -36,13 +36,17 @@ const Customer_view = ({ id }) => {
               {customer?.email || "-"}
             </Descriptions.Item>
             <Descriptions.Item label="Địa chỉ">
-              {customer?.address || "-"}
+              <Tooltip title={customer?.address || "-"}>
+                <div className="text-clamp-2 max-w-[200px]">
+                  {customer?.address || "-"}
+                </div>
+              </Tooltip>
             </Descriptions.Item>
           </Descriptions>
         </div>
       }
       color="white"
-      className="transition-all duration-300 text-[#115ed1] 
+      className="transition-all duration-300 text-[#115ed1] !max-w-full
       hover:underline hover:text-[#0066ff] cursor-pointer font-[500]"
     >
       {customer?.name ?? "-"}
