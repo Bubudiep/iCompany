@@ -3,30 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HiTech | Giải pháp ứng dụng quản lý doanh nghiệp</title>
-
-    <!-- SEO Meta Tags -->
-    <meta
-      name="description"
-      content="HiTech cung cấp các giải pháp ứng dụng công nghệ tiên tiến giúp doanh nghiệp tối ưu hoá quy trình quản lý và vận hành hiệu quả."
-    />
+    <title>Hoàng Long DJC | Phần mềm quản lý doanh nghiệp</title>
+    <meta name="description" content="Hoàng Long DJC - Nhân lực Hoàng Long" />
     <meta
       name="keywords"
-      content="HiTech, quản lý doanh nghiệp, giải pháp công nghệ, phần mềm quản lý, chuyển đổi số"
+      content="Công ty TNHH cung ứng nhân lực Hoàng Long DJC"
     />
     <meta
       property="og:title"
-      content="HiTech | Giải pháp ứng dụng quản lý doanh nghiệp"
+      content="Phần mềm - Công ty TNHH cung ứng nhân lực Hoàng Long DJC"
     />
     <meta
       property="og:description"
-      content="Tối ưu hoá quy trình, nâng tầm doanh nghiệp cùng HiTech."
+      content="Hoàng Long DJC - Nhân lực Hoàng Long | Công ty cung ứng nguồn nhân lực"
     />
     <meta property="og:type" content="website" />
-
-    <!-- Tailwind CDN -->
+    <meta property="og:site_name" content="Hoàng Long DJC" />
     <script src="https://cdn.tailwindcss.com"></script>
-
     <style>
       html {
         scroll-behavior: smooth;
@@ -109,6 +102,12 @@
       <button
         onclick="handleStart()"
         class="bg-[#008cff] text-white px-6 py-3 rounded-full font-semibold hover:scale-105 hover:bg-[#0070d4] transition-all duration-300"
+      >
+        Bắt đầu ngay
+      </button>
+      <button
+        onclick="handleStart()"
+        class="bg-[#008cff] ml-2 text-white px-6 py-3 rounded-full font-semibold hover:scale-105 hover:bg-[#0070d4] transition-all duration-300"
       >
         Bắt đầu ngay
       </button>
@@ -220,18 +219,11 @@
     <!-- JavaScript -->
     <script>
       function handleStart() {
-        window.location.href = `hitech://${window.location.host}/electron`;
-        setTimeout(() => {
-          if (!document.hidden) {
-            window.location.href = "/#contact";
-          }
-        }, 300);
+        window.location.href = `hitech://${window.location.host}/app`;
       }
-
-      // Redirect if Electron
       window.addEventListener("DOMContentLoaded", () => {
         if (window.electron) {
-          window.location.href = "/electron/";
+          window.location.href = "/app";
         }
       });
     </script>

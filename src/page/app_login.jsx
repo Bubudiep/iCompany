@@ -63,7 +63,7 @@ const LoginModal = ({ onClose }) => {
           <img src={logo} className="!w-[50px]" />
         </div>
         <div className="hint mt-5 mb-2 text-center font-[600] text-[24px] text-[#3e6191]">
-          APP LOGIN
+          HOÀNG LONG DJC
         </div>
         <div className="flex-column">
           <label>Email </label>

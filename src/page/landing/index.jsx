@@ -11,11 +11,9 @@ const LandingPage = () => {
   const navigate = useNavigate();
   const handleStart = () => {
     window.location.href = `hitech://${window.location.host}/electron`;
-    setTimeout(() => {
-      if (!document.hidden) {
-        window.location.href = "/#contact";
-      }
-    }, 300);
+  };
+  const handleDownload = () => {
+    window.location.href = `https://${window.location.host}/file/app.zip`;
   };
   useEffect(() => {
     if (window.electron) {
@@ -28,28 +26,45 @@ const LandingPage = () => {
     !loading && (
       <div className="w-full overflow-auto scroll-smooth">
         <Helmet>
-          <title>HiTech | Giải pháp ứng dụng quản lý doanh nghiệp</title>
+          <title>Hoàng Long DJC</title>
+          <meta charset="UTF-8" />
           <meta
-            name="description"
-            content="HiTech cung cấp các giải pháp ứng dụng công nghệ tiên tiến giúp doanh nghiệp tối ưu hoá quy trình quản lý và vận hành hiệu quả."
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
           />
-          <meta
-            name="keywords"
-            content="HiTech, quản lý doanh nghiệp, giải pháp công nghệ, phần mềm quản lý, chuyển đổi số"
-          />
+
           <meta
             property="og:title"
-            content="HiTech | Giải pháp ứng dụng quản lý doanh nghiệp"
+            content="Công ty Cung ứng Nhân lực Hoàng Long DJC"
           />
           <meta
             property="og:description"
-            content="Tối ưu hoá quy trình, nâng tầm doanh nghiệp cùng HiTech."
+            content="Chuyên cung ứng nhân lực chất lượng cao cho các cụm khu công nghiệp với quy trình chuyên nghiệp, minh bạch, uy tín hàng đầu."
           />
+          <meta
+            property="og:image"
+            content="https://hl-djc.vieclamvp.vn/public/images/thumbnail-hoanglong.jpg"
+          />
+          <meta property="og:url" content="https://hl-djc.vieclamvp.vn" />
           <meta property="og:type" content="website" />
+          <meta property="og:site_name" content="Hoàng Long DJC" />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta
+            name="twitter:title"
+            content="Công ty Cung ứng Nhân lực Hoàng Long DJC"
+          />
+          <meta
+            name="twitter:description"
+            content="Cung ứng nhân lực cho các cụm khu công nghiệp và hỗ trợ việc làm cho người lao động uy tín."
+          />
+          <meta
+            name="twitter:image"
+            content="https://hl-djc.vieclamvp.vn/public/images/thumbnail-hoanglong.jpg"
+          />
         </Helmet>
         <header className="bg-[#008cff] text-white p-4 fadeIn-down">
           <div className="container mx-auto flex justify-between items-center">
-            <h1 className="text-2xl font-bold">HiTech.</h1>
+            <h1 className="text-2xl font-bold">Hoàng Long DJC</h1>
             <nav className="space-x-6">
               <a
                 href="#features"
@@ -80,17 +95,29 @@ const LandingPage = () => {
           }}
         >
           <h2 className="text-5xl font-bold text-[#008cff] mb-4">
-            Giải pháp quản lý doanh nghiệp hiện đại
+            Phần mềm quản lý doanh nghiệp hiện đại
           </h2>
           <p className="text-lg mb-6">
             Nâng cao hiệu suất, giảm chi phí vận hành và tối ưu hoá quy trình
-            doanh nghiệp với HiTech.
+            doanh nghiệp với Phần mềm mới.
           </p>
           <button
-            onClick={handleStart}
+            onClick={handleDownload}
             className="bg-[#008cff] text-white px-6 py-3 rounded-full font-semibold hover:scale-105 hover:bg-[#0070d4] transition-all duration-300"
           >
-            Bắt đầu ngay
+            Tải xuống cho máy tính
+          </button>
+          <button
+            onClick={() => navigate("/app")}
+            className="bg-[#02a2d3] ml-3 text-[#fff] px-6 py-3 rounded-full font-semibold hover:scale-105 hover:text-white hover:bg-[#0070d4] transition-all duration-300"
+          >
+            Dùng bản Web
+          </button>
+          <button
+            onClick={handleStart}
+            className="bg-[#02b4d3] ml-3 text-[#fff] px-6 py-3 rounded-full font-semibold hover:scale-105 hover:text-white hover:bg-[#0070d4] transition-all duration-300"
+          >
+            Mở ứng dụng
           </button>
         </section>
         <section id="features" className="p-20 bg-gray-50 fadeIn-up">
@@ -151,16 +178,19 @@ const LandingPage = () => {
             </div>
           </div>
         </section>
-        <section id="about" className="py-20 bg-white fadeIn-up">
+        <section id="about" className="pt-10 pb-15 bg-white fadeIn-up">
           <div className="container mx-auto text-center">
+            <h2 className="text-[16px] mb-5 text-[#999]">Được cung cấp bởi</h2>
             <h3 className="text-3xl font-semibold mb-6 text-[#008cff]">
-              Về HiTech
+              Công ty phát triển phầm mềm HiTech
             </h3>
-            <p>
-              Chúng tôi là đội ngũ chuyên gia công nghệ cung cấp các giải pháp
-              số giúp doanh nghiệp Việt Nam hiện đại hoá và phát triển bền vững
-              trong kỷ nguyên 4.0.
-            </p>
+            <div className="text-center">
+              <p className="max-w-[600px] inline-block">
+                ``Chúng tôi là đội ngũ chuyên gia công nghệ cung cấp các giải
+                pháp số giúp doanh nghiệp Việt Nam hiện đại hoá và phát triển
+                bền vững trong kỷ nguyên vương mình.´´
+              </p>
+            </div>
           </div>
         </section>
         <section
@@ -175,13 +205,14 @@ const LandingPage = () => {
               Gửi yêu cầu tư vấn miễn phí ngay hôm nay để nhận giải pháp phù hợp
               nhất cho doanh nghiệp của bạn!
             </p>
-            <button className="mt-4 bg-white text-[#008cff] px-6 py-3 rounded-full font-semibold hover:scale-105 transition-all duration-300">
+            {/* <button className="mt-4 bg-white text-[#008cff] px-6 py-3 rounded-full font-semibold hover:scale-105 transition-all duration-300">
               Nhận tư vấn
-            </button>
+            </button> */}
           </div>
         </section>
         <footer className="bg-gray-900 text-white text-center py-4 animate-fade-in-up">
-          © 2025 HiTech - All rights reserved.
+          <div className="">© 2025 HiTech - All rights reserved.</div>
+          <div className="">© 2025 Hoàng Long DJC - All rights reserved.</div>
         </footer>
       </div>
     )
