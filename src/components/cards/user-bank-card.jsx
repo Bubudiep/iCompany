@@ -168,7 +168,7 @@ const Card_bank_user = ({
                         Chủ tài khoản:
                       </div>
                       <div className="flex ml-auto font-[500] text-nowrap">
-                        {fullname.toUpperCase() || "Chưa có thông tin"}
+                        {fullname?.toUpperCase() || "Chưa có thông tin"}
                       </div>
                     </div>
                     <div

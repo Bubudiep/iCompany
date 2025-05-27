@@ -103,12 +103,15 @@ class VietQR {
   }
 }
 function taoMaQR(soTaiKhoan, bin, soTien, noiDung = "") {
-  const vietQR = new VietQR();
-  vietQR
-    .setBeneficiaryOrganization(bin, soTaiKhoan)
-    .setTransactionAmount(parseInt(soTien))
-    .setAdditionalDataFieldTemplate(app.removeSpecial(noiDung));
-  return vietQR.build();
+  if (bin && soTaiKhoan && soTien) {
+    const vietQR = new VietQR();
+    vietQR
+      .setBeneficiaryOrganization(bin, soTaiKhoan)
+      .setTransactionAmount(parseInt(soTien))
+      .setAdditionalDataFieldTemplate(app.removeSpecial(noiDung));
+    return vietQR.build();
+  }
+  return null;
 }
 export default {
   BankQR: taoMaQR,

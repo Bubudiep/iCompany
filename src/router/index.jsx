@@ -37,6 +37,9 @@ import Approves_layout from "../page/approve/layout";
 import Approve_all from "../page/approve/tabs/all";
 import Approve_details from "../page/approve/tabs/details";
 import Dashboard_index from "../page/dashboard";
+import Approve_baoung from "../page/approve/tabs/baoung";
+import Approve_chitieu from "../page/approve/tabs/chitieu";
+import Approve_giuluong from "../page/approve/tabs/giuluong";
 
 function App() {
   return (
@@ -75,6 +78,15 @@ function App() {
             <Route path="approve" element={<Approves_layout />}>
               <Route index element={<Navigate to="all" replace />} />
               <Route path="all" element={<Approve_all />}>
+                <Route path=":approve_id" element={<Approve_details />} />
+              </Route>
+              <Route path="baoung" element={<Approve_baoung />}>
+                <Route path=":approve_id" element={<Approve_details />} />
+              </Route>
+              <Route path="giuluong" element={<Approve_giuluong />}>
+                <Route path=":approve_id" element={<Approve_details />} />
+              </Route>
+              <Route path="chitieu" element={<Approve_chitieu />}>
                 <Route path=":approve_id" element={<Approve_details />} />
               </Route>
             </Route>

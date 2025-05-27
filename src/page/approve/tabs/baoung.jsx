@@ -15,14 +15,14 @@ import Staff_view from "../../../components/by_id/staff_view";
 import { FaAnglesRight } from "react-icons/fa6";
 import { FaCaretLeft } from "react-icons/fa";
 
-const Approve_all = () => {
+const Approve_baoung = () => {
   const { approve_id } = useParams();
   const [filterText, setFilterText] = useState("");
   const [approve, setApprove] = useState([]);
   const location = useLocation();
   const { user, setUser } = useUser();
   const loadApprove = () => {
-    api.get(`approve/?page_size=999`, user?.token).then((res) => {
+    api.get(`approve/?type=Báo ứng&page_size=999`, user?.token).then((res) => {
       setApprove(res?.results || []);
     });
   };
@@ -149,4 +149,4 @@ const Approve_all = () => {
   );
 };
 
-export default Approve_all;
+export default Approve_baoung;
