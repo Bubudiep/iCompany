@@ -30,6 +30,32 @@ const Homepage_layout = () => {
   const [listOnline, setListOnline] = useState([]);
   const mapLinks = api.mapBreadcrumb;
   useEffect(() => {
+    if (process.env.NODE_ENV !== "production") return; // Bỏ qua nếu đang ở dev
+    const style = "color: red; font-size: 20px; font-weight: bold;";
+    console.log("%c⚠️ CẢNH BÁO: Hệ thống sẽ reload lại sau:", style);
+    let reloading = false;
+    const interval = setInterval(() => {
+      const start = new Date().getTime();
+      debugger;
+      const end = new Date().getTime();
+      console.log(end - start);
+      if (end - start > 100 && !reloading) {
+        reloading = true;
+        let count = 3;
+        const countdown = setInterval(() => {
+          if (count > 0) {
+            console.log(`%c${count}`, style);
+            count--;
+          } else {
+            clearInterval(countdown);
+            window.location.reload();
+          }
+        }, 500);
+      }
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
+  useEffect(() => {
     const basePath = "/app";
     let pathname = location.pathname.startsWith(basePath)
       ? location.pathname.slice(basePath.length)

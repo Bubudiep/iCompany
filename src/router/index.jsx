@@ -40,6 +40,7 @@ import Dashboard_index from "../page/dashboard";
 import Approve_baoung from "../page/approve/tabs/baoung";
 import Approve_chitieu from "../page/approve/tabs/chitieu";
 import Approve_giuluong from "../page/approve/tabs/giuluong";
+import { useEffect } from "react";
 
 function App() {
   return (
