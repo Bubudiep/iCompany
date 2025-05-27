@@ -13,7 +13,7 @@ const LandingPage = () => {
     window.location.href = `hitech://${window.location.host}/electron`;
   };
   const handleDownload = () => {
-    window.location.href = `https://${window.location.host}/file/app.zip`;
+    window.location.href = `https://${window.location.host}/files/app.zip`;
   };
   useEffect(() => {
     if (window.electron) {
