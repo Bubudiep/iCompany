@@ -43,7 +43,7 @@ const LandingPage = () => {
           />
           <meta
             property="og:image"
-            content="https://hl-djc.vieclamvp.vn/public/images/thumbnail-hoanglong.jpg"
+            content="https://hl-djc.vieclamvp.vn/images/thumbnail-hoanglong.jpg"
           />
           <meta property="og:url" content="https://hl-djc.vieclamvp.vn" />
           <meta property="og:type" content="website" />
@@ -59,7 +59,7 @@ const LandingPage = () => {
           />
           <meta
             name="twitter:image"
-            content="https://hl-djc.vieclamvp.vn/public/images/thumbnail-hoanglong.jpg"
+            content="https://hl-djc.vieclamvp.vn/images/thumbnail-hoanglong.jpg"
           />
         </Helmet>
         <header className="bg-[#008cff] text-white p-4 fadeIn-down">
