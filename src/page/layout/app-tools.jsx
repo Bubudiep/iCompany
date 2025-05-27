@@ -34,25 +34,29 @@ const App_tools = ({ user }) => {
             {user?.onlines?.length || 0}
           </div>
         </Tooltip>
-        <div
-          className="item"
-          onClick={() => {
-            window.electron.send("minimize");
-          }}
-        >
-          <i className="fa-solid fa-minus"></i>
-        </div>
-        <div
-          className="item"
-          onClick={() => {
-            window.electron.send("maximize");
-          }}
-        >
-          <i className="fa-solid fa-expand"></i>
-        </div>
-        <div className="item exit" onClick={showExitConfirm}>
-          <i className="fa-solid fa-xmark"></i>
-        </div>
+        {window?.electron && (
+          <>
+            <div
+              className="item"
+              onClick={() => {
+                window.electron.send("minimize");
+              }}
+            >
+              <i className="fa-solid fa-minus"></i>
+            </div>
+            <div
+              className="item"
+              onClick={() => {
+                window.electron.send("maximize");
+              }}
+            >
+              <i className="fa-solid fa-expand"></i>
+            </div>
+            <div className="item exit" onClick={showExitConfirm}>
+              <i className="fa-solid fa-xmark"></i>
+            </div>
+          </>
+        )}
       </div>
     </>
   );
