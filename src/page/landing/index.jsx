@@ -98,12 +98,13 @@ const LandingPage = () => {
             Nâng cao hiệu suất, giảm chi phí vận hành và tối ưu hoá quy trình
             doanh nghiệp với Phần mềm mới.
           </p>
-          <Link
-            to="/files/app.zip"
+          <a
+            href="/files/app.zip"
+            download
             className="bg-[#008cff] text-white px-6 py-3 rounded-full font-semibold hover:scale-105 hover:bg-[#0070d4] transition-all duration-300"
           >
             Tải xuống cho máy tính
-          </Link>
+          </a>
           <button
             onClick={() => navigate("/app")}
             className="bg-[#02a2d3] ml-3 text-[#fff] px-6 py-3 rounded-full font-semibold hover:scale-105 hover:text-white hover:bg-[#0070d4] transition-all duration-300"
