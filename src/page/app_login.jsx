@@ -5,6 +5,7 @@ import { GoAlertFill } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import logo from "../assets/icon/icon.png";
+import hldjc from "../assets/icon/hldjc.png";
 
 const LoginModal = ({ onClose }) => {
   const [cookies, setCookie] = useCookies(["newversion_token"]);
@@ -23,7 +24,7 @@ const LoginModal = ({ onClose }) => {
     if (loging == true) return;
     setLoging(true);
     if (!username || !password) {
-      message.error("Please input the data!");
+      message.warning("Chưa nhập đủ thông tin!");
       setLoging(false);
       return;
     }
@@ -58,15 +59,15 @@ const LoginModal = ({ onClose }) => {
   };
   return (
     <div className="login-modal">
-      <div className="form">
+      <div className="form mb-5">
         <div className="flex justify-center">
-          <img src={logo} className="!w-[50px]" />
+          <img src={hldjc} className="!w-[120px]" />
         </div>
-        <div className="hint mt-5 mb-2 text-center font-[600] text-[24px] text-[#3e6191]">
+        <div className="hint leading-4 mb-5 text-center font-[700] text-[24px] text-[#007e26]">
           HOÀNG LONG DJC
         </div>
         <div className="flex-column">
-          <label>Email </label>
+          <label>Tài khoản </label>
         </div>
         <div className="inputForm">
           <input
@@ -78,7 +79,7 @@ const LoginModal = ({ onClose }) => {
           />
         </div>
         <div className="flex-column">
-          <label>Password </label>
+          <label>Mật khẩu </label>
         </div>
         <div className="inputForm">
           <input
@@ -96,14 +97,14 @@ const LoginModal = ({ onClose }) => {
         </div>
         <div className="flex items-center gap-2 text-[13px] justify-center pt-3 text-cyan-600">
           <GoAlertFill />
-          Contact MES team if you no have account!
+          Liên hệ admin để thêm tài khoản (nếu cần)
         </div>
         <Button
           loading={loging}
           className="button-submit"
           onClick={handleLogin}
         >
-          Sign In
+          Đăng nhập
         </Button>
       </div>
     </div>
