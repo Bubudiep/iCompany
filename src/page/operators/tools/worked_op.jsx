@@ -101,7 +101,7 @@ const Operator_worked_report = () => {
                   )?.name || "Không hợp lệ"
                 : null,
               nhachinh: row["Nhà chính (viết tắt)"]
-                ? user?.company?.Customer?.find(
+                ? user?.company?.Vendor?.find(
                     (cpn) => cpn.name === row["Nhà chính (viết tắt)"]
                   )?.name || "Không hợp lệ"
                 : null,

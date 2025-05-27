@@ -204,7 +204,32 @@ export const debounceDelete = (url, token, delay = DEFAULT_DELAY) => {
 const error = (e) => {
   message.error(e?.response?.data?.detail || "Có lỗi xảy ra!");
 };
+const mapBreadcrumb = {
+  app: "Trang chủ",
+  companys: "Công ty",
+  roles: "Phòng ban & chức vụ",
+  accounts: "Quản lý tài khoản",
+  chat: "Trò chuyện",
+  contacts: "Danh bạ",
+  settings: "Cài đặt",
+  all: "Tất cả",
+  approve: "Phê duyệt",
+  baoung: "Báo ứng",
+  giuluong: "Giữ lương",
+  chitieu: "Chi tiêu",
+  operators: "Nhân lực",
+  add: "Thêm mới",
+  work_report: "Báo cáo đi làm",
+  group: "Nhóm",
+  department: "Bộ phận",
+  chatted: "Đã nhắn tin",
+  partners: "Công ty cung ứng",
+  customers: "Khách hàng",
+  permission: "Phân quyền",
+  dashboard: "Tổng quan",
+};
 export default {
+  mapBreadcrumb,
   error,
   get: debounceGet,
   gets: debounceGets,

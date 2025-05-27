@@ -36,6 +36,7 @@ import Operator_worked_report from "../page/operators/tools/worked_op";
 import Approves_layout from "../page/approve/layout";
 import Approve_all from "../page/approve/tabs/all";
 import Approve_details from "../page/approve/tabs/details";
+import Dashboard_index from "../page/dashboard";
 
 function App() {
   return (
@@ -44,7 +45,9 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/app" element={<Homepage_layout />}>
-            <Route index element={<Chat_page />} />
+            {/* <Route index element={<Navigate to="dashboard" replace />} /> */}
+            {/* <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<Dashboard_index />} /> */}
             <Route path="chat" element={<Chat_page />}>
               <Route index element={<Chat_rooms />} />
               <Route path=":id_room" element={<Chat_rooms />} />
