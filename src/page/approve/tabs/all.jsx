@@ -71,8 +71,8 @@ const Approve_all = () => {
           <div className="flex flex-1 gap-2 overflow-hidden pb-2 px-2">
             <div
               className={`overflow-hidden ${
-                approve_id ? "max-w-[500px]" : ""
-              } whitebox min-w-[400px] flex-1 h-full flex flex-col fadeInTop approve_list`}
+                approve_id ? "max-w-[320px]" : "min-w-[400px]"
+              } whitebox flex-1 h-full flex flex-col fadeInTop approve_list`}
             >
               {approve.map((apv) => {
                 return (

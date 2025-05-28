@@ -27,7 +27,7 @@ import Company_roles from "./../page/company/company_roles";
 import Profile from "../page/profile";
 import Details_op from "../page/operators/tools/details_op";
 import List_operators from "../page/operators/tools/list_ops";
-import Company_partner from "../page/company/comapny_parner";
+import Company_partner from "../page/company/company_parner";
 import Company_customer from "../page/company/company_customer";
 import Mobile_layout from "../mobile/layout";
 import Chat_page from "../page/chats/page";
@@ -57,7 +57,7 @@ function App() {
               <Route path=":id_room" element={<Chat_rooms />} />
             </Route>
             <Route path="companys" element={<Company_layout />}>
-              <Route index element={<Company_accounts />} />
+              <Route index element={<Navigate to="configurations" replace />} />
               <Route path="infomation" element={<Company_info />} />
               <Route path="configurations" element={<Company_setup />} />
               <Route path="accounts" element={<Company_accounts />} />

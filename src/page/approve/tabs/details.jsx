@@ -67,14 +67,14 @@ const Approve_details = () => {
       ) : (
         <div
           key={approve_id}
-          className="flex flex-col flex-1 min-w-[120px]
+          className="flex flex-col flex-1 min-w-[120px] !text-[13px]
           whitebox fadeInLeft gap-1 overflow-hidden approve_details"
         >
           <div className="overflow-y-auto flex flex-col min-h-full item">
             <Descriptions
               column={2}
               bordered
-              className="mini"
+              className="mini !text-[13px]"
               title={
                 <div className="p-1">
                   Chi tiết {approve?.requesttype?.typecode}
@@ -82,13 +82,13 @@ const Approve_details = () => {
               }
             >
               <Descriptions.Item label="Số tiền">
-                <div className="text-[26px] font-[600] flex justify-center p-2 text-[#e75500]">
+                <div className="text-[18px] font-[600] flex justify-center p-2 text-[#e75500]">
                   {parseInt(approve?.amount || 0).toLocaleString()} VNĐ
                 </div>
               </Descriptions.Item>
               <Descriptions.Item label="Tình trạng">
                 <div
-                  className={`text-[26px] font-[600] flex justify-center p-2 status ${approve?.status}`}
+                  className={`text-[18px] font-[600] flex justify-center p-2 status ${approve?.status}`}
                 >
                   {approve?.status_display}
                 </div>

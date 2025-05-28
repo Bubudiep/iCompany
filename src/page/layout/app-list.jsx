@@ -93,7 +93,7 @@ const App_lists = () => {
 
   // Cập nhật `activeItemId` khi URL thay đổi
   useEffect(() => {
-    const activeItem = menuItems.find((item) =>
+    const activeItem = [...userItems, ...menuItems].find((item) =>
       location.pathname.includes(item.link)
     );
 

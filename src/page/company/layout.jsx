@@ -14,12 +14,12 @@ const menus = [
   //   label: "Thông tin công ty",
   //   link: "/app/companys/infomation",
   // },
-  // {
-  //   id: 1,
-  //   icon: <FaGears />,
-  //   label: "Cài đặt chung",
-  //   link: "/app/companys/configurations",
-  // },
+  {
+    id: 1,
+    icon: <FaGears />,
+    label: "Cài đặt chung",
+    link: "/app/companys/configurations",
+  },
   {
     id: 2,
     icon: <FaUsersGear />,

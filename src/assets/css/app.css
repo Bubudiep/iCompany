@@ -2418,6 +2418,16 @@ a {
 .shadow-bot {
   box-shadow: -2px 2px 3px #cecece;
 }
+.ant-form {
+  &.mini {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    .ant-form-item {
+      margin-bottom: 4px;
+    }
+  }
+}
 .vendor-edit {
   .ant-form {
     display: flex;

@@ -16,13 +16,13 @@ import { FaPencil } from "react-icons/fa6";
 import { FaEdit, FaUser } from "react-icons/fa";
 import { AiFillSignature } from "react-icons/ai";
 import Update_profile from "../components/user/Update_profile";
+import Change_pass from "../components/user/Change_pass";
 
 const Profile = () => {
   const { user, setUser } = useUser();
   const navigate = useNavigate();
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [form] = Form.useForm();
-
   // Hàm định dạng ngày tháng
   const formatDate = (dateString) => {
     if (!dateString) return "Không có thông tin";
@@ -90,13 +90,20 @@ const Profile = () => {
               {user?.info?.profile?.full_name || "Chưa có tên"}
             </div>
           </div>
-          <div className="flex justify-between w-full px-4 mt-2">
-            <div>Bộ phận</div>
-            <div>{user?.info?.department_name || "-"}</div>
-          </div>
-          <div className="flex justify-between w-full px-4">
-            <div>Chức vụ</div>
-            <div>{user?.info?.possition_name || "-"}</div>
+          <div className="flex flex-col gap-2 w-[240px]">
+            <div className="flex justify-between w-full mt-2">
+              <div>Bộ phận</div>
+              <div>{user?.info?.department_name || "-"}</div>
+            </div>
+            <div className="flex justify-between w-full">
+              <div>Chức vụ</div>
+              <div>{user?.info?.possition_name || "-"}</div>
+            </div>
+            <Change_pass className="flex !w-full mt-1">
+              <Button type="primary" className="flex !w-full">
+                Đổi mật khẩu?
+              </Button>
+            </Change_pass>
           </div>
         </div>
         <div className="flex flex-1 flex-col p-2 gap-2">
@@ -199,19 +206,15 @@ const Profile = () => {
                   ? "Tài khoản Admin"
                   : "Nhân viên"}
               </Descriptions.Item>
-              <Descriptions.Item label="Tên tài khoản">
+              <Descriptions.Item label="Tên đăng nhập">
                 {user?.info?.username || (
                   <div className="text-[#999]">Chưa cập nhập</div>
                 )}
               </Descriptions.Item>
               <Descriptions.Item label="Mật khẩu">
-                <Button
-                  onClick={() => {
-                    message.warning("Tính năng đang phát triển!");
-                  }}
-                >
-                  Đặt lại mật khẩu?
-                </Button>
+                <Change_pass>
+                  <Button type="primary">Đổi mật khẩu?</Button>
+                </Change_pass>
               </Descriptions.Item>
             </Descriptions>
           </div>
