@@ -2,22 +2,106 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import api from "../../../components/api";
 import { useUser } from "../../../components/context/userContext";
-import { Button, Descriptions, Input, Spin } from "antd";
+import { Button, Descriptions, Input, message, Spin } from "antd";
 import dayjs from "dayjs";
 import Card_bank_user from "../../../components/cards/user-bank-card";
 import { FaCircleCheck, FaXmark } from "react-icons/fa6";
-import { FaCheck } from "react-icons/fa";
+import { FaCheck, FaCheckDouble } from "react-icons/fa";
 import { PiMoneyDuotone } from "react-icons/pi";
 import { RiBankCard2Line } from "react-icons/ri";
+import { MdPayments, MdSettingsBackupRestore } from "react-icons/md";
 
 const Approve_details = () => {
   const { approve_id } = useParams();
   const { user, setUser } = useUser();
   const [comment, setComment] = useState("TT chuyển khoản");
+  const [approveComment, setapproveComment] = useState("TT chuyển khoản");
   const [approve, setApprove] = useState({});
   const [loading, setLoading] = useState(false);
-  const { list } = useOutletContext();
+  const [approving, setApproving] = useState(false);
+  const { list, callback } = useOutletContext();
   const navigate = useNavigate();
+  const handleThuhoi = () => {
+    setApproving(true);
+    api
+      .post(
+        `approve/${approve_id}/paytrieve/`,
+        { comment: approveComment },
+        user?.token
+      )
+      .then((res) => {
+        setApprove(res);
+        callback(res);
+        message.success("Đã thu hồi thành công!");
+      })
+      .finally(() => {
+        setApproving(false);
+      });
+  };
+  const handleApprove = () => {
+    setApproving(true);
+    api
+      .post(
+        `approve/${approve_id}/apply/`,
+        { comment: approveComment },
+        user?.token
+      )
+      .then((res) => {
+        setApprove(res);
+        message.success("Phê duyệt thành công!");
+      })
+      .finally(() => {
+        setApproving(false);
+      });
+  };
+  const handleReject = () => {
+    setApproving(true);
+    api
+      .post(
+        `approve/${approve_id}/reject/`,
+        { comment: approveComment },
+        user?.token
+      )
+      .then((res) => {
+        setApprove(res);
+        message.success("Đã từ chối yêu cầu này!");
+      })
+      .finally(() => {
+        setApproving(false);
+      });
+  };
+  const handlePayout = () => {
+    setApproving(true);
+    api
+      .post(
+        `approve/${approve_id}/payout/`,
+        { comment: approveComment },
+        user?.token
+      )
+      .then((res) => {
+        setApprove(res);
+        message.success("Đã giải ngân thành công!");
+      })
+      .finally(() => {
+        setApproving(false);
+      });
+  };
+  const handleApprovePayout = () => {
+    setApproving(true);
+    api
+      .post(
+        `approve/${approve_id}/apply_pay/`,
+        { comment: approveComment },
+        user?.token
+      )
+      .then((res) => {
+        setApprove(res);
+        message.success("Đã phê duyệt và giải ngân thành công!");
+      })
+      .finally(() => {
+        setApproving(false);
+      });
+  };
   const loadApprove = () => {
     setLoading(true);
     api
@@ -35,16 +119,35 @@ const Approve_details = () => {
       });
   };
   const handleSpacebar = (event) => {
+    const tag = document.activeElement.tagName.toLowerCase();
+    const isEditable = document.activeElement.isContentEditable;
+    if (tag === "input" || tag === "textarea" || isEditable) {
+      return;
+    }
     if (event.code === "Space" || event.key === " ") {
-      event.preventDefault(); // ngăn chặn hành vi cuộn trang khi bấm Space
+      event.preventDefault();
       const this_approve = list.findIndex(
         (apv) => apv.request_code === approve_id
       );
-      if (list[this_approve + 1]?.request_code == undefined) {
-        message.error("Đã là cuối trang");
-        return;
-      }
-      navigate(`/app/approve/all/${list[this_approve + 1]?.request_code}`);
+      setLoading(true);
+      api
+        .post(
+          `approve/${approve_id}/apply_pay/`,
+          { comment: approveComment },
+          user?.token
+        )
+        .then((res) => {
+          setApprove(res);
+          message.success(`Thành công!`);
+          if (list[this_approve + 1]?.request_code == undefined) {
+            message.warning("Đã là cuối trang");
+            return;
+          }
+          navigate(`/app/approve/all/${list[this_approve + 1]?.request_code}`);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
   };
   useEffect(() => {
@@ -90,7 +193,23 @@ const Approve_details = () => {
                 <div
                   className={`text-[18px] font-[600] flex justify-center p-2 status ${approve?.status}`}
                 >
-                  {approve?.status_display}
+                  {approve?.status === "approved" ? (
+                    approve?.payment_status === "done" ? (
+                      approve?.requesttype?.need_retrive ? (
+                        approve?.retrieve_status === "done" ? (
+                          <div className="text-[#0b8000]">Đã thu hồi</div>
+                        ) : (
+                          <>Chờ thu hồi</>
+                        )
+                      ) : (
+                        <>Hoàn tất</>
+                      )
+                    ) : (
+                      <>Chờ giải ngân</>
+                    )
+                  ) : (
+                    <>Chờ duyệt</>
+                  )}
                 </div>
               </Descriptions.Item>
               <Descriptions.Item label="Mã đơn">
@@ -127,42 +246,50 @@ const Approve_details = () => {
               </Descriptions.Item>
               {approve?.hinhthucThanhtoan === "bank" && (
                 <>
-                  <Descriptions.Item label="Nội dung CK" span={2}>
-                    <div className="flex flex-col">
-                      <div className="text-[#999]">
-                        Hướng dẫn: {`{ten} - là tên người lao động`}
+                  {approve.payment_status === "not" ? (
+                    <Descriptions.Item label="Nội dung CK" span={2}>
+                      <div className="flex flex-col">
+                        <div className="text-[#999]">
+                          Hướng dẫn: {`{ten} - là tên người lao động`}
+                        </div>
+                        <Input
+                          value={comment}
+                          onChange={(e) => {
+                            setComment(e.target.value);
+                            localStorage.setItem(
+                              (approve?.requesttype?.typecode || "approve") +
+                                "_comment",
+                              e.target.value
+                            );
+                          }}
+                        />
                       </div>
-                      <Input
-                        value={comment}
-                        onChange={(e) => {
-                          setComment(e.target.value);
-                          localStorage.setItem(
-                            (approve?.requesttype?.typecode || "approve") +
-                              "_comment",
-                            e.target.value
-                          );
-                        }}
-                      />
-                    </div>
-                  </Descriptions.Item>
+                    </Descriptions.Item>
+                  ) : (
+                    <></>
+                  )}
                   {["staff", "opertor"].includes(approve?.nguoiThuhuong) ? (
                     <Descriptions.Item label="TT chuyển khoản" span={2}>
-                      <Card_bank_user
-                        show_logo={false}
-                        user_type={approve?.nguoiThuhuong}
-                        user_id={
-                          approve?.nguoiThuhuong === "staff"
-                            ? approve?.requester?.id
-                            : approve?.operator?.id
-                        }
-                        shadow={false}
-                        showQR={true}
-                        comment={comment.replaceAll(
-                          "{ten}",
-                          `${approve?.operator?.ho_ten ?? "No name"}`
-                        )}
-                        sotien={approve?.amount}
-                      />
+                      {approve.payment_status === "not" ? (
+                        <Card_bank_user
+                          show_logo={false}
+                          user_type={approve?.nguoiThuhuong}
+                          user_id={
+                            approve?.nguoiThuhuong === "staff"
+                              ? approve?.requester?.id
+                              : approve?.operator?.id
+                          }
+                          shadow={false}
+                          showQR={true}
+                          comment={comment.replaceAll(
+                            "{ten}",
+                            `${approve?.operator?.ho_ten ?? "No name"}`
+                          )}
+                          sotien={approve?.amount}
+                        />
+                      ) : (
+                        <>Đã giải ngân</>
+                      )}
                     </Descriptions.Item>
                   ) : (
                     <></>
@@ -172,15 +299,62 @@ const Approve_details = () => {
             </Descriptions>
             <div className="flex flex-col justify-between mt-auto gap-1">
               <div className="flex text-[#999] text-[13px] flex-row-reverse">
-                (*) Bấm phím cách: Đã giải ngân và qua phê duyệt tiếp
+                (*) Bấm phím cách: Phê duyệt và giải ngân và qua phê duyệt tiếp
               </div>
               <div className="flex gap-1">
-                <Button danger icon={<FaXmark />} className="ml-auto">
-                  Từ chối
-                </Button>
-                <Button type="primary" icon={<FaCheck />}>
-                  Đã giải ngân
-                </Button>
+                {approve.status === "pending" && (
+                  <Button
+                    onClick={handleReject}
+                    danger
+                    icon={<FaXmark />}
+                    className="mr-auto"
+                  >
+                    Từ chối
+                  </Button>
+                )}
+                <div className="ml-auto flex gap-1">
+                  {approve?.status === "pending" && (
+                    <Button
+                      onClick={handleApprove}
+                      icon={<FaCheck />}
+                      type="primary"
+                    >
+                      Phê duyệt
+                    </Button>
+                  )}
+                  {approve?.status === "pending" &&
+                    approve?.payment_status === "not" && (
+                      <Button
+                        onClick={handleApprovePayout}
+                        icon={<FaCheck />}
+                        type="primary"
+                      >
+                        Phê duyệt và giải ngân
+                      </Button>
+                    )}
+                  {approve?.status === "approved" &&
+                    approve?.payment_status === "not" && (
+                      <Button
+                        onClick={handlePayout}
+                        icon={<MdPayments />}
+                        type="primary"
+                      >
+                        Giải ngân
+                      </Button>
+                    )}
+                  {approve?.status === "approved" &&
+                    approve?.payment_status === "done" &&
+                    approve?.requesttype?.need_retrive &&
+                    approve?.retrieve_status === "not" && (
+                      <Button
+                        onClick={handleThuhoi}
+                        icon={<MdSettingsBackupRestore />}
+                        type="primary"
+                      >
+                        Thu hồi
+                      </Button>
+                    )}
+                </div>
               </div>
             </div>
           </div>

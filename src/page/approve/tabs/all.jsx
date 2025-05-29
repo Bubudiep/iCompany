@@ -13,7 +13,7 @@ import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
 import { IoSearchOutline } from "react-icons/io5";
 import Staff_view from "../../../components/by_id/staff_view";
 import { FaAnglesRight } from "react-icons/fa6";
-import { FaCaretLeft } from "react-icons/fa";
+import { FaCaretLeft, FaCheckCircle } from "react-icons/fa";
 
 const Approve_all = () => {
   const { approve_id } = useParams();
@@ -71,7 +71,7 @@ const Approve_all = () => {
           <div className="flex flex-1 gap-2 overflow-hidden pb-2 px-2">
             <div
               className={`overflow-hidden ${
-                approve_id ? "max-w-[320px]" : "min-w-[400px]"
+                approve_id ? "max-w-[450px]" : "min-w-[460px]"
               } whitebox flex-1 h-full flex flex-col fadeInTop approve_list`}
             >
               {approve.map((apv) => {
@@ -90,13 +90,44 @@ const Approve_all = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="flex w-[120px] flex-col gap-1">
+                    <div className="flex w-[150px] flex-col gap-1">
                       <div className={`status flex ${apv?.status}`}>
-                        {apv?.status_display}
+                        {apv?.status === "approved" ? (
+                          <div className="text-[#00a30e] flex items-center gap-1">
+                            <FaCheckCircle />
+                            Đã duyệt
+                          </div>
+                        ) : apv?.status === "pending" ? (
+                          <div className="text-[#dd6300]">Chờ duyệt</div>
+                        ) : apv?.status === "cancel" ? (
+                          <div className="text-[#464646]">Đã hủy </div>
+                        ) : apv?.status === "reject" ? (
+                          <div className="text-[#d62b00]">Đã từ chối </div>
+                        ) : (
+                          <div className="text-[#00a30e]">{apv?.status}</div>
+                        )}
                       </div>
-                      <div className={`status flex ${apv?.payment_status}`}>
-                        {apv?.payment_status_display}
-                      </div>
+                      {apv?.payment_status === "not" ? (
+                        <div className={`status flex ${apv?.payment_status}`}>
+                          {apv?.payment_status_display}
+                        </div>
+                      ) : apv?.requesttype?.need_retrive ? (
+                        <div className={`status flex ${apv?.retrieve_status}`}>
+                          {apv?.retrieve_status === "not" ? (
+                            <>Chờ thu hồi</>
+                          ) : (
+                            <div className="text-[#00a30e] flex items-center gap-1">
+                              <FaCheckCircle />
+                              Đã thu hồi
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="text-[#00a30e] flex items-center gap-1">
+                          <FaCheckCircle />
+                          Đã hành thành
+                        </div>
+                      )}
                     </div>
                     {!approve_id && (
                       <>
@@ -131,7 +162,7 @@ const Approve_all = () => {
                     ) : (
                       <Link
                         to={`/app/approve/all/${apv?.request_code}`}
-                        className="flex ml-auto text-[#3993cf] hover:text-[#0076c5] transition-all 
+                        className="flex flex-nowrap text-nowrap ml-auto text-[#3993cf] hover:text-[#0076c5] transition-all 
                       duration-300 items-center gap-1 font-[500] hover:underline"
                       >
                         Chi tiết <FaAnglesRight />
@@ -141,7 +172,15 @@ const Approve_all = () => {
                 );
               })}
             </div>
-            <Outlet context={{ list: approve }} />
+            <Outlet
+              context={{
+                list: approve,
+                callback: (res) =>
+                  setApprove((old) =>
+                    old.map((arv) => (arv.id === res.id ? res : arv))
+                  ),
+              }}
+            />
           </div>
         </div>
       </div>

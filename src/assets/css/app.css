@@ -2428,7 +2428,8 @@ a {
     }
   }
 }
-.vendor-edit {
+.vendor-edit,
+.mini {
   .ant-form {
     display: flex;
     flex-direction: column;

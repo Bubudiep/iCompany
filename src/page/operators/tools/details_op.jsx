@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   FaArrowLeft,
   FaArrowRight,
+  FaEdit,
   FaHistory,
   FaTrash,
   FaUser,
@@ -11,7 +12,12 @@ import api from "../../../components/api";
 import { useUser } from "../../../components/context/userContext";
 import { Button, Descriptions, message, Modal, Spin, Tooltip } from "antd";
 import { IoCaretDown } from "react-icons/io5";
-import { TbMessage2Check, TbMessage2X, TbMessageReport } from "react-icons/tb";
+import {
+  TbHistory,
+  TbMessage2Check,
+  TbMessage2X,
+  TbMessageReport,
+} from "react-icons/tb";
 import { LuMessageSquareDot, LuMessageSquareLock } from "react-icons/lu";
 import Staff_view from "../../../components/by_id/staff_view";
 import OP_dilam from "../../../components/op/bao_dilam";
@@ -21,6 +27,9 @@ import TimeSinceText from "../../../components/ui/timesinceText";
 import OP_baoung from "../../../components/op/bao_ung";
 import OP_giuluong from "../../../components/op/bao_giuluong";
 import dayjs from "dayjs";
+import Update_info from "../../../components/op/update_info";
+import Update_op_info from "../../../components/op/update_info";
+import OP_dilamroi from "../../../components/op/bao_dadilam";
 
 const Details_op = () => {
   const [loading, setLoading] = useState(true);
@@ -152,6 +161,17 @@ const Details_op = () => {
                     </div>
                     Báo nghỉ việc
                   </OP_nghiviec>
+                  <OP_dilamroi
+                    op={op}
+                    user={user}
+                    className="item"
+                    callback={(data) => setOp((old) => ({ ...old, ...data }))}
+                  >
+                    <div className="icon">
+                      <TbHistory />
+                    </div>
+                    Thêm lịch sử đi làm
+                  </OP_dilamroi>
                   <div className="item text-[#ff5151] hover:!text-[#d60000] hover:!bg-[#ffe8e8]">
                     <div className="icon">
                       <FaTrash />
@@ -162,39 +182,54 @@ const Details_op = () => {
               </div>
               <div className="h-full w-full overflow-y-auto pr-1 pb-2">
                 <div className="flex flex-col gap-2 w-full">
-                  <div className="flex gap-1">
-                    {op?.work?.map((work) => (
-                      <div className="whitebox !p-2" key={work?.id}>
-                        <div className="text-[13px] font-[600]">
-                          <Customer_view id={work?.customer} />
-                        </div>
-                        <div className="flex text-[13px]">
-                          Thời gian:
-                          <div className="flex ml-3 gap-1">
-                            <a className="text-[#09f]">{work?.start_date}</a>
-                            đến <a className="text-[#09f]">{work?.end_date}</a>
+                  <div className="flex gap-2 overflow-x-auto pb-1">
+                    {[...op?.work]
+                      ?.sort(
+                        (a, b) =>
+                          new Date(b?.start_date) - new Date(a?.start_date)
+                      )
+                      ?.map((work) => (
+                        <div
+                          className="whitebox !p-2 min-w-[260px]"
+                          key={work?.id}
+                        >
+                          <div className="text-[13px] font-[600]">
+                            <Customer_view id={work?.customer} />
+                          </div>
+                          <div className="flex text-[13px] gap-3">
+                            Thời gian:
+                            <div className="flex gap-1 ml-auto">
+                              <a className="text-[#09f]">{work?.start_date}</a>
+                              đến
+                              {
+                                <a className="text-[#09f]">
+                                  {work?.end_date ?? "Hiện tại"}
+                                </a>
+                              }
+                            </div>
+                          </div>
+                          <div className="flex text-[13px] gap-1">
+                            Mã nhân viên:
+                            <a className="flex ml-auto">
+                              {work?.ma_nhanvien || "N/A"}
+                            </a>
+                          </div>
+                          <div className="flex text-[13px] gap-1">
+                            Công việc:
+                            <a className="flex ml-auto">
+                              {work?.vitri || "N/A"}
+                            </a>
+                          </div>
+                          <div className="flex text-[13px] gap-1">
+                            Lý do nghỉ:
+                            <a className="flex ml-auto">
+                              {work?.reason || "Không có"}
+                            </a>
                           </div>
                         </div>
-                        <div className="flex text-[13px] gap-1">
-                          Mã nhân viên:
-                          <a className="flex ml-auto">
-                            {work?.ma_nhanvien || "N/A"}
-                          </a>
-                        </div>
-                        <div className="flex text-[13px] gap-1">
-                          Công việc:
-                          <a className="flex ml-auto">{work?.vitri || "N/A"}</a>
-                        </div>
-                        <div className="flex text-[13px] gap-1">
-                          Lý do nghỉ:
-                          <a className="flex ml-auto">
-                            {work?.reason || "Không có"}
-                          </a>
-                        </div>
-                      </div>
-                    ))}
+                      ))}
                   </div>
-                  <div className="whitebox flex-1 !p-0">
+                  <div className="whitebox flex-1 !p-0 min-w-[500px]">
                     <div className="header">Thông tin làm việc</div>
                     <div className="md:col-span-2 space-y-3 p-3">
                       <div className="grid grid-cols-2 sm:grid-cols-2 gap-2">
@@ -269,7 +304,7 @@ const Details_op = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="whitebox flex-1 !p-0">
+                  <div className="whitebox flex-1 !p-0 min-w-[500px]">
                     <div className="header">Thống kê</div>
                     <div className="md:col-span-2 space-y-3 p-3">
                       <div className="grid grid-cols-2 sm:grid-cols-2 gap-2">
@@ -296,8 +331,24 @@ const Details_op = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="whitebox flex-1 !p-0">
-                    <div className="header">Thông tin cá nhân</div>
+                  <div className="whitebox flex-1 !p-0 min-w-[500px]">
+                    <div className="flex justify-between header items-center">
+                      <div className="name">Thông tin cá nhân</div>
+                      <div className="tools">
+                        <Update_op_info
+                          op={op}
+                          update={(data) => {
+                            setOp(data);
+                          }}
+                        >
+                          <Button
+                            icon={<FaEdit />}
+                            variant="text"
+                            color="primary"
+                          ></Button>
+                        </Update_op_info>
+                      </div>
+                    </div>
                     <div className="md:col-span-2 space-y-3 p-3">
                       <div className="grid grid-cols-2 sm:grid-cols-2 gap-2">
                         <Info label="Họ và tên" value={op.ho_ten} />
@@ -309,7 +360,7 @@ const Details_op = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="whitebox flex-1 !p-0">
+                  <div className="whitebox flex-1 !p-0 min-w-[500px]">
                     <div className="header">Thông tin tài khoản</div>
                     <div className="md:col-span-2 space-y-3 p-3">
                       <div className="grid grid-cols-2 sm:grid-cols-2 gap-2">
