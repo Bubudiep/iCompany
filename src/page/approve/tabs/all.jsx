@@ -14,6 +14,7 @@ import { IoSearchOutline } from "react-icons/io5";
 import Staff_view from "../../../components/by_id/staff_view";
 import { FaAnglesRight } from "react-icons/fa6";
 import { FaCaretLeft, FaCheckCircle } from "react-icons/fa";
+import { MdSettingsBackupRestore } from "react-icons/md";
 
 const Approve_all = () => {
   const { approve_id } = useParams();
@@ -112,9 +113,12 @@ const Approve_all = () => {
                           {apv?.payment_status_display}
                         </div>
                       ) : apv?.requesttype?.need_retrive ? (
-                        <div className={`status flex ${apv?.retrieve_status}`}>
+                        <div className={`status flex`}>
                           {apv?.retrieve_status === "not" ? (
-                            <>Chờ thu hồi</>
+                            <div className="text-[#ec6a00] flex items-center gap-1 font-[500]">
+                              <MdSettingsBackupRestore size={15} />
+                              Chờ thu hồi
+                            </div>
                           ) : (
                             <div className="text-[#00a30e] flex items-center gap-1">
                               <FaCheckCircle />
@@ -125,7 +129,7 @@ const Approve_all = () => {
                       ) : (
                         <div className="text-[#00a30e] flex items-center gap-1">
                           <FaCheckCircle />
-                          Đã hành thành
+                          Đã hoàn thành
                         </div>
                       )}
                     </div>

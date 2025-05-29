@@ -50,8 +50,8 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/app" element={<Homepage_layout />}>
             {/* <Route index element={<Navigate to="dashboard" replace />} /> */}
-            {/* <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard" element={<Dashboard_index />} /> */}
+            {/* <Route index element={<Navigate to="dashboard" replace />} /> */}
+            <Route path="dashboard" element={<Dashboard_index />} />
             <Route path="chat" element={<Chat_page />}>
               <Route index element={<Chat_rooms />} />
               <Route path=":id_room" element={<Chat_rooms />} />

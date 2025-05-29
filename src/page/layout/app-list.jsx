@@ -134,7 +134,7 @@ const App_lists = () => {
     <div className="app-list">
       <div className="logo">
         <Link
-          to="/app/"
+          to="/app/dashboard"
           className="box"
           onClick={() => {
             setActiveItemId(0);
