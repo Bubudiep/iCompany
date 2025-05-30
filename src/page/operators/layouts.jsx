@@ -5,7 +5,7 @@ import { FaUserCheck, FaUserClock, FaUserTimes } from "react-icons/fa";
 import { HiOutlineSearch } from "react-icons/hi";
 import { HiMiniUserGroup } from "react-icons/hi2";
 import { LuNotebookText } from "react-icons/lu";
-import { RiBookletFill } from "react-icons/ri";
+import { RiBookletFill, RiHourglass2Fill } from "react-icons/ri";
 import { TiGroup } from "react-icons/ti";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import LeftNav from "../../components/layout/LeftNav";
@@ -18,6 +18,12 @@ const Operators_layout = () => {
       label: "Danh sách người lao động",
       icon: <HiMiniUserGroup />,
       link: "/app/operators/all",
+    },
+    {
+      id: "hour",
+      label: "Báo cáo giờ làm việc",
+      icon: <RiHourglass2Fill />,
+      link: "/app/operators/work_hour",
     },
     {
       id: "add",

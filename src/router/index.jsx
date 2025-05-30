@@ -41,6 +41,7 @@ import Approve_baoung from "../page/approve/tabs/baoung";
 import Approve_chitieu from "../page/approve/tabs/chitieu";
 import Approve_giuluong from "../page/approve/tabs/giuluong";
 import { useEffect } from "react";
+import OP_giolamviec from "./../page/operators/tools/bangcong/index";
 
 function App() {
   return (
@@ -74,6 +75,7 @@ function App() {
               <Route path="work_report" element={<Operator_work_report />} />
               <Route path="work_off" element={<Operator_offwork_report />} />
               <Route path="work_history" element={<Operator_worked_report />} />
+              <Route path="work_hour" element={<OP_giolamviec />} />
             </Route>
             <Route path="approve" element={<Approves_layout />}>
               <Route index element={<Navigate to="all" replace />} />

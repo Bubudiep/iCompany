@@ -2415,6 +2415,50 @@ a {
     }
   }
 }
+table {
+  &.demo {
+    width: 100%;
+    border: 1px solid #0003;
+    tr {
+      th {
+        font-weight: 500;
+        padding: 4px 8px;
+        border: 1px solid #0003;
+      }
+      td {
+        border: 1px solid #0003;
+        font-weight: 400;
+        padding: 4px 8px;
+      }
+    }
+  }
+}
+.ant-mini {
+  table {
+    font-size: 13px;
+    width: 100%;
+    tr {
+      th {
+        font-weight: 500;
+        padding: 12px 8px !important;
+      }
+      td {
+        font-weight: 400;
+        padding: 6px 8px !important;
+        &.non-fixed-column {
+          background-color: #f3f3f3 !important;
+          text-align: center;
+        }
+      }
+      &[aria-hidden="true"] {
+        td {
+          font-weight: 400;
+          padding: 0px !important;
+        }
+      }
+    }
+  }
+}
 .shadow-bot {
   box-shadow: -2px 2px 3px #cecece;
 }
