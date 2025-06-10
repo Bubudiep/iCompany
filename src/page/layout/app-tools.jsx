@@ -34,7 +34,7 @@ const App_tools = ({ user }) => {
             {user?.onlines?.length || 0}
           </div>
         </Tooltip>
-        {window?.electron && (
+        {window?.electron ? (
           <>
             <div
               className="item"
@@ -56,6 +56,8 @@ const App_tools = ({ user }) => {
               <i className="fa-solid fa-xmark"></i>
             </div>
           </>
+        ) : (
+          <div className="w-2"></div>
         )}
       </div>
     </>
