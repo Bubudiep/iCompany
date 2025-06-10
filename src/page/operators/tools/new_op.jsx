@@ -511,7 +511,7 @@ const Operator_news = () => {
                     }
                   />
                 </div>
-                {/* <div className="flex flex-col gap-1 min-w-[160px]">
+                <div className="flex flex-col gap-1 min-w-[160px]">
                   <DatePicker
                     placeholder="Ngày vào làm"
                     className="w-[160px]"
@@ -545,7 +545,7 @@ const Operator_news = () => {
                       handleChange(index, "work_code", e.target.value)
                     }
                   />
-                </div> */}
+                </div>
                 <div className="ml-auto flex items-center gap-3">
                   {op.fullname === null && (
                     <Tooltip

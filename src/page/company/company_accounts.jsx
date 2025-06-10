@@ -195,9 +195,9 @@ const Company_accounts = () => {
         </div>
       </div>
 
-      <div className="flex flex-col flex-1 p-2 gap-2 fadeInTop min-w-[720px]">
+      <div className="flex flex-col flex-1 p-2 gap-2 fadeInTop min-w-[720px] overflow-hidden">
         <Alert_box text="Chỉ boss và admin mới được thêm mới tài khoản" />
-        <div className="whitebox h-full flex flex-col !p-0">
+        <div className="whitebox h-full flex flex-col !p-0 overflow-hidden">
           {loading ? (
             <div className="flex flex-1 justify-center items-center">
               <Spin size="large" />
