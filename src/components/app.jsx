@@ -180,7 +180,6 @@ const TimeSinceText = ({ createdAt }) => {
   return <span>{text}</span>;
 };
 function removeSpecial(str) {
-  console.log(str);
   if (str) {
     const nonAccentStr = str?.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     const cleanedStr = nonAccentStr?.replace(/[^a-zA-Z0-9\s]/g, "");

@@ -211,11 +211,8 @@ const Card_bank_user = ({
               </div>
             ) : (
               <>
-                <div className="bankname font-[600] text-[16px] text-semibold text-[#c95101]">
-                  {parseInt(sotien).toLocaleString("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  })}
+                <div className="bankname font-[600] text-[16px] text-semibold text-[#000000]">
+                  Thông tin ngân hàng
                 </div>
                 <div className="font-semibold text-shadow-2xs text-[#106fc7]">
                   {fullname || "Chưa có thông tin"}
@@ -239,15 +236,15 @@ const Card_bank_user = ({
                 </div>
               </>
             )}
-            <Tooltip
-              title="Sửa"
-              onClick={() => setIsModalOpen(true)}
-              className="hover:text-blue-500 text-[#999] hover:underline text-sm absolute 
-              top-2 right-2 cursor-pointer transition-all duration-300"
-            >
-              <div>
+            <Tooltip title="Sửa">
+              <Button
+                onClick={() => setIsModalOpen(true)}
+                variant="text"
+                color="primary"
+                className=" text-sm !absolute top-0 right-0 cursor-pointer !px-2.5"
+              >
                 <FaEdit />
-              </div>
+              </Button>
             </Tooltip>
           </div>
         </div>

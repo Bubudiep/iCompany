@@ -30,6 +30,7 @@ import dayjs from "dayjs";
 import Update_info from "../../../components/op/update_info";
 import Update_op_info from "../../../components/op/update_info";
 import OP_dilamroi from "../../../components/op/bao_dadilam";
+import Card_bank_user from "../../../components/cards/user-bank-card";
 
 const Details_op = () => {
   const [loading, setLoading] = useState(true);
@@ -360,6 +361,7 @@ const Details_op = () => {
                       </div>
                     </div>
                   </div>
+                  <Card_bank_user user_type="op" user_id={op?.id} />
                   <div className="whitebox flex-1 !p-0 min-w-[500px]">
                     <div className="header">Thông tin tài khoản</div>
                     <div className="md:col-span-2 space-y-3 p-3">

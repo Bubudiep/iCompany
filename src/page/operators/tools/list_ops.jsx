@@ -1,65 +1,188 @@
-import { Button, message, Modal, Popover, Select, Tooltip } from "antd";
+import { Button, Select, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
-import { IoSearchOutline } from "react-icons/io5";
-import { Link, useOutletContext } from "react-router-dom";
 import api from "../../../components/api";
 import { useUser } from "../../../components/context/userContext";
-import app from "../../../components/app";
-import { FaEllipsisH, FaTrash } from "react-icons/fa";
-import { GrMoney } from "react-icons/gr";
-import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
 import Customer_view from "../../../components/by_id/customer_view";
+import app from "../../../components/app";
+import { IoSearchOutline } from "react-icons/io5";
+import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
+import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
+import * as XLSX from "xlsx";
 
 const List_operators = () => {
+  const [data, setData] = useState([]);
   const [filterText, setFilterText] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [pagination, setPagination] = useState({
+    total: 0,
+  });
   const { user } = useUser();
-  const [listOP, setListOP] = useState(user?.info?.Operator);
-  const [banks, setBanks] = useState([]);
-  const [page, setPage] = useState({ total: 0, page_now: 1 });
-  const filterOperators = () => {
-    return listOP;
-  };
-  const handleDelete = (op) => {
-    Modal.confirm({
-      title: "Xác nhận xóa",
-      content: "Tất cả thông tin của người lao động này sẽ bị xóa!",
-      onOk: () => {
-        console.log(op);
-        message.warning("Chưa được phép");
-      },
-    });
-  };
-  const handleExport = () => {};
-  const getOP = () => {
+
+  const fetchData = (params = {}) => {
     setLoading(true);
-    api.get("/banks/").then((res) => {
-      setBanks(res.data);
-    });
     api
-      .get("/ops/", user.token)
+      .get(`/ops/?page_size=99999`, user.token)
       .then((res) => {
-        setListOP(res.results);
-        setPage((old) => ({
-          ...old,
+        setData(res.results);
+        setPagination({
           total: res.count,
-        }));
+        });
       })
-      .catch((e) => {
-        console.log(e);
-        message.error(
-          e?.response?.data?.details ||
-            "Phát sinh lỗi khi tải dữ liệu người lao động!"
-        );
+      .catch((err) => {
+        message.error("Lỗi tải dữ liệu");
       })
       .finally(() => setLoading(false));
   };
+
   useEffect(() => {
-    getOP();
+    fetchData();
   }, []);
+  const columns = [
+    {
+      title: "Họ tên",
+      dataIndex: "ho_ten",
+      key: "ho_ten",
+      sorter: true,
+      render: (text, record) => (
+        <div className="flex items-center">
+          <div
+            className="avatar"
+            style={{
+              backgroundColor: record?.avatar
+                ? "transparent"
+                : app.getRandomColorFromString(record?.ho_ten || "user"),
+            }}
+          >
+            {record?.avatar ? (
+              <img
+                src={record.avatar}
+                className="w-full h-full object-cover rounded-[8px]"
+              />
+            ) : (
+              record.ho_ten.split(" ").pop()?.[0] || "?"
+            )}
+          </div>
+          <div className="flex flex-col flex-1 w-[180px] ml-3">
+            <div className="flex font-[500] text-[14px]">
+              {record?.ho_ten || "Chưa đặt tên"}
+            </div>
+            <div className="flex text-[13px] text-[#5f5f5f]">
+              {record?.ma_nhanvien}
+            </div>
+            <div className="flex text-[13px] text-[#5f5f5f]">
+              {record?.congty_danglam ? (
+                <Customer_view id={record?.congty_danglam} />
+              ) : (
+                "Chưa đi làm"
+              )}
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "Mã nhân viên",
+      dataIndex: "ma_nhanvien",
+      key: "ma_nhanvien",
+      render: (text, record) => (
+        <div className="block md:!max-w-[180px] md:!w-[180px] md:!ml-[0px]">
+          <div className="flex text-[13px]">CCCD: {record?.so_cccd || "-"}</div>
+          <div className="flex text-[13px] text-[#5f5f5f]">
+            Ngày sinh:{" "}
+            {record?.ngaysinh
+              ? new Date(record?.ngaysinh).toLocaleDateString()
+              : "-"}
+          </div>
+          <div title={record?.quequan} className="text-[13px] text-[#5f5f5f]">
+            {record?.quequan || "-"}
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "Ngày phỏng vấn",
+      dataIndex: "ngay_phongvan",
+      key: "ngay_phongvan",
+      render: (text, record) => (
+        <div className="max-w-0 lg:!max-w-[180px] lg:!w-[180px] block">
+          <div className="flex text-[13px] text-[#5f5f5f]  text-nowrap">
+            Thâm niên: 0 ngày
+          </div>
+          <div className="flex text-[13px] text-[#5f5f5f]  text-nowrap">
+            Tổng công: 0 công
+          </div>
+          <div className="flex text-[13px] text-[#5f5f5f]  text-nowrap">
+            Ngày phỏng vấn: {text || "-"}
+          </div>
+        </div>
+      ),
+    },
+  ];
+  const handleExport = () => {
+    // Tạo một sheet với tiêu đề
+    const headers = [
+      [
+        "Mã nhân viên",
+        "Họ tên",
+        "Số điện thoại",
+        "Giới tính",
+        "Số CCCD",
+        "Ngày sinh",
+        "Địa chỉ",
+        "Mã ngân hàng",
+        "Số tài khoản",
+        "Chủ tài khoản",
+        "Ghi chú tài khoản",
+        "Người tuyển",
+        "Vendor",
+        "Nhà chính",
+        "Công ty đang làm",
+        "Ngày vào làm",
+        "Ghi chú",
+      ],
+      ...data.map((item) => [
+        item?.ma_nhanvien,
+        item?.ho_ten,
+        item?.sdt,
+        item?.gioi_tinh,
+        item?.so_cccd,
+        item?.ngaysinh,
+        item?.diachi,
+        item?.nganhang,
+        item?.so_taikhoan,
+        item?.chu_taikhoan,
+        item?.ghichu_taikhoan,
+        item?.nguoituyen,
+        item?.vendor,
+        item?.nhachinh,
+        item?.congty_danglam,
+        item?.ghichu,
+      ]),
+    ];
+    const worksheet = XLSX.utils.aoa_to_sheet(headers);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Total");
+    XLSX.writeFile(
+      workbook,
+      `Danhsach_nguoilaodong_${dayjs().format("YYMMDDHHmmss")}.xlsx`
+    );
+  };
+  const filteredData = data.filter((item) =>
+    item.ho_ten.toLowerCase().includes(filterText.toLowerCase())
+  );
+  const navigate = useNavigate();
+  const onRowClick = (record) => {
+    return {
+      onClick: () => navigate(`/app/operators/all/${record.id}`),
+    };
+  };
   return (
-    <div className="overflow-hidden fadeInTop flex flex-col gap-2 flex-1 p-2 ">
-      <div className="flex gap-2 whitebox overflow-hidden">
+    <div className="fadeInTop flex flex-col flex-1 overflow-hidden">
+      <div
+        className="flex gap-2 items-center min-h-[54px] bg-white overflow-hidden
+      border-b-1 border-[#0003]"
+      >
         <div className="search !p-1">
           <div className="searchbox">
             <label className="icon p-2">
@@ -82,7 +205,6 @@ const List_operators = () => {
           >
             <Select.Option value="working">Đang đi làm</Select.Option>
             <Select.Option value="notworking">Chưa đi làm</Select.Option>
-            <Select.Option value="resigned">Đã nghỉ việc</Select.Option>
           </Select>
           <Select
             className="w-40 !h-[40px]"
@@ -102,120 +224,18 @@ const List_operators = () => {
           </Button>
         </div>
       </div>
-      <div className="whitebox h-full flex flex-col overflow-hidden">
-        <div className="flex gap-1">
-          <div className="flex gap-2 items-center px-2 font-[500]">
-            <div className="total">Tổng: {page.total}</div>
-          </div>
-        </div>
-        <div className="items mt-2 h-full overflow-auto fadeInTop">
-          {filterOperators().map((item) => (
-            <div className="contact-item" key={item.id}>
-              <Link
-                to={`/app/operators/all/${item.id}`}
-                className="flex items-center"
-              >
-                <div className="flex">
-                  <div
-                    className="avatar"
-                    style={{
-                      backgroundColor: item?.avatar
-                        ? "transparent"
-                        : app.getRandomColorFromString(
-                            item?.profile?.full_name || "user"
-                          ),
-                    }}
-                  >
-                    {item?.avatar ? (
-                      <img
-                        src={item?.avatar}
-                        className="w-full h-full object-cover rounded-[8px]"
-                      />
-                    ) : (
-                      item?.ho_ten?.split(" ").pop()?.[0] || "?"
-                    )}
-                  </div>
-                </div>
-                <div className="flex flex-col flex-1 w-[180px] ml-3">
-                  <div className="flex font-[500] text-[14px]">
-                    {item?.ho_ten || "Chưa đặt tên"}
-                  </div>
-                  <div className="flex text-[13px] text-[#5f5f5f]">
-                    {item?.ma_nhanvien}
-                  </div>
-                  <div className="flex text-[13px] text-[#5f5f5f]">
-                    {item?.congty_danglam ? (
-                      <Customer_view id={item?.congty_danglam} />
-                    ) : (
-                      "Chưa đi làm"
-                    )}
-                  </div>
-                </div>
-                <div className="block md:!max-w-[180px] md:!w-[180px] md:!ml-[0px]">
-                  <div className="flex text-[13px]">
-                    CCCD: {item?.so_cccd || "-"}
-                  </div>
-                  <div className="flex text-[13px] text-[#5f5f5f]">
-                    Ngày sinh:{" "}
-                    {item?.ngaysinh
-                      ? new Date(item?.ngaysinh).toLocaleDateString()
-                      : "-"}
-                  </div>
-                  <div
-                    title={item?.quequan}
-                    className="text-[13px] text-[#5f5f5f]"
-                  >
-                    {item?.quequan || "-"}
-                  </div>
-                </div>
-                <div className="max-w-0 lg:!max-w-[180px] lg:!w-[180px] block">
-                  {/* <div className="flex text-[13px] text-[#5f5f5f]  text-nowrap">
-                    Thâm niên: 0 ngày
-                  </div>
-                  <div className="flex text-[13px] text-[#5f5f5f]  text-nowrap">
-                    Tổng công: 0 công
-                  </div> */}
-                  <div className="flex text-[13px] text-[#5f5f5f]  text-nowrap">
-                    Ngày phỏng vấn: {item?.ngay_phongvan || "-"}
-                  </div>
-                </div>
-                {/* <div className="flex flex-col flex-1 ml-4 w-[180px]">
-                  <div className="flex text-[13px] text-[#5f5f5f]">
-                    Giữ lương: 0đ
-                  </div>
-                  <div className="flex text-[13px] text-[#5f5f5f]">
-                    Đang ứng: 0đ
-                  </div>
-                  <div className="flex text-[13px] text-[#5f5f5f]">
-                    {item?.ghichu || "-"}
-                  </div>
-                </div> */}
-              </Link>
-              <div className="flex items-center tools ml-auto mr-2 gap-2">
-                <Popover
-                  content={
-                    <div className="flex flex-col items">
-                      <div
-                        onClick={() => handleDelete(item)}
-                        className="item p-2 flex gap-2 items-center text-[#c22f2f] transition-all duration-300 hover:text-[#ff0000]"
-                      >
-                        <FaTrash />
-                        Xóa
-                      </div>
-                    </div>
-                  }
-                  trigger="click"
-                  placement="leftTop"
-                >
-                  <Button type="more">
-                    <FaEllipsisH />
-                  </Button>
-                </Popover>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <Table
+        showHeader={false}
+        className="full-table items"
+        columns={columns}
+        rowKey={(record) => record.id}
+        rowClassName="user-item"
+        dataSource={filteredData}
+        loading={loading}
+        scroll={{ y: 600 }}
+        onRow={onRowClick}
+        pagination={{ pageSize: 10, showSizeChanger: false }}
+      />
     </div>
   );
 };
