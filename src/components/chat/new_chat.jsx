@@ -43,7 +43,7 @@ const New_chats = ({ children }) => {
         onCancel={handleCancel}
         footer={null}
       >
-        <div className="flex flex-col gap-1 list-one">
+        <div className="flex flex-col gap-1 list-one max-h-[400px] overflow-y-auto">
           {contacts
             .filter((staff) => staff.id !== user?.info?.id)
             .map((staff) => (
