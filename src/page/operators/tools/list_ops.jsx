@@ -8,6 +8,7 @@ import app from "../../../components/app";
 import { FaEllipsisH, FaTrash } from "react-icons/fa";
 import { GrMoney } from "react-icons/gr";
 import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
+import Customer_view from "../../../components/by_id/customer_view";
 
 const List_operators = () => {
   const [filterText, setFilterText] = useState("");
@@ -143,7 +144,11 @@ const List_operators = () => {
                     {item?.ma_nhanvien}
                   </div>
                   <div className="flex text-[13px] text-[#5f5f5f]">
-                    {item?.congty_danglam ?? "Chưa đi làm"}
+                    {item?.congty_danglam ? (
+                      <Customer_view id={item?.congty_danglam} />
+                    ) : (
+                      "Chưa đi làm"
+                    )}
                   </div>
                 </div>
                 <div className="block md:!max-w-[180px] md:!w-[180px] md:!ml-[0px]">
