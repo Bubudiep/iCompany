@@ -4,16 +4,24 @@ import { FaInfoCircle } from "react-icons/fa";
 import ReactApexChart from "react-apexcharts";
 
 const Db_dilam_card = ({ user }) => {
-  const [chartData, setChartData] = useState({ labels: [], values: [] });
+  const [chartData, setChartData] = useState({});
   useEffect(() => {
     const labels = Object.keys(user?.company?.Dashboard?.op?.by_customer);
-    const values = Object.values(user?.company?.Dashboard?.op?.by_customer);
-    const data = {
-      labels: labels,
-      values: values,
-    };
+    const tatCaCongTyCon = Array.from(
+      new Set(
+        labels.flatMap((nc) =>
+          Object.keys(user?.company?.Dashboard?.op?.by_customer[nc])
+        )
+      )
+    );
+    const series = tatCaCongTyCon.map((ctyCon) => ({
+      name: ctyCon,
+      data: labels.map(
+        (nc) => user?.company?.Dashboard?.op?.by_customer[nc][ctyCon] || 0
+      ),
+    }));
     const timeout = setTimeout(() => {
-      setChartData(data);
+      setChartData(series);
     }, 300);
 
     return () => clearTimeout(timeout);
@@ -21,29 +29,41 @@ const Db_dilam_card = ({ user }) => {
   const chartOptions = {
     chart: {
       type: "bar",
-      height: 500,
+      stacked: true,
       toolbar: { show: false },
     },
     plotOptions: {
       bar: {
-        borderRadius: 4,
         horizontal: false,
+        borderRadius: 6,
+        borderRadiusApplication: "end", // hoặc "end"
+        borderRadiusWhenStacked: "all",
         columnWidth: "50%",
+        borderWidth: 1, // 👈 Không có tác dụng
       },
     },
-    dataLabels: { enabled: false },
+    dataLabels: {
+      enabled: false,
+    },
     xaxis: {
-      categories: chartData.labels,
-      labels: { style: { fontSize: "13px" } },
+      categories: Object.keys(user?.company?.Dashboard?.op?.by_customer),
     },
-    colors: ["#1890ff"],
+    legend: {
+      position: "top",
+    },
+    colors: [
+      "#008FFB",
+      "#00E396",
+      "#FEB019",
+      "#FF4560",
+      "#775DD0",
+      "#3F51B5",
+      "#546E7A",
+      "#D4526E",
+      "#8D5B4C",
+      "#F86624",
+    ],
   };
-  const chartSeries = [
-    {
-      name: "Đang đi làm",
-      data: chartData.values,
-    },
-  ];
   return (
     <div className="flex flex-col flex-1">
       <div className="text-[15px] text-[#666] font-[500] flex justify-between">
@@ -65,7 +85,7 @@ const Db_dilam_card = ({ user }) => {
       <div className="flex-1 mt-4">
         <ReactApexChart
           options={chartOptions}
-          series={chartSeries}
+          series={chartData}
           type="bar"
           height={350}
         />
