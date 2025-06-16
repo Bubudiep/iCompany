@@ -48,6 +48,19 @@ const Db_dilam_card = ({ user }) => {
     xaxis: {
       categories: Object.keys(user?.company?.Dashboard?.op?.by_customer),
     },
+    yaxis: {
+      labels: {
+        formatter: (val) => `${val}`,
+        style: {
+          fontSize: "13px",
+        },
+      },
+    },
+    tooltip: {
+      y: {
+        formatter: (val) => `${val} người`, // ✅ chỉ tooltip mới có "người"
+      },
+    },
     legend: {
       position: "top",
     },
