@@ -69,7 +69,16 @@ const List_operators = () => {
               {record?.ho_ten || "Chưa đặt tên"}
             </div>
             <div className="flex text-[13px] text-[#5f5f5f]">
-              {record?.ma_nhanvien}
+              {record?.congty_hientai ? (
+                <div className="flex gap-1">
+                  <div className="text-[#02338d]">
+                    {record?.congty_hientai?.ma_nhanvien}
+                  </div>
+                  ({record?.congty_hientai?.start_date})
+                </div>
+              ) : (
+                record?.ma_nhanvien
+              )}
             </div>
             <div className="flex text-[13px] text-[#5f5f5f]">
               {record?.congty_danglam ? (
