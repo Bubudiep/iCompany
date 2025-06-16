@@ -112,9 +112,11 @@ const Operator_news = () => {
               sex: row["Giới tính"] || null,
               cardid: row["Số CCCD"] || null,
               birthday:
-                dayjs(app.excelDateToJSDate(row["Ngày sinh"])).format(
-                  "YYYY-MM-DD"
-                ) || null,
+                dayjs(
+                  row["Ngày sinh"].includes("-")
+                    ? row["Ngày sinh"]
+                    : app.excelDateToJSDate(row["Ngày sinh"])
+                ).format("YYYY-MM-DD") || null,
               address: row["Địa chỉ"] || null,
               bank_code: row["Mã ngân hàng"] || null,
               bank_number: row["Số tài khoản"] || null,
@@ -131,9 +133,11 @@ const Operator_news = () => {
                   (cpm) => cpm.name === row["Nhà chính"]
                 )?.id || null,
               work_date:
-                dayjs(app.excelDateToJSDate(row["Ngày vào làm"])).format(
-                  "YYYY-MM-DD"
-                ) || null,
+                dayjs(
+                  row["Ngày vào làm"].includes("-")
+                    ? row["Ngày vào làm"]
+                    : app.excelDateToJSDate(row["Ngày vào làm"])
+                ).format("YYYY-MM-DD") || null,
               customer:
                 user?.company?.Customer?.find(
                   (cpm) =>

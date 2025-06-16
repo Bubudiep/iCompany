@@ -1460,6 +1460,24 @@ body,
     }
   }
 }
+.op-hist {
+  transition: all 0.3s;
+  .edit {
+    opacity: 0;
+    color: #999;
+    cursor: pointer;
+    transition: all 0.3s;
+    &:hover {
+      color: #006eff !important;
+    }
+  }
+  &:hover {
+    .edit {
+      opacity: 1;
+      color: #999;
+    }
+  }
+}
 .error-box {
   @apply flex items-center justify-center p-4;
   .box {
@@ -2462,6 +2480,8 @@ a {
     }
     .ant-modal-footer {
       padding: 12px;
+      display: flex;
+      gap: 4px;
     }
     .ant-descriptions-view {
       table {
@@ -2474,6 +2494,9 @@ a {
       }
     }
   }
+}
+.ant-popover-inner-content {
+  padding: 12px !important;
 }
 table {
   &.demo {

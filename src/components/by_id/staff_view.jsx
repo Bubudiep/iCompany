@@ -3,7 +3,7 @@ import { useUser } from "../context/userContext";
 import { Descriptions, Tooltip } from "antd";
 import { FaUser } from "react-icons/fa";
 
-const Staff_view = ({ id }) => {
+const Staff_view = ({ id, className }) => {
   const { user } = useUser();
   const staff = user?.company?.Staff?.find((staff) => staff.id === id);
   return staff ? (
@@ -39,8 +39,8 @@ const Staff_view = ({ id }) => {
         </div>
       }
       color="white"
-      className="transition-all duration-300 text-[#115ed1] 
-      hover:underline hover:text-[#0066ff] cursor-pointer"
+      className={`transition-all duration-300 text-[#115ed1] 
+      hover:underline hover:text-[#0066ff] cursor-pointer ${className}`}
     >
       {staff?.profile?.full_name ?? staff?.cardID ?? "-"}
     </Tooltip>

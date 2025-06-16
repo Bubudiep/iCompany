@@ -9,6 +9,7 @@ import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import * as XLSX from "xlsx";
+import Staff_view from "../../../components/by_id/staff_view";
 
 const List_operators = () => {
   const [data, setData] = useState([]);
@@ -107,10 +108,20 @@ const List_operators = () => {
       render: (text, record) => (
         <div className="max-w-0 lg:!max-w-[180px] lg:!w-[180px] block">
           <div className="flex text-[13px] text-[#5f5f5f]  text-nowrap">
-            Thâm niên: 0 ngày
+            Người tuyển:{" "}
+            {record?.nguoituyen ? (
+              <Staff_view className="ml-1" id={record?.nguoituyen} />
+            ) : (
+              "-"
+            )}
           </div>
           <div className="flex text-[13px] text-[#5f5f5f]  text-nowrap">
-            Tổng công: 0 công
+            Báo cáo:{" "}
+            {record?.nguoibaocao ? (
+              <Staff_view className="ml-1" id={record?.nguoibaocao} />
+            ) : (
+              "-"
+            )}
           </div>
           <div className="flex text-[13px] text-[#5f5f5f]  text-nowrap">
             Ngày phỏng vấn: {text || "-"}

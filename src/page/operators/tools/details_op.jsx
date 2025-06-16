@@ -31,6 +31,7 @@ import Update_info from "../../../components/op/update_info";
 import Update_op_info from "../../../components/op/update_info";
 import OP_dilamroi from "../../../components/op/bao_dadilam";
 import Card_bank_user from "../../../components/cards/user-bank-card";
+import OP_History_card from "./details_op/history_card";
 
 const Details_op = () => {
   const [loading, setLoading] = useState(true);
@@ -190,44 +191,23 @@ const Details_op = () => {
                           new Date(b?.start_date) - new Date(a?.start_date)
                       )
                       ?.map((work) => (
-                        <div
-                          className="whitebox !p-2 min-w-[260px]"
+                        <OP_History_card
                           key={work?.id}
-                        >
-                          <div className="text-[13px] font-[600]">
-                            <Customer_view id={work?.customer} />
-                          </div>
-                          <div className="flex text-[13px] gap-3">
-                            Thời gian:
-                            <div className="flex gap-1 ml-auto">
-                              <a className="text-[#09f]">{work?.start_date}</a>
-                              đến
-                              {
-                                <a className="text-[#09f]">
-                                  {work?.end_date ?? "Hiện tại"}
-                                </a>
-                              }
-                            </div>
-                          </div>
-                          <div className="flex text-[13px] gap-1">
-                            Mã nhân viên:
-                            <a className="flex ml-auto">
-                              {work?.ma_nhanvien || "N/A"}
-                            </a>
-                          </div>
-                          <div className="flex text-[13px] gap-1">
-                            Công việc:
-                            <a className="flex ml-auto">
-                              {work?.vitri || "N/A"}
-                            </a>
-                          </div>
-                          <div className="flex text-[13px] gap-1">
-                            Lý do nghỉ:
-                            <a className="flex ml-auto">
-                              {work?.reason || "Không có"}
-                            </a>
-                          </div>
-                        </div>
+                          work={work}
+                          onDelete={(work) => {
+                            console.log("Xoá công việc ID:", work.id);
+                          }}
+                          callback={(data) => {
+                            setOp((old) => ({
+                              ...old,
+                              work: [
+                                ...old?.work.map((hist) =>
+                                  hist.id === data.id ? data : hist
+                                ),
+                              ],
+                            }));
+                          }}
+                        />
                       ))}
                   </div>
                   <div className="whitebox flex-1 !p-0 min-w-[500px]">
@@ -280,17 +260,30 @@ const Details_op = () => {
                         <Info
                           label="Đã ứng (chưa thu hồi)"
                           value={
-                            op?.baoung?.reduce((sum, item) => {
-                              return item.payment_status === "done" &&
-                                item.retrieve_status === "not"
-                                ? sum + parseInt(item.amount)
-                                : sum;
-                            }, 0) + " vnđ"
+                            op?.baoung
+                              ?.reduce((sum, item) => {
+                                return item.payment_status === "done" &&
+                                  item.retrieve_status === "not"
+                                  ? sum + parseInt(item.amount)
+                                  : sum;
+                              }, 0)
+                              .toLocaleString() + " vnđ"
                           }
                         />
-                        <Info label="Đã giải ngân giữ lương" value={"0 vnđ"} />
                         <Info
-                          label="Chờ duyệt & giải ngân"
+                          label="Đã giải ngân giữ lương"
+                          value={
+                            op?.baogiu
+                              ?.reduce((sum, item) => {
+                                return item.payment_status === "done"
+                                  ? sum + parseInt(item.amount)
+                                  : sum;
+                              }, 0)
+                              .toLocaleString() + " vnđ"
+                          }
+                        />
+                        <Info
+                          label="Chờ duyệt ứng & giải ngân"
                           value={
                             op?.baoung
                               ?.reduce((sum, item) => {
@@ -314,7 +307,8 @@ const Details_op = () => {
                           value={
                             op?.baoung
                               ?.reduce((sum, item) => {
-                                return item.payment_status === "done"
+                                return item.payment_status === "done" &&
+                                  item.retrieve_status === "done"
                                   ? sum + parseInt(item.amount)
                                   : sum;
                               }, 0)
