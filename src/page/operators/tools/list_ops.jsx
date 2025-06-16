@@ -73,7 +73,12 @@ const List_operators = () => {
             </div>
             <div className="flex text-[13px] text-[#5f5f5f]">
               {record?.congty_danglam ? (
-                <Customer_view id={record?.congty_danglam} />
+                <>
+                  <Customer_view
+                    id={record?.congty_danglam}
+                    working={record?.congty_hientai}
+                  />
+                </>
               ) : (
                 "Chưa đi làm"
               )}
@@ -124,7 +129,7 @@ const List_operators = () => {
             )}
           </div>
           <div className="flex text-[13px] text-[#5f5f5f]  text-nowrap">
-            Ngày phỏng vấn: {text || "-"}
+            Ghi chú: {record?.ghichu || "-"}
           </div>
         </div>
       ),
@@ -149,7 +154,7 @@ const List_operators = () => {
         "Vendor",
         "Nhà chính",
         "Công ty đang làm",
-        "Ngày vào làm",
+        "Ngày phỏng vấn",
         "Ghi chú",
       ],
       ...data.map((item) => [
@@ -164,10 +169,23 @@ const List_operators = () => {
         item?.so_taikhoan,
         item?.chu_taikhoan,
         item?.ghichu_taikhoan,
-        item?.nguoituyen,
-        item?.vendor,
-        item?.nhachinh,
-        item?.congty_danglam,
+        item?.nguoituyen
+          ? user?.company?.Staff?.find((staff) => staff.id === item?.nguoituyen)
+              ?.profile?.full_name
+          : "-",
+        item?.vendor
+          ? user?.company?.Vendor?.find((ven) => ven.id === item?.vendor)?.name
+          : "-",
+        item?.nhachinh
+          ? user?.company?.Vendor?.find((ven) => ven.id === item?.nhachinh)
+              ?.name
+          : "-",
+        item?.congty_danglam
+          ? user?.company?.Customer?.find(
+              (ven) => ven.id === item?.congty_danglam
+            )?.name
+          : "-",
+        item?.ngay_phongvan,
         item?.ghichu,
       ]),
     ];

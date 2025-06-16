@@ -35,7 +35,7 @@ const Contacts_layout = () => {
     // },
   ];
   return (
-    <div className="flex flex-1">
+    <div className="flex flex-1 overflow-hidden">
       <LeftNav>
         <div className="top-nav">
           <div className="search">

@@ -28,7 +28,7 @@ const Contacts_list = () => {
           {activeFilter.label}
         </div>
       </div>
-      <div className="flex flex-col flex-1 p-2 gap-2 fadeInTop">
+      <div className="flex flex-col flex-1 p-2 gap-2 fadeInTop  overflow-hidden">
         <div className="flex whitebox">
           <div className="search !p-1">
             <div className="searchbox">
@@ -45,7 +45,7 @@ const Contacts_list = () => {
             </div>
           </div>
         </div>
-        <div className="whitebox h-full flex flex-col">
+        <div className="whitebox h-full flex flex-col overflow-hidden">
           <div className="flex gap-1">
             <Select className="w-30" placeholder="Sắp xếp" allowClear={true}>
               <Select.Option value="az">A-Z</Select.Option>

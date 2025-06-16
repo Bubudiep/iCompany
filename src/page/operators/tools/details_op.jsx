@@ -352,6 +352,11 @@ const Details_op = () => {
                         <Info label="Số điện thoại" value={op.sdt} />
                         <Info label="Số CCCD" value={op.so_cccd} />
                         <Info label="Địa chỉ" value={op.diachi} />
+                        <Info
+                          className="w-full"
+                          label="Ghi chú"
+                          value={op.ghichu}
+                        />
                       </div>
                     </div>
                   </div>

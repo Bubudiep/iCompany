@@ -3,7 +3,7 @@ import { useUser } from "../context/userContext";
 import { Descriptions, Tooltip } from "antd";
 import { HiOutlineOfficeBuilding } from "react-icons/hi";
 
-const Customer_view = ({ id }) => {
+const Customer_view = ({ id, working }) => {
   const { user } = useUser();
   const customer = user?.company?.Customer?.find(
     (customer) => customer.id === id
@@ -29,6 +29,22 @@ const Customer_view = ({ id }) => {
             <div>{customer?.fullname || "Chưa cập nhập"}</div>
           </div>
           <Descriptions column={1} className="card-format">
+            {working?.ma_nhanvien && (
+              <Descriptions.Item label="Mã nhân viên">
+                {(
+                  <div className="font-[500] text-[#007ce2]">
+                    {working?.ma_nhanvien}
+                  </div>
+                ) || "-"}
+              </Descriptions.Item>
+            )}
+            {working?.start_date && (
+              <Descriptions.Item label="Ngày vào làm">
+                {<div className=" text-[#007ce2]">{working?.start_date}</div> ||
+                  "-"}
+              </Descriptions.Item>
+            )}
+            <div className="border-b-1 pt-1 mb-1 border-[#d3d3d3]" />
             <Descriptions.Item label="Điện thoại">
               {customer?.hotline || "-"}
             </Descriptions.Item>
