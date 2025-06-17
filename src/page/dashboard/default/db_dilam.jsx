@@ -4,26 +4,36 @@ import { FaInfoCircle } from "react-icons/fa";
 import ReactApexChart from "react-apexcharts";
 
 const Db_dilam_card = ({ user }) => {
-  const [chartData, setChartData] = useState({});
+  const [chartData, setChartData] = useState([]);
+  const [labelSeries, setLabelSeries] = useState([]);
   useEffect(() => {
-    const labels = Object.keys(user?.company?.Dashboard?.op?.by_customer);
+    const dashboardData = user?.company?.Dashboard?.op?.by_customer || {};
+    const labels = Object.keys(dashboardData);
+    const labelsWithTotal = labels.map((label) => {
+      const subCompanies = dashboardData[label];
+      const total = Object.values(subCompanies).reduce(
+        (sum, val) => sum + val,
+        0
+      );
+      return { label, total };
+    });
+    const top10Labels = labelsWithTotal
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 10)
+      .map((item) => item.label);
     const tatCaCongTyCon = Array.from(
       new Set(
-        labels.flatMap((nc) =>
-          Object.keys(user?.company?.Dashboard?.op?.by_customer[nc])
-        )
+        top10Labels.flatMap((label) => Object.keys(dashboardData[label] || {}))
       )
     );
     const series = tatCaCongTyCon.map((ctyCon) => ({
       name: ctyCon,
-      data: labels.map(
-        (nc) => user?.company?.Dashboard?.op?.by_customer[nc][ctyCon] || 0
-      ),
+      data: top10Labels.map((label) => dashboardData[label]?.[ctyCon] || 0),
     }));
     const timeout = setTimeout(() => {
       setChartData(series);
+      setLabelSeries(top10Labels); // nếu cần set lại labels biểu đồ
     }, 300);
-
     return () => clearTimeout(timeout);
   }, []);
   const chartOptions = {
@@ -40,13 +50,23 @@ const Db_dilam_card = ({ user }) => {
         borderRadiusWhenStacked: "all",
         columnWidth: "50%",
         borderWidth: 1, // 👈 Không có tác dụng
+        dataLabels: {
+          total: {
+            enabled: true,
+            style: {
+              fontSize: "10px",
+              fontWeight: 500,
+              color: "#999",
+            },
+          },
+        },
       },
     },
     dataLabels: {
       enabled: false,
     },
     xaxis: {
-      categories: Object.keys(user?.company?.Dashboard?.op?.by_customer),
+      categories: labelSeries,
     },
     yaxis: {
       labels: {
@@ -85,7 +105,7 @@ const Db_dilam_card = ({ user }) => {
           color="white"
           title={
             <div className="text-[#636363] max-w-[200px] p-1">
-              Dựa theo dữ liệu báo cáo đi làm hằng ngày của nhân viên
+              Dựa theo dữ liệu báo cáo đi làm hằng ngày của nhân viên (TOP 10)
             </div>
           }
         >

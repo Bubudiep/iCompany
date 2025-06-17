@@ -9,7 +9,7 @@ const Staff_view = ({ id, className }) => {
   return staff ? (
     <Tooltip
       title={
-        <div className="flex flex-col w-[200px] text-[#000] gap-2">
+        <div className="flex flex-col w-[300px] text-[#000] gap-2">
           <div className="fullname p-2 flex flex-1 items-center justify-center flex-col gap-1">
             <div
               className="flex items-center justify-center rounded-full border-[2px] border-[#fff]

@@ -2019,7 +2019,7 @@ body,
       }
     }
     .avatar {
-      @apply flex flex-1 items-center justify-center font-[500] text-[#fff] text-[26px] max-w-16 w-16 h-16 rounded-[8px];
+      @apply flex flex-1 items-center justify-center font-[500] text-[#fff] text-[26px] max-w-16 min-w-16 w-16 h-16 rounded-[8px];
     }
   }
 }

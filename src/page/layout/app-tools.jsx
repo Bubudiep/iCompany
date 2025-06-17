@@ -1,8 +1,8 @@
 import { Modal, Tooltip } from "antd";
 import React, { useRef, useState } from "react";
-import { AiOutlineUserSwitch } from "react-icons/ai";
 import { FaDotCircle, FaUser, FaUserAlt } from "react-icons/fa";
-import { GoDotFill } from "react-icons/go";
+import { IoReloadCircleOutline, IoReloadCircleSharp } from "react-icons/io5";
+import app from "../../components/app";
 
 const App_tools = ({ user }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -22,6 +22,14 @@ const App_tools = ({ user }) => {
             <input type="text" ref={searchRef} />
           </div>
         </div>
+        <Tooltip title="Tải lại dữ liệu">
+          <div className="reload mr-3" onClick={app.send("reload")}>
+            <IoReloadCircleSharp
+              size={26}
+              className="text-[#0003] cursor-pointer hover:text-[#008cff] transition-all duration-300"
+            />
+          </div>
+        </Tooltip>
         <Tooltip
           title={(user?.onlines?.length ?? 0) + " người đang online"}
           className="flex items-center flex-col relative cursor-pointer mr-2"
