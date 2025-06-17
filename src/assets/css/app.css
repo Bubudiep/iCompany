@@ -2665,3 +2665,8 @@ input,
 .ant-tooltip {
   max-width: unset;
 }
+.dashboard {
+  .whitebox {
+    min-width: 200px;
+  }
+}
