@@ -23,7 +23,7 @@ const App_tools = ({ user }) => {
           </div>
         </div>
         <Tooltip title="Tải lại dữ liệu">
-          <div className="reload mr-3" onClick={app.send("reload")}>
+          <div className="reload mr-3" onClick={() => app.send("reload")}>
             <IoReloadCircleSharp
               size={26}
               className="text-[#0003] cursor-pointer hover:text-[#008cff] transition-all duration-300"
