@@ -27,7 +27,7 @@ const Dashboard_index = () => {
                 </div>
                 <div className="text-[13px] text-[#999] flex gap-1 items-center">
                   <FaMoneyBillTransfer className="text-[16px] mt-0.5" />
-                  Thống kê giữ lương NLĐ
+                  Top 4 nhân viên nhiều nhân lực đi làm nhất
                 </div>
                 <div className="flex mt-auto gap-1">
                   <div className="flex w-[50%] flex-col bg-[#e2f2ff] text-[#008cff] rounded-[4px] px-2 py-1">
