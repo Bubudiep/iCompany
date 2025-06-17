@@ -6,7 +6,7 @@ import Db_dilam_card from "./default/db_dilam";
 import { Empty } from "antd";
 import Db_op_card from "./default/db_op";
 import Staff_view from "../../components/by_id/staff_view";
-import { FaMoneyBillTransfer } from "react-icons/fa6";
+import { FaChartSimple, FaMoneyBillTransfer } from "react-icons/fa6";
 
 const Dashboard_index = () => {
   const { user } = useUser();
@@ -26,7 +26,7 @@ const Dashboard_index = () => {
                   Top tuyển dụng
                 </div>
                 <div className="text-[13px] text-[#999] flex gap-1 items-center">
-                  <FaMoneyBillTransfer className="text-[16px] mt-0.5" />
+                  <FaChartSimple className="text-[16px] mt-0.5" />
                   Top 4 nhân viên nhiều nhân lực đi làm nhất
                 </div>
                 <div className="flex mt-auto gap-1">
