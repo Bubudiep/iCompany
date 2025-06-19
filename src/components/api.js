@@ -10,7 +10,7 @@ const debugMode = import.meta.env.VITE_DEBUGMODE === "development";
 
 const api = axios.create({
   baseURL: host + "/api",
-  timeout: 10000,
+  timeout: 15000,
   headers: {
     "Content-Type": "application/json",
   },
