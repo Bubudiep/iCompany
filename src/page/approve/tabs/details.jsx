@@ -48,6 +48,7 @@ const Approve_details = () => {
       )
       .then((res) => {
         setApprove(res);
+        callback(res);
         message.success("Phê duyệt thành công!");
       })
       .finally(() => {
@@ -64,6 +65,7 @@ const Approve_details = () => {
       )
       .then((res) => {
         setApprove(res);
+        callback(res);
         message.success("Đã từ chối yêu cầu này!");
       })
       .finally(() => {
@@ -80,6 +82,7 @@ const Approve_details = () => {
       )
       .then((res) => {
         setApprove(res);
+        callback(res);
         message.success("Đã giải ngân thành công!");
       })
       .finally(() => {
@@ -96,6 +99,7 @@ const Approve_details = () => {
       )
       .then((res) => {
         setApprove(res);
+        callback(res);
         message.success("Đã phê duyệt và giải ngân thành công!");
       })
       .finally(() => {

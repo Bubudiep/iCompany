@@ -149,7 +149,15 @@ const Approve_baoung = () => {
                 </div>
               )}
             </div>
-            <Outlet context={{ list: approve }} />
+            <Outlet
+              context={{
+                list: approve,
+                callback: (res) =>
+                  setApprove((old) =>
+                    old.map((arv) => (arv.id === res.id ? res : arv))
+                  ),
+              }}
+            />
           </div>
         </div>
       </div>
