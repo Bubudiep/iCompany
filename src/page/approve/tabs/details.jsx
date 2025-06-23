@@ -348,12 +348,7 @@ const Approve_details = () => {
               </div>
               <div className="flex gap-1">
                 {approve.status === "pending" && (
-                  <Button
-                    onClick={handleCancel}
-                    danger
-                    icon={<FaXmark />}
-                    className="mr-auto"
-                  >
+                  <Button onClick={handleCancel} danger icon={<FaXmark />}>
                     Hủy
                   </Button>
                 )}
