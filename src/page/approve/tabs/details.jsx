@@ -238,22 +238,26 @@ const Approve_details = () => {
                 <div
                   className={`text-[18px] font-[600] flex justify-center p-2 status ${approve?.status}`}
                 >
-                  {approve?.status === "approved" ? (
-                    approve?.payment_status === "done" ? (
-                      approve?.requesttype?.need_retrive ? (
-                        approve?.retrieve_status === "done" ? (
-                          <div className="text-[#0b8000]">Đã thu hồi</div>
+                  {approve?.status === "cancel" ? (
+                    approve?.status === "approved" ? (
+                      approve?.payment_status === "done" ? (
+                        approve?.requesttype?.need_retrive ? (
+                          approve?.retrieve_status === "done" ? (
+                            <div className="text-[#0b8000]">Đã thu hồi</div>
+                          ) : (
+                            <>Chờ thu hồi</>
+                          )
                         ) : (
-                          <>Chờ thu hồi</>
+                          <>Hoàn tất</>
                         )
                       ) : (
-                        <>Hoàn tất</>
+                        <>Chờ giải ngân</>
                       )
                     ) : (
-                      <>Chờ giải ngân</>
+                      <>Chờ duyệt</>
                     )
                   ) : (
-                    <>Chờ duyệt</>
+                    <>Đã hủy</>
                   )}
                 </div>
               </Descriptions.Item>
