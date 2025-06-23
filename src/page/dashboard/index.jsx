@@ -19,7 +19,7 @@ const Dashboard_index = () => {
               <Db_baoung_card user={user} />
               <Db_baogiu_card user={user} />
             </div>
-            <div className="flex flex-col gap-4 w-[calc(25%-12px)]">
+            <div className="flex flex-col gap-4 w-[calc(25%-12px)] min-w-[300px]">
               <Db_op_card user={user} />
               <div className="flex whitebox flex-col h-[200px] w-full">
                 <div className="text-[15px] text-[#666] font-[500] flex justify-between">
