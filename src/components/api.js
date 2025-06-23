@@ -205,6 +205,8 @@ const error = (e) => {
   message.error(e?.response?.data?.detail || "Có lỗi xảy ra!");
 };
 const mapBreadcrumb = {
+  config: "Cài đặt",
+  user: "Cá nhân hóa",
   app: "Trang chủ",
   companys: "Công ty",
   roles: "Phòng ban & chức vụ",
