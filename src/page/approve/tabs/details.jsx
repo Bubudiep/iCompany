@@ -34,6 +34,9 @@ const Approve_details = () => {
         callback(res);
         message.success("Đã thu hồi thành công!");
       })
+      .catch((e) => {
+        message.error(e?.response?.data?.detail || "Lỗi không xác định!");
+      })
       .finally(() => {
         setApproving(false);
       });
@@ -50,6 +53,9 @@ const Approve_details = () => {
         setApprove(res);
         callback(res);
         message.success("Phê duyệt thành công!");
+      })
+      .catch((e) => {
+        message.error(e?.response?.data?.detail || "Lỗi không xác định!");
       })
       .finally(() => {
         setApproving(false);
@@ -68,6 +74,9 @@ const Approve_details = () => {
         callback(res);
         message.success("Đã từ chối yêu cầu này!");
       })
+      .catch((e) => {
+        message.error(e?.response?.data?.detail || "Lỗi không xác định!");
+      })
       .finally(() => {
         setApproving(false);
       });
@@ -84,6 +93,9 @@ const Approve_details = () => {
         setApprove(res);
         callback(res);
         message.success("Đã giải ngân thành công!");
+      })
+      .catch((e) => {
+        message.error(e?.response?.data?.detail || "Lỗi không xác định!");
       })
       .finally(() => {
         setApproving(false);
@@ -102,6 +114,9 @@ const Approve_details = () => {
         callback(res);
         message.success("Đã phê duyệt và giải ngân thành công!");
       })
+      .catch((e) => {
+        message.error(e?.response?.data?.detail || "Lỗi không xác định!");
+      })
       .finally(() => {
         setApproving(false);
       });
@@ -117,6 +132,9 @@ const Approve_details = () => {
             (res?.requesttype?.typecode || "_approve") + "_comment"
           ) || "TT chuyển khoản"
         );
+      })
+      .catch((e) => {
+        message.error(e?.response?.data?.detail || "Lỗi không xác định!");
       })
       .finally(() => {
         setLoading(false);
@@ -148,6 +166,9 @@ const Approve_details = () => {
             return;
           }
           navigate(`/app/approve/all/${list[this_approve + 1]?.request_code}`);
+        })
+        .catch((e) => {
+          message.error(e?.response?.data?.detail || "Lỗi không xác định!");
         })
         .finally(() => {
           setLoading(false);
