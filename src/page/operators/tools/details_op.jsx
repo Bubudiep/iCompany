@@ -193,6 +193,7 @@ const Details_op = () => {
                       ?.map((work) => (
                         <OP_History_card
                           key={work?.id}
+                          op={op}
                           work={work}
                           onDelete={(work) => {
                             console.log("Xoá công việc ID:", work.id);

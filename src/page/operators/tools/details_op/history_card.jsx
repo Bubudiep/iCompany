@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import api from "../../../../components/api";
 import { useUser } from "../../../../components/context/userContext";
 
-const OP_History_card = ({ work, onDelete, callback }) => {
+const OP_History_card = ({ work, onDelete, callback, op }) => {
   const [open, setOpen] = React.useState(false);
   const { user } = useUser();
   const [form] = Form.useForm();
@@ -96,7 +96,13 @@ const OP_History_card = ({ work, onDelete, callback }) => {
           ]}
         >
           <Form form={form} layout="vertical">
+            <Form.Item name="ho_ten" label="Tên đi làm">
+              <Input />
+            </Form.Item>
             <Form.Item name="ma_nhanvien" label="Mã nhân viên">
+              <Input />
+            </Form.Item>
+            <Form.Item name="so_cccd" label="Số CCCD">
               <Input />
             </Form.Item>
             <Form.Item name="vitri" label="Công việc">
@@ -123,8 +129,16 @@ const OP_History_card = ({ work, onDelete, callback }) => {
         </div>
       </div>
       <div className="flex text-[13px] gap-1">
+        Tên đi làm:
+        <a className="flex ml-auto">{work?.ho_ten || op?.ho_ten}</a>
+      </div>
+      <div className="flex text-[13px] gap-1">
         Mã nhân viên:
         <a className="flex ml-auto">{work?.ma_nhanvien || "N/A"}</a>
+      </div>
+      <div className="flex text-[13px] gap-1">
+        Số CCCD:
+        <a className="flex ml-auto">{work?.so_cccd || op?.so_cccd}</a>
       </div>
       <div className="flex text-[13px] gap-1">
         Công việc:

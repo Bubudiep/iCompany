@@ -78,6 +78,7 @@ const OP_dilamroi = ({ children, op, user, callback, className }) => {
           initialValues={{
             ten: op?.ho_ten,
             nguoituyen: op?.nguoituyen,
+            cccd: op?.so_cccd,
           }}
         >
           <Form.Item

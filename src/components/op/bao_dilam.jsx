@@ -70,6 +70,7 @@ const OP_dilam = ({ children, op, user, callback, className }) => {
           initialValues={{
             ten: op?.ho_ten,
             nguoituyen: op?.nguoituyen,
+            so_cccd: op?.so_cccd,
           }}
         >
           <Form.Item
@@ -124,7 +125,9 @@ const OP_dilam = ({ children, op, user, callback, className }) => {
           <Form.Item label={`Tên đi làm`} name="ten">
             <Input />
           </Form.Item>
-
+          <Form.Item label={`Số CCCD`} name="cccd">
+            <Input />
+          </Form.Item>
           <Form.Item label="Ghi chú" name="ghichu">
             <Input.TextArea rows={3} />
           </Form.Item>
