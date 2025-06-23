@@ -61,6 +61,26 @@ const Approve_details = () => {
         setApproving(false);
       });
   };
+  const handleCancel = () => {
+    setApproving(true);
+    api
+      .post(
+        `approve/${approve_id}/cancel/`,
+        { comment: approveComment },
+        user?.token
+      )
+      .then((res) => {
+        setApprove(res);
+        callback(res);
+        message.success("Đã từ chối yêu cầu này!");
+      })
+      .catch((e) => {
+        message.error(e?.response?.data?.detail || "Lỗi không xác định!");
+      })
+      .finally(() => {
+        setApproving(false);
+      });
+  };
   const handleReject = () => {
     setApproving(true);
     api
@@ -327,6 +347,16 @@ const Approve_details = () => {
                 (*) Bấm phím cách: Phê duyệt và giải ngân và qua phê duyệt tiếp
               </div>
               <div className="flex gap-1">
+                {approve.status === "pending" && (
+                  <Button
+                    onClick={handleCancel}
+                    danger
+                    icon={<FaXmark />}
+                    className="mr-auto"
+                  >
+                    Hủy
+                  </Button>
+                )}
                 {approve.status === "pending" && (
                   <Button
                     onClick={handleReject}
