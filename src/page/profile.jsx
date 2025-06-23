@@ -17,6 +17,9 @@ import { FaEdit, FaUser } from "react-icons/fa";
 import { AiFillSignature } from "react-icons/ai";
 import Update_profile from "../components/user/Update_profile";
 import Change_pass from "../components/user/Change_pass";
+import Card_bank_user from "../components/cards/user-bank-card";
+import app from "../components/app";
+import api from "../components/api";
 
 const Profile = () => {
   const { user, setUser } = useUser();
@@ -69,23 +72,69 @@ const Profile = () => {
       </div>
     );
   }
+  const [avatarPreview, setAvatarPreview] = useState(null);
+  const handleUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const resizedBase64 = app.resizeImage(img, 500);
+          api
+            .patch(
+              `/profile/${user?.info?.profile?.id}/`,
+              { avatar_base64: resizedBase64 },
+              user.token
+            )
+            .then((res) => {
+              setUser({ ...user, info: { ...user?.info, profile: res } });
+              setAvatarPreview(resizedBase64);
+              message.success("Cập nhật thành công!");
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  };
   return (
     <>
       <div className="flex w-full h-full overflow-hidden">
         <div className="flex flex-col w-[260px] items-center py-2 bg-white border-r-1 border-[#0003]">
-          <div className="avatar">
-            <div
-              className="box w-[120px] h-[120px] bg-[#6991be] rounded-2xl
-              flex items-center justify-center text-white"
-            >
-              {user?.info?.profile?.avatar ? (
-                <></>
+          <div className="avatar flex flex-col items-center">
+            <div className="box w-[120px] h-[120px] bg-[#6991be] rounded-2xl flex items-center justify-center text-white overflow-hidden">
+              {avatarPreview ? (
+                <img
+                  src={avatarPreview}
+                  alt="Avatar"
+                  className="w-full h-full object-cover rounded-2xl"
+                />
+              ) : user?.info?.profile?.avatar_base64 ? (
+                <img
+                  src={user.info.profile.avatar_base64}
+                  alt="Avatar"
+                  className="w-full h-full object-cover rounded-2xl"
+                />
               ) : (
-                <>
-                  <FaUser size={50} />
-                </>
+                <FaUser size={50} />
               )}
             </div>
+            <label
+              className="mt-1 cursor-pointer bg-[#98abc5] text-[11px] hover:underline
+            text-[#fff] px-1 pt-0.5 rounded-[4px]"
+            >
+              Tải ảnh lên
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleUpload}
+              />
+            </label>
             <div className="name text-center text-[16px] mt-2 text-[#000407]">
               {user?.info?.profile?.full_name || "Chưa có tên"}
             </div>
@@ -157,36 +206,8 @@ const Profile = () => {
               </Descriptions.Item>
             </Descriptions>
           </div>
-          <div className="whitebox">
-            <div className="flex justify-between items-center px-2 mt-1 mb-3">
-              <div className="flex items-center font-[500] text-[13px] gap-1">
-                <AiFillSignature />
-                Thông tin thanh toán và chuyển khoản
-              </div>
-              <div className="flex gap-2"></div>
-            </div>
-            <Descriptions column={2} bordered>
-              <Descriptions.Item label="Số tài khoản">
-                {user?.info?.profile?.so_taikhoan || (
-                  <div className="text-[#999]">Chưa cập nhập</div>
-                )}
-              </Descriptions.Item>
-              <Descriptions.Item label="Ngân hàng">
-                {user?.info?.profile?.nganhang || (
-                  <div className="text-[#999]">Chưa cập nhập</div>
-                )}
-              </Descriptions.Item>
-              <Descriptions.Item label="Chủ tài khoản">
-                {user?.info?.profile?.chu_taikhoan || (
-                  <div className="text-[#999]">Chưa cập nhập</div>
-                )}
-              </Descriptions.Item>
-              <Descriptions.Item label="Ghi chú">
-                {user?.info?.profile?.ghichu_nganhang || (
-                  <div className="text-[#999]">Chưa cập nhập</div>
-                )}
-              </Descriptions.Item>
-            </Descriptions>
+          <div className="whitebox !py-3">
+            <Card_bank_user user_id={user?.id} user_type="staff" />
           </div>
           <div className="whitebox">
             <div className="flex font-[500] text-[13px] gap-1 items-center px-2 mt-1 mb-3">

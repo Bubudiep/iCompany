@@ -221,7 +221,7 @@ const Chat_room = () => {
                 members={messages?.members}
                 isGroupChat={messages?.is_group}
                 chatName={messages?.name}
-                avatar={messages?.avatar}
+                avatar={messages?.avatar_base64}
                 host={messages?.host}
                 company={messages?.company}
                 created_at={messages?.created_at}

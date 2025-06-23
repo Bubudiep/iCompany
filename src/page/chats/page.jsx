@@ -8,10 +8,10 @@ import {
   useParams,
 } from "react-router-dom";
 import { useUser } from "../../components/context/userContext";
-import { Button, Empty, Tooltip } from "antd";
+import { Button, Empty, Image, Tooltip } from "antd";
 import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2";
 import New_chats from "../../components/chat/new_chat";
-import { FaUser } from "react-icons/fa";
+import { FaEye, FaUser } from "react-icons/fa";
 import { GoDotFill } from "react-icons/go";
 
 const Chat_page = () => {
@@ -74,9 +74,18 @@ const Chat_page = () => {
                     }`}
                   >
                     <div className="relative">
-                      <div className="avatar">
-                        {to?.profile?.avatar ? (
-                          <img src={to?.profile?.avatar} />
+                      <div className="avatar !rounded-[12px]">
+                        {to?.profile?.avatar_base64 ? (
+                          <Image
+                            src={to?.profile?.avatar_base64}
+                            preview={{
+                              mask: (
+                                <span className="text-[14px]">
+                                  <FaEye />
+                                </span>
+                              ),
+                            }}
+                          />
                         ) : (
                           <FaUser size={20} />
                         )}

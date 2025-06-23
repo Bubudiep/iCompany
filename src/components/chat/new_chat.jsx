@@ -56,7 +56,11 @@ const New_chats = ({ children }) => {
               >
                 <div className="relative">
                   <div className="avatar">
-                    {staff?.avatar ? <img src={staff.avatar} /> : <FaUser />}
+                    {staff?.avatar_base64 ? (
+                      <img src={staff.avatar_base64} />
+                    ) : (
+                      <FaUser />
+                    )}
                   </div>
                   {user?.onlines?.find((user) => user.id === staff?.id) && (
                     <Tooltip title="Đang hoạt động">

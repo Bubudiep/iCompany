@@ -74,15 +74,12 @@ const App_lists = () => {
       icon: (
         <div
           className="w-[50px] h-[50px] flex items-center justify-center
-          bg-white rounded-[50%]"
+          bg-white rounded-[8px] overflow-hidden"
         >
-          {user?.info?.profile?.avatar ? (
-            <img src={user?.info?.profile?.avatar}></img>
+          {user?.info?.profile?.avatar_base64 ? (
+            <img src={user?.info?.profile?.avatar_base64} className="!w-full" />
           ) : (
-            <FaUser
-              size={22}
-              style={{ filter: "drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.5))" }}
-            />
+            <FaUser size={20} />
           )}
         </div>
       ),

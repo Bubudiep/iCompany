@@ -5,9 +5,9 @@ import { useUser } from "../../../components/context/userContext";
 import { BsChatSquareText, BsGear } from "react-icons/bs";
 import { LuChevronsRightLeft, LuListTodo, LuMailCheck } from "react-icons/lu";
 import { IoGitCommitOutline } from "react-icons/io5";
-import { FaUser } from "react-icons/fa";
+import { FaEye, FaUser } from "react-icons/fa";
 import Message_chat_box from "./message_box";
-import { Button, Spin, Tooltip } from "antd";
+import { Button, Image, Spin, Tooltip } from "antd";
 import Message_send from "./message_send";
 import { GoDotFill } from "react-icons/go";
 
@@ -120,11 +120,26 @@ const Chat_rooms = () => {
             <>
               <div className="room_info">
                 <div className="top_info min-h-[60px]">
-                  <div className="avatar">
+                  <div className="avatar w-[50px] h-[50px] overflow-hidden">
                     {isGroup ? (
                       <></>
                     ) : (
-                      <>{to?.profile?.avatar ? <></> : <FaUser />}</>
+                      <>
+                        {to?.profile?.avatar_base64 ? (
+                          <Image
+                            src={to?.profile?.avatar_base64}
+                            preview={{
+                              mask: (
+                                <span className="text-[14px]">
+                                  <FaEye />
+                                </span>
+                              ),
+                            }}
+                          />
+                        ) : (
+                          <FaUser />
+                        )}
+                      </>
                     )}
                   </div>
                   <div className="flex flex-col">

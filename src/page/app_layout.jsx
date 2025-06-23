@@ -237,7 +237,7 @@ const Homepage_layout = () => {
               window?.electron?.send("Notice", {
                 appname: APP_NAME,
                 silent: true,
-                icon: sender?.profile?.avatar || undefined,
+                icon: sender?.profile?.avatar_base64 || undefined,
                 click_data: {
                   type: "user_chat",
                   data: data.data,

@@ -25,7 +25,6 @@ const Card_bank_user = ({
   const [bankCode, setBankCode] = useState("");
 
   useEffect(() => {
-    console.log(user_type);
     if (user_type === "new") {
       setIsModalOpen(true);
     }
