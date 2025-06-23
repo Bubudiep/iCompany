@@ -19,6 +19,7 @@ const Approve_details = () => {
   const [approve, setApprove] = useState({});
   const [loading, setLoading] = useState(false);
   const [approving, setApproving] = useState(false);
+  const [amountPay, setAmoutPay] = useState(0);
   const { list, callback } = useOutletContext();
   const navigate = useNavigate();
   const handleThuhoi = () => {
@@ -106,7 +107,7 @@ const Approve_details = () => {
     api
       .post(
         `approve/${approve_id}/payout/`,
-        { comment: approveComment },
+        { comment: approveComment, amountPay: amountPay },
         user?.token
       )
       .then((res) => {
@@ -126,7 +127,7 @@ const Approve_details = () => {
     api
       .post(
         `approve/${approve_id}/apply_pay/`,
-        { comment: approveComment },
+        { comment: approveComment, amountPay: amountPay },
         user?.token
       )
       .then((res) => {
@@ -147,6 +148,7 @@ const Approve_details = () => {
       .get(`approve/${approve_id}/`, user?.token)
       .then((res) => {
         setApprove(res);
+        setAmoutPay(res?.amount);
         setComment(
           localStorage.getItem(
             (res?.requesttype?.typecode || "_approve") + "_comment"
@@ -175,7 +177,7 @@ const Approve_details = () => {
       api
         .post(
           `approve/${approve_id}/apply_pay/`,
-          { comment: approveComment },
+          { comment: approveComment, amountPay: amountPay },
           user?.token
         )
         .then((res) => {
@@ -238,26 +240,28 @@ const Approve_details = () => {
                 <div
                   className={`text-[18px] font-[600] flex justify-center p-2 status ${approve?.status}`}
                 >
-                  {approve?.status === "cancel" ? (
+                  {approve?.status !== "cancel" ? (
                     approve?.status === "approved" ? (
                       approve?.payment_status === "done" ? (
                         approve?.requesttype?.need_retrive ? (
                           approve?.retrieve_status === "done" ? (
                             <div className="text-[#0b8000]">Đã thu hồi</div>
                           ) : (
-                            <>Chờ thu hồi</>
+                            <div className="text-[#6d8000]">
+                              Hoàn tất và chờ thu hồi
+                            </div>
                           )
                         ) : (
-                          <>Hoàn tất</>
+                          <div className="text-[#0b8000]">Hoàn tất</div>
                         )
                       ) : (
-                        <>Chờ giải ngân</>
+                        <div className="text-[#0197bd]">Chờ giải ngân</div>
                       )
                     ) : (
-                      <>Chờ duyệt</>
+                      <div className="text-[#0197bd]">Chờ duyệt</div>
                     )
                   ) : (
-                    <>Đã hủy</>
+                    <div className="text-[#f51d1d]">Đã hủy</div>
                   )}
                 </div>
               </Descriptions.Item>
@@ -347,6 +351,18 @@ const Approve_details = () => {
               )}
             </Descriptions>
             <div className="flex flex-col justify-between mt-auto gap-1">
+              <div className="flex justify-end items-center !text-[30px] !text-[#5e5e5e] font-[600]">
+                Số tiền giải ngân:
+                <Input
+                  placeholder="Số tiền giải ngân"
+                  value={parseInt(amountPay).toLocaleString()}
+                  onChange={(e) =>
+                    setAmoutPay(parseInt(e.target.value.replaceAll(".", "")))
+                  }
+                  className="text-right !w-[220px] !text-[30px] !border-none !text-[#ff5b0e] font-[600]"
+                />
+                VNĐ
+              </div>
               <div className="flex text-[#999] text-[13px] flex-row-reverse">
                 (*) Bấm phím cách: Phê duyệt và giải ngân và qua phê duyệt tiếp
               </div>
