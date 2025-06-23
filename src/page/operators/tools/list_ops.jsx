@@ -272,7 +272,7 @@ const List_operators = () => {
         loading={loading}
         scroll={{ y: 600 }}
         onRow={onRowClick}
-        pagination={{ pageSize: 10, showSizeChanger: false }}
+        pagination={{ pageSize: 20, showSizeChanger: false }}
       />
     </div>
   );
