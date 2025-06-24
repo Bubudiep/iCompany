@@ -117,9 +117,13 @@ const Approve_all = () => {
                         </div>
                         <div className="flex gap-1 items-center">
                           <div
-                            className={`type t${apv?.requesttype?.id} text-nowrap`}
+                            className={`type t${app.removeSpecial(
+                              apv?.requesttype
+                                ?.replaceAll(" ", "")
+                                ?.toLowerCase()
+                            )} text-nowrap`}
                           >
-                            {apv?.requesttype?.typecode}
+                            {apv?.requesttype}
                           </div>
                           <div className="text-[11px] text-[#474747]  text-nowrap">
                             {apv?.created_at && (
@@ -177,9 +181,7 @@ const Approve_all = () => {
                           <div className="flex">
                             <Staff_view id={apv?.requester} />
                           </div>
-                          <div className="flex">
-                            {apv?.operator?.ho_ten || "-"}
-                          </div>
+                          <div className="flex">{apv?.operator || "-"}</div>
                         </div>
                         <div className="flex flex-col gap-1">
                           <div className="flex">
