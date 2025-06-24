@@ -109,13 +109,12 @@ const Approve_all = () => {
                       }`}
                     >
                       <div className="w-[180px] flex flex-col gap-1">
-                        <Link
-                          to={`/app/approve/all/${apv?.request_code}`}
+                        <div
                           className="flex text-[#3993cf] hover:text-[#0076c5] transition-all 
                           duration-300 font-[500] hover:underline"
                         >
                           {apv?.request_code}
-                        </Link>
+                        </div>
                         <div className="flex gap-1 items-center">
                           <div
                             className={`type t${apv?.requesttype?.id} text-nowrap`}
@@ -176,7 +175,7 @@ const Approve_all = () => {
                       <>
                         <div className="flex w-[120px] flex-col gap-1">
                           <div className="flex">
-                            <Staff_view id={apv?.requester?.id} />
+                            <Staff_view id={apv?.requester} />
                           </div>
                           <div className="flex">
                             {apv?.operator?.ho_ten || "-"}
