@@ -47,6 +47,34 @@ const Details_op = () => {
       <p className="text-[#000102] font-[400]">{value || "—"}</p>
     </div>
   );
+  const formatNote = (text) => {
+    if (!text) return ["..."];
+    const parts = [];
+    const regex = /\[approve\|([A-Z0-9\-]+)\]/g;
+    let lastIndex = 0;
+    let match;
+    while ((match = regex.exec(text)) !== null) {
+      const [fullMatch, code] = match;
+      const index = match.index;
+      if (index > lastIndex) {
+        parts.push(text.slice(lastIndex, index));
+      }
+      parts.push(
+        <Link
+          key={code + index}
+          to={`/app/approve/all/${code}`}
+          className="text-blue-600 hover:underline"
+        >
+          {code}
+        </Link>
+      );
+      lastIndex = index + fullMatch.length;
+    }
+    if (lastIndex < text.length) {
+      parts.push(text.slice(lastIndex));
+    }
+    return parts;
+  };
   useEffect(() => {
     if (op_id) {
       setLoading(true);
@@ -220,12 +248,15 @@ const Details_op = () => {
                           label="Thâm niên"
                           value={
                             op?.work?.reduce((sum, item) => {
-                              const start =
-                                item?.start_date && dayjs(item?.start_date);
-                              const end =
-                                item?.end_date && dayjs(item?.end_date);
+                              const start = item?.start_date
+                                ? dayjs(item?.start_date)
+                                : dayjs();
+                              const end = item?.end_date
+                                ? dayjs(item?.end_date)
+                                : dayjs();
                               if (start && end) {
                                 const diff = end.diff(start, "day");
+                                console.log(diff);
                                 return sum + diff;
                               } else {
                                 return sum + 0;
@@ -507,7 +538,7 @@ const Details_op = () => {
                     </div>
                   </div>
                   <div className="content text-[13px] px-2 pb-2 text-[#03132b]">
-                    {his?.notes || "..."}
+                    {formatNote(his?.notes)}
                   </div>
                 </div>
               ))}
