@@ -79,16 +79,7 @@ function App() {
             </Route>
             <Route path="approve" element={<Approves_layout />}>
               <Route index element={<Navigate to="all" replace />} />
-              <Route path="all" element={<Approve_all />}>
-                <Route path=":approve_id" element={<Approve_details />} />
-              </Route>
-              <Route path="baoung" element={<Approve_baoung />}>
-                <Route path=":approve_id" element={<Approve_details />} />
-              </Route>
-              <Route path="giuluong" element={<Approve_giuluong />}>
-                <Route path=":approve_id" element={<Approve_details />} />
-              </Route>
-              <Route path="chitieu" element={<Approve_chitieu />}>
+              <Route path=":type" element={<Approve_all />}>
                 <Route path=":approve_id" element={<Approve_details />} />
               </Route>
             </Route>

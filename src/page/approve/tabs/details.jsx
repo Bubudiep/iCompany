@@ -6,13 +6,13 @@ import { Button, Descriptions, Input, message, Spin } from "antd";
 import dayjs from "dayjs";
 import Card_bank_user from "../../../components/cards/user-bank-card";
 import { FaCircleCheck, FaXmark } from "react-icons/fa6";
-import { FaCheck, FaCheckDouble } from "react-icons/fa";
+import { FaArrowLeft, FaCheck, FaCheckDouble } from "react-icons/fa";
 import { PiMoneyDuotone } from "react-icons/pi";
 import { RiBankCard2Line } from "react-icons/ri";
 import { MdPayments, MdSettingsBackupRestore } from "react-icons/md";
 
 const Approve_details = () => {
-  const { approve_id } = useParams();
+  const { approve_id, type } = useParams();
   const { user, setUser } = useUser();
   const [comment, setComment] = useState("TT chuyển khoản");
   const [approveComment, setapproveComment] = useState("TT chuyển khoản");
@@ -187,7 +187,9 @@ const Approve_details = () => {
             message.warning("Đã là cuối trang");
             return;
           }
-          navigate(`/app/approve/all/${list[this_approve + 1]?.request_code}`);
+          navigate(
+            `/app/approve/${type}/${list[this_approve + 1]?.request_code}`
+          );
         })
         .catch((e) => {
           message.error(e?.response?.data?.detail || "Lỗi không xác định!");
@@ -226,8 +228,14 @@ const Approve_details = () => {
               bordered
               className="mini !text-[13px]"
               title={
-                <div className="p-1">
-                  Chi tiết {approve?.requesttype?.typecode}
+                <div className="p-1 flex justify-between">
+                  <div className="flex gap-2 items-center">
+                    <Button
+                      icon={<FaArrowLeft />}
+                      onClick={() => navigate(`/app/approve/${type}`)}
+                    />
+                    Chi tiết {approve?.requesttype?.typecode}
+                  </div>
                 </div>
               }
             >
