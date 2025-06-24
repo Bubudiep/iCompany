@@ -34,7 +34,7 @@ const Approve_all = () => {
     setLoading(true);
     api
       .get(
-        `approve/?from=app${
+        `approve/?from=app${filter?.type ? `&banktype=${filter?.type}` : ``}${
           filter?.staff !== 0 ? `&staff=${filter?.staff}` : ``
         }${filter?.status !== 0 ? `&status=${filter?.status}` : ""}${
           type === "baoung"
@@ -62,8 +62,6 @@ const Approve_all = () => {
       .finally(() => setLoading(false));
   };
   useEffect(() => {
-    setApprove([]);
-    setPage(1);
     loadApprove();
   }, [type, filter]);
   useEffect(() => {
@@ -101,10 +99,13 @@ const Approve_all = () => {
             <Select
               className="w-[200px] !h-[40px]"
               placeholder="Người tuyển"
-              allowClear={true}
               value={filter?.staff}
               showSearch
-              onChange={(e) => setFilter((old) => ({ ...old, staff: e }))}
+              onChange={(e) => {
+                setPage(1);
+                setApprove([]);
+                setFilter((old) => ({ ...old, staff: e }));
+              }}
               filterOption={(input, option) =>
                 option?.label?.toLowerCase().includes(input.toLowerCase())
               }
@@ -114,6 +115,25 @@ const Approve_all = () => {
                   label: emp?.profile?.full_name,
                   value: emp?.id,
                 })),
+              ]}
+            />
+            <Select
+              className="w-[200px] !h-[40px]"
+              placeholder="Phân loại"
+              value={filter?.type || ""}
+              showSearch
+              onChange={(e) => {
+                setPage(1);
+                setApprove([]);
+                setFilter((old) => ({ ...old, type: e }));
+              }}
+              filterOption={(input, option) =>
+                option?.label?.toLowerCase().includes(input.toLowerCase())
+              }
+              options={[
+                { value: "", label: "Tất cả" },
+                { value: "bank", label: "Chuyển khoản" },
+                { value: "money", label: "Tiền mặt" },
               ]}
             />
             <div className="flex p-1 gap-2 ml-auto">
