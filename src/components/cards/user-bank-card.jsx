@@ -48,12 +48,13 @@ const Card_bank_user = ({
         .finally(() => setLoading(false));
     }
     if (user_type === "staff") {
-      setFullname(user?.info?.profile?.chu_taikhoan);
-      setBanknumber(user?.info?.profile?.so_taikhoan);
-      setBankname(user?.info?.profile?.nganhang);
+      const staff = user?.company?.Staff?.find((st) => st.id === user_id);
+      setFullname(staff?.profile?.chu_taikhoan);
+      setBanknumber(staff?.profile?.so_taikhoan);
+      setBankname(staff?.profile?.nganhang);
       const banktoQR = qrcode.BankQR(
-        user?.info?.profile?.so_taikhoan,
-        user?.info?.profile?.nganhang,
+        staff?.profile?.so_taikhoan,
+        staff?.profile?.nganhang,
         sotien,
         comment
       );

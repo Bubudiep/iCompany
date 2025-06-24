@@ -337,7 +337,7 @@ const Approve_details = () => {
                           user_type={approve?.nguoiThuhuong}
                           user_id={
                             approve?.nguoiThuhuong === "staff"
-                              ? approve?.requester?.id
+                              ? approve?.requester
                               : approve?.operator?.id
                           }
                           shadow={false}
