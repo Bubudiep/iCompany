@@ -349,7 +349,27 @@ const Approve_details = () => {
                           sotien={approve?.amount}
                         />
                       ) : (
-                        <>Đã giải ngân</>
+                        <div className="flex flex-col gap-1">
+                          <div className="ml-1 font-[500] text-[#00a716]">
+                            Đã giải ngân vào tài khoản
+                          </div>
+                          <Card_bank_user
+                            show_logo={false}
+                            user_type={approve?.nguoiThuhuong}
+                            user_id={
+                              approve?.nguoiThuhuong === "staff"
+                                ? approve?.requester
+                                : approve?.operator?.id
+                            }
+                            shadow={false}
+                            showQR={true}
+                            comment={comment.replaceAll(
+                              "{ten}",
+                              `${approve?.operator?.ho_ten ?? "No name"}`
+                            )}
+                            sotien={approve?.amount}
+                          />
+                        </div>
                       )}
                     </Descriptions.Item>
                   ) : (
@@ -368,7 +388,23 @@ const Approve_details = () => {
                           sotien={approve?.amount}
                         />
                       ) : (
-                        <>Đã giải ngân</>
+                        <div className="flex flex-col gap-1">
+                          <div className="ml-1 font-[500] text-[#00a716]">
+                            Đã giải ngân vào tài khoản
+                          </div>
+                          <Card_bank_user
+                            show_logo={false}
+                            user_type={approve?.nguoiThuhuong}
+                            user_id={approve}
+                            shadow={false}
+                            showQR={true}
+                            comment={comment.replaceAll(
+                              "{ten}",
+                              `${approve?.operator?.ho_ten ?? "No name"}`
+                            )}
+                            sotien={approve?.amount}
+                          />
+                        </div>
                       )}
                     </Descriptions.Item>
                   )}
