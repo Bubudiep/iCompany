@@ -10,6 +10,7 @@ import { FaArrowLeft, FaCheck, FaCheckDouble } from "react-icons/fa";
 import { PiMoneyDuotone } from "react-icons/pi";
 import { RiBankCard2Line } from "react-icons/ri";
 import { MdPayments, MdSettingsBackupRestore } from "react-icons/md";
+import Staff_view from "../../../components/by_id/staff_view";
 
 const Approve_details = () => {
   const { approve_id, type } = useParams();
@@ -277,8 +278,7 @@ const Approve_details = () => {
                 <div className="font-[600]"> {approve?.request_code}</div>
               </Descriptions.Item>
               <Descriptions.Item label="Người yêu cầu">
-                {approve?.requester?.profile?.full_name} (
-                {approve?.requester?.cardID})
+                <Staff_view id={approve?.requester} />
               </Descriptions.Item>
               <Descriptions.Item label="Yêu cầu cho">
                 {approve?.operator?.ho_ten}
@@ -353,7 +353,24 @@ const Approve_details = () => {
                       )}
                     </Descriptions.Item>
                   ) : (
-                    <></>
+                    <Descriptions.Item label="TT chuyển khoản" span={2}>
+                      {approve.payment_status === "not" ? (
+                        <Card_bank_user
+                          show_logo={false}
+                          user_type={approve?.nguoiThuhuong}
+                          user_id={approve}
+                          shadow={false}
+                          showQR={true}
+                          comment={comment.replaceAll(
+                            "{ten}",
+                            `${approve?.operator?.ho_ten ?? "No name"}`
+                          )}
+                          sotien={approve?.amount}
+                        />
+                      ) : (
+                        <>Đã giải ngân</>
+                      )}
+                    </Descriptions.Item>
                   )}
                 </>
               )}

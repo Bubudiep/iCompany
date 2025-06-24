@@ -60,6 +60,19 @@ const Card_bank_user = ({
       setBankCode(banktoQR);
       setLoading(false);
     }
+    if (user_type === "other") {
+      setFullname(user_id?.khacCtk);
+      setBanknumber(user_id?.khacStk);
+      setBankname(user_id?.khacNganhang);
+      const banktoQR = qrcode.BankQR(
+        user?.info?.profile?.so_taikhoan,
+        user?.info?.profile?.nganhang,
+        sotien,
+        comment
+      );
+      setBankCode(banktoQR);
+      setLoading(false);
+    }
   }, [user_type, isModalOpen]);
 
   const handleSave = () => {
