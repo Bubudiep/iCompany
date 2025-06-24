@@ -74,7 +74,7 @@ const Card_bank_user = ({
       setBankCode(banktoQR);
       setLoading(false);
     }
-  }, [user_type, isModalOpen]);
+  }, [user_type, isModalOpen, comment]);
 
   const handleSave = () => {
     if (user_id && user_type === "op") {

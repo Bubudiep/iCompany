@@ -16,6 +16,7 @@ class VietQR {
 
   convertLength(str) {
     const num = parseInt(str);
+    console.log(num < 10 ? `0${num}` : `${num}`);
     return num < 10 ? `0${num}` : num;
   }
 
@@ -83,22 +84,22 @@ class VietQR {
       0x2e93, 0x3eb2, 0x0ed1, 0x1ef0,
     ];
 
-    var crc = 0xffff;
-    var j, i;
-    for (i = 0; i < str.length; i++) {
-      let c = str.charCodeAt(i);
-      if (c > 255) {
-        throw new RangeError();
-      }
-      j = (c ^ (crc >> 8)) & 0xff;
-      crc = crcTable[j] ^ (crc << 8);
+    let crc = 0xffff;
+    for (let i = 0; i < str.length; i++) {
+      const c = str.charCodeAt(i);
+      if (c > 255) throw new RangeError("Only ASCII input is supported");
+      const j = (c ^ (crc >> 8)) & 0xff;
+      crc = (crcTable[j] ^ (crc << 8)) & 0xffff; // 👈 giữ crc ở 16-bit
     }
-    return (crc ^ 0) & 0xffff;
+    return crc;
   }
 
   build() {
     const contentQR = `${this.payloadFormatIndicator}${this.pointOfInitiationMethod}${this.consumerAccountInformation}${this.transactionCurrency}${this.transactionAmount}${this.countryCode}${this.additionalDataFieldTemplate}6304`;
-    const crc = this.calcCRC(contentQR).toString(16).toUpperCase();
+    const crc = this.calcCRC(contentQR)
+      .toString(16)
+      .toUpperCase()
+      .padStart(4, "0");
     return `${contentQR}${crc}`;
   }
 }

@@ -48,16 +48,16 @@ const Approve_all = () => {
         user?.token
       )
       .then((res) => {
-        setTotal(res?.count);
-        setApprove((old) => {
-          const combined = [...old, ...res?.results];
-          const unique = combined.filter(
-            (item, index, self) =>
-              index === self.findIndex((i) => i.id === item.id)
-          );
-          return unique;
-        });
-        setPage((prev) => prev + 1);
+        if (res?.results) {
+          setTotal(res?.count);
+          setApprove((old) => [
+            ...old?.filter((item) =>
+              res?.results.findIndex((i) => i.id === item.id)
+            ),
+            ...res?.results,
+          ]);
+          setPage((prev) => prev + 1);
+        }
       })
       .finally(() => setLoading(false));
   };
