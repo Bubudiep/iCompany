@@ -37,7 +37,7 @@ const Db_baogiu_card = ({ user }) => {
     // },
   ];
   return (
-    <div className="flex whitebox flex-col h-[200px] w-full">
+    <div className="flex whitebox flex-col h-[340px] w-full !min-w-[300px]">
       <div className="text-[15px] text-[#666] font-[500] flex justify-between">
         Báo giữ lương
         <Tooltip

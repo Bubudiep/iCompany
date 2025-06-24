@@ -30,9 +30,33 @@ const Db_op_card = ({ user }) => {
       bg: "#ffe9d7",
       textColor: "#c77e4d",
     },
+    {
+      label: "Của nhà khác",
+      condition: operator.nhachinh,
+      bg: "#ffe9d7",
+      textColor: "#c77e4d",
+    },
+    {
+      label: "Của nhà khác",
+      condition: operator.nhachinh,
+      bg: "#ffe9d7",
+      textColor: "#c77e4d",
+    },
+    {
+      label: "Của nhà khác",
+      condition: operator.nhachinh,
+      bg: "#ffe9d7",
+      textColor: "#c77e4d",
+    },
+    {
+      label: "Của nhà khác",
+      condition: operator.nhachinh,
+      bg: "#ffe9d7",
+      textColor: "#c77e4d",
+    },
   ];
   return (
-    <div className="flex whitebox flex-col h-[200px] w-full">
+    <div className="flex whitebox flex-col h-[340px] w-full !min-w-[300px]">
       <div className="text-[15px] text-[#666] font-[500] flex justify-between">
         Nhân lực
         <Tooltip
@@ -48,17 +72,13 @@ const Db_op_card = ({ user }) => {
           </div>
         </Tooltip>
       </div>
-      <div className="text-[13px] text-[#999] flex gap-1 items-center">
-        <TbPigMoney className="text-[17px]" />
-        Thông kê người lao động
-      </div>
       <div className="flex mt-auto gap-1">
         <div className="grid grid-cols-2 gap-2 mt-auto flex-1">
           {statusConfigs.map(({ label, condition, bg, textColor }, index) => {
             return (
               <div
                 key={index}
-                className="flex flex-1 flex-col rounded-[4px] p-1 px-2 text-[13px] font-[500]"
+                className="flex flex-1 flex-col rounded-[4px] p-1.5 px-2 text-[13px] font-[500]"
                 style={{ backgroundColor: bg, color: textColor }}
               >
                 <div className="flex flex-col justify-between">

@@ -98,7 +98,7 @@ const Db_dilam_card = ({ user }) => {
     ],
   };
   return (
-    <div className="flex flex-col flex-1">
+    <div className="flex flex-col flex-1 h-[320px]">
       <div className="text-[15px] text-[#666] font-[500] flex justify-between">
         Thống kê nhân lực theo nhà chính
         <Tooltip
@@ -120,7 +120,7 @@ const Db_dilam_card = ({ user }) => {
           options={chartOptions}
           series={chartData}
           type="bar"
-          height={350}
+          height={288}
         />
       </div>
     </div>
