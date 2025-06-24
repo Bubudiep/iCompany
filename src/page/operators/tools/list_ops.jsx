@@ -20,15 +20,26 @@ const List_operators = () => {
   });
   const { user } = useUser();
 
-  const fetchData = (params = {}) => {
+  const fetchData = (
+    params = {},
+    link = `/ops/?page_size=99999`,
+    replace = true
+  ) => {
     setLoading(true);
     api
-      .get(`/ops/?page_size=99999`, user.token)
+      .get(link, user.token)
       .then((res) => {
-        setData(res.results);
-        setPagination({
-          total: res.count,
-        });
+        if (replace) {
+          setData(res.results);
+          setPagination({
+            total: res.count,
+          });
+        } else {
+          setData((old) => [...old, res.results]);
+        }
+        if (res?.next) {
+          fetchData(params, res?.next?.replace("http", "https"), false);
+        }
       })
       .catch((err) => {
         message.error("Lỗi tải dữ liệu");
@@ -207,7 +218,7 @@ const List_operators = () => {
     );
   };
   const filteredData = data.filter((item) =>
-    item.ho_ten.toLowerCase().includes(filterText.toLowerCase())
+    item?.ho_ten?.toLowerCase().includes(filterText?.toLowerCase())
   );
   const navigate = useNavigate();
   const onRowClick = (record) => {

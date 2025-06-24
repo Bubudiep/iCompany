@@ -9,6 +9,7 @@ import api from "../../../components/api";
 import { useLocation } from "react-router-dom";
 import app from "../../../components/app";
 import { Image } from "antd";
+import { RiLoader4Fill } from "react-icons/ri";
 
 const Message_chat_box = ({
   messages,
@@ -66,17 +67,22 @@ const Message_chat_box = ({
           )}
           <div className="box">
             <div className="text-[15px] whitespace-pre-line">{msg.message}</div>
-            {messages?.[index - 1]?.sender === msg.sender &&
-            dayjs(messages?.[index - 1]?.created_at).diff(
-              dayjs(msg?.created_at),
-              "minute"
-            ) <= 2 ? (
-              <></>
-            ) : (
-              <div className="time text-[11px] text-[#818181]">
-                {dayjs(msg.created_at).format("HH:mm")}
-              </div>
-            )}
+            <div className="time text-[11px] text-[#818181] flex items-center">
+              {messages?.[index - 1]?.sender === msg.sender &&
+              dayjs(messages?.[index - 1]?.created_at).diff(
+                dayjs(msg?.created_at),
+                "minute"
+              ) <= 2 ? (
+                <></>
+              ) : (
+                <>{dayjs(msg.created_at).format("HH:mm")}</>
+              )}
+              {msg?.sending && (
+                <div className="ml-auto text-[#0088e2]">
+                  <RiLoader4Fill className="spining" />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </>

@@ -25,6 +25,23 @@ const Message_send = ({
     if (!msg || !room_id || !user.token || loading) return;
     setLoading(true);
     setOpenEmoji(false);
+    const random_number = Math.floor(Math.random() * 900000) + 100000;
+    setMesss((old) => [
+      ...old,
+      {
+        attachment: null,
+        created_at: new Date().toISOString(),
+        ghim_by: null,
+        id: random_number,
+        sending: true,
+        isAction: false,
+        mention_users: [],
+        message: msg,
+        reply_to: null,
+        room: room_id,
+        sender: user?.id,
+      },
+    ]);
     api
       .post(
         `/chatbox/${room_id}/chat/`,
@@ -37,7 +54,10 @@ const Message_send = ({
         setTimeout(() => {
           scrollToBottom();
         }, 100);
-        setMesss((old) => [...old, res]);
+        setMesss((old) => [
+          ...old.filter((item) => item.id !== random_number),
+          res,
+        ]);
         setUser((old) => ({
           ...old,
           chatbox: old.chatbox.map((chat) =>
