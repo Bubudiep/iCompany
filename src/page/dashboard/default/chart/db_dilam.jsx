@@ -54,7 +54,7 @@ const Db_dilam_card = ({ user }) => {
           total: {
             enabled: true,
             style: {
-              fontSize: "10px",
+              fontSize: "12px",
               fontWeight: 500,
               color: "#999",
             },
@@ -67,12 +67,17 @@ const Db_dilam_card = ({ user }) => {
     },
     xaxis: {
       categories: labelSeries,
+      labels: {
+        style: {
+          fontSize: "12px",
+        },
+      },
     },
     yaxis: {
       labels: {
         formatter: (val) => `${val}`,
         style: {
-          fontSize: "13px",
+          fontSize: "12px",
         },
       },
     },
