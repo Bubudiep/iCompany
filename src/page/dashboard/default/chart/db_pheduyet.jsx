@@ -2,37 +2,76 @@ import { Empty, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { FaInfoCircle } from "react-icons/fa";
 import ReactApexChart from "react-apexcharts";
+import dayjs from "dayjs";
 
 const Db_pheduyet_card = ({ user }) => {
   const [chartData, setChartData] = useState([]);
   const [labelSeries, setLabelSeries] = useState([]);
   useEffect(() => {
-    const dashboardData = user?.company?.Dashboard?.op?.by_customer || {};
-    const labels = Object.keys(dashboardData);
-    const labelsWithTotal = labels.map((label) => {
-      const subCompanies = dashboardData[label];
-      const total = Object.values(subCompanies).reduce(
-        (sum, val) => sum + val,
-        0
-      );
-      return { label, total };
+    const dashboardData = user?.company?.Dashboard?.approve || {};
+    const allDatesSet = new Set();
+    const map = {};
+    dashboardData?.baoung?.forEach((item) => {
+      const date = dayjs(item?.created_at).format("DD-MM");
+      allDatesSet.add(date);
+      if (!map[date]) map[date] = {};
+      map[date][item?.status] =
+        (map?.[date]?.[item?.status] || 0) + parseInt(item?.amount);
     });
-    const top10Labels = labelsWithTotal
-      .sort((a, b) => b.total - a.total)
-      .slice(0, 10)
-      .map((item) => item.label);
-    const tatCaCongTyCon = Array.from(
-      new Set(
-        top10Labels.flatMap((label) => Object.keys(dashboardData[label] || {}))
-      )
-    );
-    const series = tatCaCongTyCon.map((ctyCon) => ({
-      name: ctyCon,
-      data: top10Labels.map((label) => dashboardData[label]?.[ctyCon] || 0),
-    }));
+    const allDates = Array.from(allDatesSet).sort();
     const timeout = setTimeout(() => {
-      setChartData(series);
-      setLabelSeries(top10Labels); // nếu cần set lại labels biểu đồ
+      setChartData([
+        {
+          name: "Chờ duyệt",
+          data: allDates.map((date) => {
+            return dashboardData?.baoung
+              ?.filter(
+                (item) =>
+                  dayjs(item?.created_at).format("DD-MM") === date &&
+                  item?.payment_status === "not" &&
+                  item?.status === "pending"
+              )
+              .reduce((sum, item) => sum + parseInt(item.amount || 0), 0);
+          }),
+        },
+        {
+          name: "Hoàn tất",
+          data: allDates.map((date) => {
+            return dashboardData?.baoung
+              ?.filter(
+                (item) =>
+                  dayjs(item?.created_at).format("DD-MM") === date &&
+                  item?.payment_status === "done"
+              )
+              .reduce((sum, item) => sum + parseInt(item.amount || 0), 0);
+          }),
+        },
+        {
+          name: "Từ chối",
+          data: allDates.map((date) => {
+            return dashboardData?.baoung
+              ?.filter(
+                (item) =>
+                  dayjs(item?.created_at).format("DD-MM") === date &&
+                  item?.status === "reject"
+              )
+              .reduce((sum, item) => sum + parseInt(item.amount || 0), 0);
+          }),
+        },
+        {
+          name: "Hủy",
+          data: allDates.map((date) => {
+            return dashboardData?.baoung
+              ?.filter(
+                (item) =>
+                  dayjs(item?.created_at).format("DD-MM") === date &&
+                  item?.status === "cancel"
+              )
+              .reduce((sum, item) => sum + parseInt(item.amount || 0), 0);
+          }),
+        },
+      ]);
+      setLabelSeries(allDates);
     }, 300);
     return () => clearTimeout(timeout);
   }, []);
@@ -58,6 +97,9 @@ const Db_pheduyet_card = ({ user }) => {
               fontWeight: 500,
               color: "#999",
             },
+            formatter: function (val) {
+              return (val / 1000000).toFixed(1) + " tr";
+            },
           },
         },
       },
@@ -70,7 +112,7 @@ const Db_pheduyet_card = ({ user }) => {
     },
     yaxis: {
       labels: {
-        formatter: (val) => `${val}`,
+        formatter: (val) => (val / 1000000).toFixed(1) + " tr",
         style: {
           fontSize: "13px",
         },
@@ -78,7 +120,7 @@ const Db_pheduyet_card = ({ user }) => {
     },
     tooltip: {
       y: {
-        formatter: (val) => `${val} người`, // ✅ chỉ tooltip mới có "người"
+        formatter: (val) => `${val.toLocaleString()} vnđ`, // ✅ chỉ tooltip mới có "người"
       },
     },
     legend: {

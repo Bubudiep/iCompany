@@ -2,39 +2,35 @@ import { Tooltip } from "antd";
 import React from "react";
 import { FaInfoCircle } from "react-icons/fa";
 import { TbPigMoney } from "react-icons/tb";
+import Staff_view from "./../../../components/by_id/staff_view";
 
-const Db_op_card = ({ user }) => {
+const Db_op_today = ({ user }) => {
   const operator = user?.company?.Dashboard?.op || {};
+  let op_data = {};
+  operator?.homnay?.map((op) => {
+    if (!op_data[op.nguoibaocao]) op_data[op.nguoibaocao] = 0;
+    op_data[op.nguoibaocao] = op_data[op.nguoibaocao] + 1;
+  });
   const statusConfigs = [
     {
       label: "Tất cả",
-      condition: operator?.total,
+      condition: operator?.homnay?.length,
       bg: "#e2f2ff",
       textColor: "#008cff",
     },
-    {
-      label: "Hôm nay",
-      condition: operator?.homnay?.length,
-      bg: "#d7fff1",
-      textColor: "#2ca97e",
-    },
-    {
-      label: "Đang đi làm",
-      condition: operator?.dilam,
-      bg: "#e9e8ff",
-      textColor: "#5c56ce",
-    },
-    {
-      label: "Của nhà khác",
-      condition: operator?.nhachinh,
-      bg: "#ffe9d7",
-      textColor: "#c77e4d",
-    },
+    ...Object.keys(op_data).map((op) => {
+      return {
+        label: <Staff_view id={parseInt(op)} />,
+        condition: op_data[op],
+        bg: "#e2f2ff",
+        textColor: "#008cff",
+      };
+    }),
   ];
   return (
     <div className="flex whitebox flex-col h-[186px] w-full !min-w-[300px]">
       <div className="text-[15px] text-[#666] font-[500] flex justify-between">
-        Nhân lực
+        Người mới hôm nay
         <Tooltip
           color="white"
           title={
@@ -72,4 +68,4 @@ const Db_op_card = ({ user }) => {
   );
 };
 
-export default Db_op_card;
+export default Db_op_today;

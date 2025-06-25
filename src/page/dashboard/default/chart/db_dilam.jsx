@@ -120,7 +120,7 @@ const Db_dilam_card = ({ user }) => {
           options={chartOptions}
           series={chartData}
           type="bar"
-          height={288}
+          height={338}
         />
       </div>
     </div>
