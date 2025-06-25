@@ -202,7 +202,13 @@ export const debounceDelete = (url, token, delay = DEFAULT_DELAY) => {
   });
 };
 const error = (e) => {
-  message.error(e?.response?.data?.detail || "Có lỗi xảy ra!");
+  message.error(
+    e?.response?.data?.detail ||
+      e?.response?.data?.details ||
+      e?.response?.data?.error ||
+      e?.response?.data?.errors ||
+      "Có lỗi xảy ra!"
+  );
 };
 const mapBreadcrumb = {
   config: "Cài đặt",

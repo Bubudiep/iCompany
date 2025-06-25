@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import api from "../../../components/api";
 import { useUser } from "../../../components/context/userContext";
-import { Button, Descriptions, Input, message, Spin } from "antd";
+import { Button, Descriptions, Input, message, Spin, Tooltip } from "antd";
 import dayjs from "dayjs";
 import Card_bank_user from "../../../components/cards/user-bank-card";
 import { FaCircleCheck, FaXmark } from "react-icons/fa6";
@@ -20,6 +20,7 @@ const Approve_details = () => {
   const [approve, setApprove] = useState({});
   const [loading, setLoading] = useState(false);
   const [approving, setApproving] = useState(false);
+  const [showBank, setShowBank] = useState(false);
   const [amountPay, setAmoutPay] = useState(0);
   const { list, callback } = useOutletContext();
   const navigate = useNavigate();
@@ -349,7 +350,36 @@ const Approve_details = () => {
                           sotien={approve?.amount}
                         />
                       ) : (
-                        <>Đã giải ngân</>
+                        <div className="flex flex-col gap-1">
+                          <div className="flex ml-1 justify-start">
+                            <Tooltip title="Bấm để hiển thị thông tin chuyển khoản!">
+                              <div
+                                className="font-[500] text-[#00a716] cursor-pointer"
+                                onClick={() => setShowBank(!showBank)}
+                              >
+                                Đã giải ngân vào tài khoản
+                              </div>
+                            </Tooltip>
+                          </div>
+                          {showBank && (
+                            <Card_bank_user
+                              show_logo={false}
+                              user_type={approve?.nguoiThuhuong}
+                              user_id={
+                                approve?.nguoiThuhuong === "staff"
+                                  ? approve?.requester
+                                  : approve?.operator?.id
+                              }
+                              shadow={false}
+                              showQR={true}
+                              comment={comment.replaceAll(
+                                "{ten}",
+                                `${approve?.operator?.ho_ten ?? "No name"}`
+                              )}
+                              sotien={approve?.amount}
+                            />
+                          )}
+                        </div>
                       )}
                     </Descriptions.Item>
                   ) : (
@@ -368,7 +398,32 @@ const Approve_details = () => {
                           sotien={approve?.amount}
                         />
                       ) : (
-                        <>Đã giải ngân</>
+                        <div className="flex flex-col gap-1">
+                          <div className="flex ml-1 justify-start">
+                            <Tooltip title="Bấm để hiển thị thông tin chuyển khoản!">
+                              <div
+                                className="cursor-pointer font-[500] text-[#00a716]"
+                                onClick={() => setShowBank(!showBank)}
+                              >
+                                Đã giải ngân vào tài khoản
+                              </div>
+                            </Tooltip>
+                          </div>
+                          {showBank && (
+                            <Card_bank_user
+                              show_logo={false}
+                              user_type={approve?.nguoiThuhuong}
+                              user_id={approve}
+                              shadow={false}
+                              showQR={true}
+                              comment={comment.replaceAll(
+                                "{ten}",
+                                `${approve?.operator?.ho_ten ?? "No name"}`
+                              )}
+                              sotien={approve?.amount}
+                            />
+                          )}
+                        </div>
                       )}
                     </Descriptions.Item>
                   )}

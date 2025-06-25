@@ -19,6 +19,7 @@ const { Option } = Select;
 
 const OP_baoung = ({ children, op, user, callback, className }) => {
   const [open, setOpen] = useState(false);
+  const [isSend, setIsSend] = useState(false);
   const [form] = Form.useForm();
   const [nguoiThuHuong, setNguoiThuHuong] = useState(null);
   const [hinhThuc, setHinhThuc] = useState(null);
@@ -41,13 +42,20 @@ const OP_baoung = ({ children, op, user, callback, className }) => {
 
   const handleSave = async () => {
     try {
+      setIsSend(true);
       const values = await form.validateFields();
-      api.post(`/ops/${op.id}/baoung/`, values, user.token).then((res) => {
-        message.success("Báo ứng thành công!");
-        callback(res);
-        setOpen(false);
-        form.resetFields();
-      });
+      api
+        .post(`/ops/${op.id}/baoung/`, values, user.token)
+        .then((res) => {
+          message.success("Báo ứng thành công!");
+          callback(res);
+          setOpen(false);
+          form.resetFields();
+        })
+        .catch((e) => {
+          api.error(e);
+        })
+        .finally(() => setIsSend(false));
     } catch (err) {
       message.warning("Vui lòng điền đầy đủ thông tin bắt buộc!");
     }
@@ -70,7 +78,12 @@ const OP_baoung = ({ children, op, user, callback, className }) => {
           <Button key="cancel" onClick={onClose}>
             Hủy
           </Button>,
-          <Button key="submit" type="primary" onClick={handleSave}>
+          <Button
+            key="submit"
+            type="primary"
+            loading={isSend}
+            onClick={handleSave}
+          >
             Lưu
           </Button>,
         ]}

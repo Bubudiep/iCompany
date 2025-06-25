@@ -25,16 +25,16 @@ const Approve_all = () => {
   const [filterText, setFilterText] = useState("");
   const [filter, setFilter] = useState({ staff: 0, status: 0 });
   const [approve, setApprove] = useState([]);
-  const [loading, setLoading] = useState(true);
   const location = useLocation();
-  const pageRef = useRef(1);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
   const { user, setUser } = useUser();
   const scrollRef = useRef(null);
   const loadApprove = () => {
     setLoading(true);
     api
       .get(
-        `approve/?from=app${
+        `approve/?from=app${filter?.type ? `&banktype=${filter?.type}` : ``}${
           filter?.staff !== 0 ? `&staff=${filter?.staff}` : ``
         }${filter?.status !== 0 ? `&status=${filter?.status}` : ""}${
           type === "baoung"
@@ -44,35 +44,38 @@ const Approve_all = () => {
             : type === "giuluong"
             ? "&type=Báo giữ lương"
             : ""
-        }&page=${pageRef.current}&page_size=15`,
+        }&page=${page}&page_size=15`,
         user?.token
       )
       .then((res) => {
-        setTotal(res?.count);
-        setApprove((old) => [...old, ...res?.results]);
-        pageRef.current += 1;
+        if (res?.results) {
+          setTotal(res?.count);
+          setApprove((old) => [
+            ...old?.filter((item) =>
+              res?.results.findIndex((i) => i.id === item.id)
+            ),
+            ...res?.results,
+          ]);
+          setPage((prev) => prev + 1);
+        }
       })
       .finally(() => setLoading(false));
   };
   useEffect(() => {
-    setApprove([]);
-    pageRef.current = 1;
     loadApprove();
   }, [type, filter]);
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
     const handleScroll = () => {
-      const isBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 100; // gần cuối
-      if (isBottom) {
-        if (approve.length < total) {
-          loadApprove();
-        }
+      const isBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 100;
+      if (isBottom && !loading && approve.length < total) {
+        loadApprove();
       }
     };
     el.addEventListener("scroll", handleScroll);
     return () => el.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [loading, approve.length, total]);
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <div className="min-h-[60px] bg-white flex border-b-1 border-[#0003]"></div>
@@ -96,10 +99,13 @@ const Approve_all = () => {
             <Select
               className="w-[200px] !h-[40px]"
               placeholder="Người tuyển"
-              allowClear={true}
               value={filter?.staff}
               showSearch
-              onChange={(e) => setFilter((old) => ({ ...old, staff: e }))}
+              onChange={(e) => {
+                setPage(1);
+                setApprove([]);
+                setFilter((old) => ({ ...old, staff: e }));
+              }}
               filterOption={(input, option) =>
                 option?.label?.toLowerCase().includes(input.toLowerCase())
               }
@@ -109,6 +115,25 @@ const Approve_all = () => {
                   label: emp?.profile?.full_name,
                   value: emp?.id,
                 })),
+              ]}
+            />
+            <Select
+              className="w-[200px] !h-[40px]"
+              placeholder="Phân loại"
+              value={filter?.type || ""}
+              showSearch
+              onChange={(e) => {
+                setPage(1);
+                setApprove([]);
+                setFilter((old) => ({ ...old, type: e }));
+              }}
+              filterOption={(input, option) =>
+                option?.label?.toLowerCase().includes(input.toLowerCase())
+              }
+              options={[
+                { value: "", label: "Tất cả" },
+                { value: "bank", label: "Chuyển khoản" },
+                { value: "money", label: "Tiền mặt" },
               ]}
             />
             <div className="flex p-1 gap-2 ml-auto">
@@ -128,7 +153,7 @@ const Approve_all = () => {
           </div>
           <div className="flex flex-1 gap-2 overflow-hidden pb-2 px-2">
             <div
-              className={`overflow-auto relative ${
+              className={`overflow-auto relative min-w-[440px] ${
                 approve_id ? "max-w-[500px]" : "min-w-[460px]"
               } whitebox flex-1 h-full flex flex-col fadeInTop approve_list`}
             >
@@ -141,7 +166,10 @@ const Approve_all = () => {
                   <div className="text-[#579ad8]">Đang tải dữ liệu...</div>
                 </div>
               )}
-              <div className="overflow-y-auto pr-1" ref={scrollRef}>
+              <div
+                className="overflow-y-auto pr-1 min-w-[460px]"
+                ref={scrollRef}
+              >
                 {approve.map((apv) => (
                   <Request_card approve={apv} key={apv?.id} />
                 ))}
