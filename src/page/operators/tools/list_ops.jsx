@@ -1,4 +1,4 @@
-import { Button, Select, Table, message } from "antd";
+import { Button, Select, Table, Tooltip, message } from "antd";
 import React, { useEffect, useState } from "react";
 import api from "../../../components/api";
 import { useUser } from "../../../components/context/userContext";
@@ -15,6 +15,10 @@ const List_operators = () => {
   const [data, setData] = useState([]);
   const [filterText, setFilterText] = useState("");
   const [loading, setLoading] = useState(false);
+  const [filterOption, setFilterOption] = useState({
+    working: 0,
+    company: 0,
+  });
   const [pagination, setPagination] = useState({
     total: 0,
   });
@@ -217,8 +221,84 @@ const List_operators = () => {
       `Danhsach_nguoilaodong_${dayjs().format("YYMMDDHHmmss")}.xlsx`
     );
   };
-  const filteredData = data.filter((item) =>
-    item?.ho_ten?.toLowerCase().includes(filterText?.toLowerCase())
+  const handleExportHistory = () => {
+    api.get("/ops/export_history/", user?.token).then((res) => {
+      console.log(res);
+    });
+    // Tạo một sheet với tiêu đề
+    // const headers = [
+    //   [
+    //     "Mã nhân viên",
+    //     "Họ tên",
+    //     "Số điện thoại",
+    //     "Giới tính",
+    //     "Số CCCD",
+    //     "Ngày sinh",
+    //     "Địa chỉ",
+    //     "Mã ngân hàng",
+    //     "Số tài khoản",
+    //     "Chủ tài khoản",
+    //     "Ghi chú tài khoản",
+    //     "Người tuyển",
+    //     "Vendor",
+    //     "Nhà chính",
+    //     "Công ty đang làm",
+    //     "Ngày phỏng vấn",
+    //     "Ghi chú",
+    //   ],
+    //   ...data.map((item) => [
+    //     item?.ma_nhanvien,
+    //     item?.ho_ten,
+    //     item?.sdt,
+    //     item?.gioi_tinh,
+    //     item?.so_cccd,
+    //     item?.ngaysinh,
+    //     item?.diachi,
+    //     item?.nganhang,
+    //     item?.so_taikhoan,
+    //     item?.chu_taikhoan,
+    //     item?.ghichu_taikhoan,
+    //     item?.nguoituyen
+    //       ? user?.company?.Staff?.find((staff) => staff.id === item?.nguoituyen)
+    //           ?.profile?.full_name
+    //       : "-",
+    //     item?.vendor
+    //       ? user?.company?.Vendor?.find((ven) => ven.id === item?.vendor)?.name
+    //       : "-",
+    //     item?.nhachinh
+    //       ? user?.company?.Vendor?.find((ven) => ven.id === item?.nhachinh)
+    //           ?.name
+    //       : "-",
+    //     item?.congty_danglam
+    //       ? user?.company?.Customer?.find(
+    //           (ven) => ven.id === item?.congty_danglam
+    //         )?.name
+    //       : "-",
+    //     item?.ngay_phongvan,
+    //     item?.ghichu,
+    //   ]),
+    // ];
+    // const worksheet = XLSX.utils.aoa_to_sheet(headers);
+    // const workbook = XLSX.utils.book_new();
+    // XLSX.utils.book_append_sheet(workbook, worksheet, "Total");
+    // XLSX.writeFile(
+    //   workbook,
+    //   `Danhsach_nguoilaodong_${dayjs().format("YYMMDDHHmmss")}.xlsx`
+    // );
+  };
+  const filteredData = data.filter(
+    (item) =>
+      item?.ho_ten?.toLowerCase().includes(filterText?.toLowerCase()) &&
+      (filterOption?.working !== 0
+        ? filterOption?.working === "working"
+          ? item?.congty_danglam !== null
+          : filterOption?.working === "notworking"
+          ? item?.congty_danglam === null
+          : false
+        : true) &&
+      (filterOption?.company !== 0
+        ? item.congty_danglam === filterOption?.company
+        : true)
   );
   const navigate = useNavigate();
   const onRowClick = (record) => {
@@ -248,30 +328,78 @@ const List_operators = () => {
         </div>
         <div className="flex p-1 gap-2 flex-1">
           <Select
-            className="w-30 !h-[40px]"
+            className="w-40 !h-[40px]"
             placeholder="Trạng thái"
-            allowClear={true}
+            value={filterOption?.working || 0}
+            onChange={(e) => setFilterOption((old) => ({ ...old, working: e }))}
           >
-            <Select.Option value="all">Tất cả</Select.Option>
-            <Select.Option value="working">Đang đi làm</Select.Option>
-            <Select.Option value="notworking">Chưa đi làm</Select.Option>
+            <Select.Option value={0}>Tất cả ({data?.length})</Select.Option>
+            <Select.Option value="working">
+              Đang đi làm (
+              {data?.filter((d) => d.congty_danglam !== null)?.length})
+            </Select.Option>
+            <Select.Option value="notworking">
+              Chưa đi làm (
+              {data?.filter((d) => d.congty_danglam === null)?.length})
+            </Select.Option>
           </Select>
           <Select
             className="w-40 !h-[40px]"
             placeholder="Công ty"
-            allowClear={true}
+            value={filterOption?.company || 0}
+            onChange={(e) => setFilterOption((old) => ({ ...old, company: e }))}
+            filterOption={(input, option) =>
+              option?.label?.toLowerCase().includes(input.toLowerCase())
+            }
+            showSearch
+            options={[
+              {
+                value: 0,
+                label: "Tất cả công ty",
+              },
+              ...user?.company?.Customer?.map((dpm) => ({
+                value: dpm?.id,
+                label: `${dpm?.name} (${
+                  data?.filter((d) => d.congty_danglam === dpm.id)?.length
+                })`,
+              })),
+            ]}
+          />
+          <Tooltip
+            title={
+              <div className="flex items-start flex-col gap-1.5 min-w-[120px] p-2">
+                <div className="text-[#000] mb-2">Chọn kiểu dữ liệu</div>
+                <div className="flex flex-col gap-1.5 ml-2">
+                  <Button
+                    icon={
+                      <PiMicrosoftExcelLogoFill size={20} className="mt-1" />
+                    }
+                    type="primary"
+                    className="!h-[40px]"
+                    onClick={handleExport}
+                  >
+                    Danh sách hiện tại
+                  </Button>
+                  <Button
+                    icon={
+                      <PiMicrosoftExcelLogoFill size={20} className="mt-1" />
+                    }
+                    type="primary"
+                    className="!h-[40px]"
+                    onClick={handleExportHistory}
+                  >
+                    Kèm lịch sử làm việc
+                  </Button>
+                </div>
+              </div>
+            }
+            color="white"
           >
-            <Select.Option value="companyA">Công ty A</Select.Option>
-            <Select.Option value="companyB">Công ty B</Select.Option>
-          </Select>
-          <Button
-            icon={<PiMicrosoftExcelLogoFill size={20} className="mt-1" />}
-            type="primary"
-            className="ml-auto !h-[40px]"
-            onClick={handleExport}
-          >
-            Xuất Excel
-          </Button>
+            <div className="flex ml-auto items-center p-2 bg-[#007add] text-[white] px-4 rounded-[8px] gap-2">
+              <PiMicrosoftExcelLogoFill size={20} />
+              Xuất Excel
+            </div>
+          </Tooltip>
         </div>
       </div>
       <Table
