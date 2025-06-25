@@ -86,6 +86,23 @@ const Db_baoung_card = ({ user }) => {
                   item?.status === "approved" && item?.payment_status === "done"
               )?.length || 0}
             </div>
+            <div className="text-right text-[13px] flex justify-end gap-1">
+              <div className="font-[500]">
+                {(
+                  user?.company?.Dashboard?.approve?.baoung
+                    ?.filter?.(
+                      (item) =>
+                        item?.status === "approved" &&
+                        item?.payment_status === "done"
+                    )
+                    ?.reduce(
+                      (sum, item) => sum + parseInt(item.amount || 0),
+                      0
+                    ) || 0
+                ).toLocaleString()}
+              </div>
+              <div className="text">vnđ</div>
+            </div>
             <div className="text-right text-[13px]">Đã hoàn thành</div>
           </div>
         </div>
