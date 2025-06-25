@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import * as XLSX from "xlsx";
 import Staff_view from "../../../components/by_id/staff_view";
+import Export_op_history from "../../../components/op/export_op_history";
 
 const List_operators = () => {
   const [data, setData] = useState([]);
@@ -221,71 +222,6 @@ const List_operators = () => {
       `Danhsach_nguoilaodong_${dayjs().format("YYMMDDHHmmss")}.xlsx`
     );
   };
-  const handleExportHistory = () => {
-    api.get("/ops/export_history/", user?.token).then((res) => {
-      console.log(res);
-    });
-    // Tạo một sheet với tiêu đề
-    // const headers = [
-    //   [
-    //     "Mã nhân viên",
-    //     "Họ tên",
-    //     "Số điện thoại",
-    //     "Giới tính",
-    //     "Số CCCD",
-    //     "Ngày sinh",
-    //     "Địa chỉ",
-    //     "Mã ngân hàng",
-    //     "Số tài khoản",
-    //     "Chủ tài khoản",
-    //     "Ghi chú tài khoản",
-    //     "Người tuyển",
-    //     "Vendor",
-    //     "Nhà chính",
-    //     "Công ty đang làm",
-    //     "Ngày phỏng vấn",
-    //     "Ghi chú",
-    //   ],
-    //   ...data.map((item) => [
-    //     item?.ma_nhanvien,
-    //     item?.ho_ten,
-    //     item?.sdt,
-    //     item?.gioi_tinh,
-    //     item?.so_cccd,
-    //     item?.ngaysinh,
-    //     item?.diachi,
-    //     item?.nganhang,
-    //     item?.so_taikhoan,
-    //     item?.chu_taikhoan,
-    //     item?.ghichu_taikhoan,
-    //     item?.nguoituyen
-    //       ? user?.company?.Staff?.find((staff) => staff.id === item?.nguoituyen)
-    //           ?.profile?.full_name
-    //       : "-",
-    //     item?.vendor
-    //       ? user?.company?.Vendor?.find((ven) => ven.id === item?.vendor)?.name
-    //       : "-",
-    //     item?.nhachinh
-    //       ? user?.company?.Vendor?.find((ven) => ven.id === item?.nhachinh)
-    //           ?.name
-    //       : "-",
-    //     item?.congty_danglam
-    //       ? user?.company?.Customer?.find(
-    //           (ven) => ven.id === item?.congty_danglam
-    //         )?.name
-    //       : "-",
-    //     item?.ngay_phongvan,
-    //     item?.ghichu,
-    //   ]),
-    // ];
-    // const worksheet = XLSX.utils.aoa_to_sheet(headers);
-    // const workbook = XLSX.utils.book_new();
-    // XLSX.utils.book_append_sheet(workbook, worksheet, "Total");
-    // XLSX.writeFile(
-    //   workbook,
-    //   `Danhsach_nguoilaodong_${dayjs().format("YYMMDDHHmmss")}.xlsx`
-    // );
-  };
   const filteredData = data.filter(
     (item) =>
       item?.ho_ten?.toLowerCase().includes(filterText?.toLowerCase()) &&
@@ -380,16 +316,17 @@ const List_operators = () => {
                   >
                     Danh sách hiện tại
                   </Button>
-                  <Button
-                    icon={
-                      <PiMicrosoftExcelLogoFill size={20} className="mt-1" />
-                    }
-                    type="primary"
-                    className="!h-[40px]"
-                    onClick={handleExportHistory}
-                  >
-                    Kèm lịch sử làm việc
-                  </Button>
+                  <Export_op_history>
+                    <Button
+                      icon={
+                        <PiMicrosoftExcelLogoFill size={20} className="mt-1" />
+                      }
+                      type="primary"
+                      className="!h-[40px]"
+                    >
+                      Kèm lịch sử làm việc
+                    </Button>
+                  </Export_op_history>
                 </div>
               </div>
             }

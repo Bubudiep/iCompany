@@ -80,7 +80,9 @@ const Card_bank_user = ({
     if (user_id && user_type === "op") {
       api
         .post(
-          `/ops/${user_id}/bank/`,
+          `/ops/${
+            user?.company?.Staff?.find((st) => st.id === user_id)?.id
+          }/bank/`,
           { fullname, banknumber, bankname },
           user.token
         )
@@ -96,7 +98,7 @@ const Card_bank_user = ({
     if (user_type === "staff") {
       api
         .patch(
-          `/profile/${user?.info?.profile?.id}/`,
+          `/profile/${user?.id}/`,
           {
             chu_taikhoan: fullname,
             so_taikhoan: banknumber,
@@ -249,16 +251,22 @@ const Card_bank_user = ({
                 </div>
               </>
             )}
-            <Tooltip title="Sửa">
-              <Button
-                onClick={() => setIsModalOpen(true)}
-                variant="text"
-                color="primary"
-                className=" text-sm !absolute top-0 right-0 cursor-pointer !px-2.5"
-              >
-                <FaEdit />
-              </Button>
-            </Tooltip>
+            {user_type === "staff" &&
+            user_id !== user?.id &&
+            !user?.info?.isSuperAdmin ? (
+              <></>
+            ) : (
+              <Tooltip title="Sửa">
+                <Button
+                  onClick={() => setIsModalOpen(true)}
+                  variant="text"
+                  color="primary"
+                  className=" text-sm !absolute top-0 right-0 cursor-pointer !px-2.5"
+                >
+                  <FaEdit />
+                </Button>
+              </Tooltip>
+            )}
           </div>
         </div>
       )}

@@ -547,6 +547,10 @@ const Operator_news = () => {
                     }))}
                     className="w-[160px]"
                     allowClear={true}
+                    showSearch={true}
+                    filterOption={(input, option) =>
+                      option?.label?.toLowerCase().includes(input.toLowerCase())
+                    }
                   />
                   <Input
                     className="!w-[160px]"

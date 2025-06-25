@@ -8,7 +8,6 @@ const Customer_view = ({ id, working }) => {
   const customer = user?.company?.Customer?.find(
     (customer) => customer.id === id
   );
-  console.log(customer);
   return customer ? (
     <Tooltip
       title={
