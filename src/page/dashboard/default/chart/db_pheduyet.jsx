@@ -93,7 +93,7 @@ const Db_pheduyet_card = ({ user }) => {
           total: {
             enabled: true,
             style: {
-              fontSize: "10px",
+              fontSize: "12px",
               fontWeight: 500,
               color: "#999",
             },
@@ -109,12 +109,17 @@ const Db_pheduyet_card = ({ user }) => {
     },
     xaxis: {
       categories: labelSeries,
+      labels: {
+        style: {
+          fontSize: "11px",
+        },
+      },
     },
     yaxis: {
       labels: {
         formatter: (val) => (val / 1000000).toFixed(1) + " tr",
         style: {
-          fontSize: "13px",
+          fontSize: "11px",
         },
       },
     },
