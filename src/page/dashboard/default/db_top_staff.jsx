@@ -17,14 +17,7 @@ const Db_top_staff = ({ user }) => {
           return idx > 0 ? (
             <div
               key={op?.nguoituyen__id}
-              className={`justify-between flex flex-col px-2 py-1.5 bg-[#d1f6ff] rounded-[4px]
-                ${
-                  idx === 1
-                    ? "text-[15px] py-2 gap-2 pb-3"
-                    : idx === 2
-                    ? "text-[14px] py-2 gap-1"
-                    : "text-[12px]"
-                }`}
+              className={`justify-between flex flex-col px-2 py-1.5 bg-[#d1f6ff] rounded-[4px]`}
             >
               <div className="flex flex-1 font-[600] text-[10px]">
                 TOP {idx + 1}
@@ -33,7 +26,7 @@ const Db_top_staff = ({ user }) => {
                   <div className="font-[400] text-[#00000075]">người</div>
                 </div>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between text-[13px]">
                 <Staff_view
                   className="whitespace-nowrap overflow-hidden"
                   id={op?.nguoituyen__id}
