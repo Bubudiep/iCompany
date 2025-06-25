@@ -3,8 +3,8 @@ import React from "react";
 import { FaInfoCircle } from "react-icons/fa";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 
-const Db_baogiu_card = ({ user }) => {
-  const baoung = user?.company?.Dashboard?.approve?.baogiu || [];
+const Db_baokhac_card = ({ user }) => {
+  const baoung = user?.company?.Dashboard?.approve?.baokhac || [];
   const statusConfigs = [
     {
       label: "Hoàn thành",
@@ -19,23 +19,16 @@ const Db_baogiu_card = ({ user }) => {
       bg: "#ffe9d7",
       textColor: "#c77e4d",
     },
-    {
-      label: "Chờ giải ngân",
-      condition: (item) =>
-        item.status === "approve" && item.payment_status === "not",
-      bg: "#ffd7d7",
-      textColor: "#c74d4d",
-    },
   ];
   return (
-    <div className="flex whitebox flex-col h-[200px] w-full !min-w-[300px]">
+    <div className="flex whitebox flex-col h-[124px] w-full !min-w-[300px]">
       <div className="text-[15px] text-[#666] font-[500] flex justify-between">
-        Báo giữ lương
+        Báo chi tiêu
         <Tooltip
           color="white"
           title={
             <div className="text-[#636363] max-w-[200px] p-1">
-              Dữ liệu lấy từ danh sách báo giữ lương của công ty từ trước đến
+              Dữ liệu lấy từ danh sách báo chi tiêu của công ty từ trước đến
               nay.
             </div>
           }
@@ -45,14 +38,10 @@ const Db_baogiu_card = ({ user }) => {
           </div>
         </Tooltip>
       </div>
-      <div className="text-[13px] text-[#999] flex gap-1 items-center">
-        <FaMoneyBillTransfer className="text-[16px] mt-0.5" />
-        Thống kê giữ lương NLĐ
-      </div>
       <div className="flex mt-auto gap-1">
-        <div className="flex w-[50%] flex-col bg-[#e2f2ff] text-[#008cff] rounded-[4px] px-2 py-1">
+        <div className="flex w-[50%] flex-col bg-[#e2f2ff] text-[#008cff] rounded-[4px] px-1">
           <div className="flex px-1 py-1 font-[500]">Tất cả</div>
-          <div className="flex flex-1 items-center justify-center text-[50px] font-[500] pb-5">
+          <div className="flex flex-1 items-center justify-center text-[35px] font-[500] mb-2">
             {baoung?.length || 0}
           </div>
         </div>
@@ -83,4 +72,4 @@ const Db_baogiu_card = ({ user }) => {
   );
 };
 
-export default Db_baogiu_card;
+export default Db_baokhac_card;

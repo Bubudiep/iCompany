@@ -86,6 +86,7 @@ const Db_baoung_card = ({ user }) => {
                   item?.status === "approved" && item?.payment_status === "done"
               )?.length || 0}
             </div>
+            <div className="text-right text-[13px]">Hoàn thành</div>
             <div className="text-right text-[13px] flex justify-end gap-1">
               <div className="font-[500]">
                 {(
@@ -103,7 +104,6 @@ const Db_baoung_card = ({ user }) => {
               </div>
               <div className="text">vnđ</div>
             </div>
-            <div className="text-right text-[13px]">Đã hoàn thành</div>
           </div>
         </div>
         <div className="flex flex-1 flex-col gap-2 justify-between">
