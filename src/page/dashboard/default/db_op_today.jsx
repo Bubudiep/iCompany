@@ -48,18 +48,20 @@ const Db_op_today = ({ user }) => {
         <div className="grid grid-cols-2 gap-2 mt-auto flex-1">
           {statusConfigs.map(({ label, condition, bg, textColor }, index) => {
             return (
-              <div
-                key={index}
-                className="flex flex-1 flex-col rounded-[4px] p-1.5 px-2 text-[13px] font-[500]"
-                style={{ backgroundColor: bg, color: textColor }}
-              >
-                <div className="flex flex-col justify-between">
-                  <div className="name">{label}</div>
-                  <div className="value text-[22px] pb-1.5 flex justify-center">
-                    {condition}
+              index < 4 && (
+                <div
+                  key={index}
+                  className="flex flex-1 flex-col rounded-[4px] p-1.5 px-2 text-[13px] font-[500]"
+                  style={{ backgroundColor: bg, color: textColor }}
+                >
+                  <div className="flex flex-col justify-between">
+                    <div className="name">{label}</div>
+                    <div className="value text-[22px] pb-1.5 flex justify-center">
+                      {condition}
+                    </div>
                   </div>
                 </div>
-              </div>
+              )
             );
           })}
         </div>
