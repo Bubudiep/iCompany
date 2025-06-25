@@ -20,7 +20,11 @@ const Chat_rooms = () => {
   const { user, setUser } = useUser();
   const [leftTab, setLeftTab] = useState(false);
   const [isGroup, setIsGroup] = useState(false);
-  const [room, setRoom] = useState({});
+  const [room, setRoom] = useState(
+    JSON.parse(localStorage.getItem("rooms") || "[]").filter(
+      (room) => room.id == id?.id_room
+    ) || {}
+  );
   const [messs, setMesss] = useState(false);
   const [to, setTo] = useState({});
   const tools = [
@@ -88,6 +92,29 @@ const Chat_rooms = () => {
         setLoading(false);
       });
   };
+  useEffect(() => {
+    if (id?.id_room && messs?.length > 1) {
+      const old = JSON.parse(localStorage.getItem("rooms") || "[]");
+      const old_room = old.find((item) => item.id == id?.id_room);
+      const combined = [...old_room?.message?.data, ...messs];
+      const unique = Array.from(
+        new Map(combined.map((msg) => [msg.id, msg])).values()
+      );
+      localStorage.setItem(
+        "rooms",
+        JSON.stringify([
+          ...old.filter((item) => item.id != id?.id_room),
+          {
+            ...old_room,
+            message: {
+              total: unique.length,
+              data: unique,
+            },
+          },
+        ])
+      );
+    }
+  }, [messs]);
   useEffect(() => {
     if (id?.id_room) {
       const old_data = rooms.find((room) => room && room?.id == id?.id_room);
@@ -200,7 +227,7 @@ const Chat_rooms = () => {
                 </div>
                 <Message_chat_box
                   user={user}
-                  messages={messs}
+                  messageList={messs}
                   room_id={id?.id_room}
                   setMesss={setMesss}
                   setUser={setUser}

@@ -19,7 +19,9 @@ const Chat_page = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, setUser } = useUser();
-  const [chatboxs, setChatboxs] = useState([]);
+  const [chatboxs, setChatboxs] = useState(
+    JSON.parse(localStorage.getItem("rooms") || "[]")
+  );
   useEffect(() => {
     const all_rooms = JSON.parse(localStorage.getItem("rooms") || "[]").filter(
       (r) => r != null && r != undefined

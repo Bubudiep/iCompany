@@ -34,7 +34,10 @@ const Db_top_staff = ({ user }) => {
               </div>
             </div>
           ) : (
-            <div className="flex flex-col bg-[#e2f2ff] text-[#008cff] rounded-[4px] px-2 py-1 flex-1">
+            <div
+              key={op?.nguoituyen__id}
+              className="flex flex-col bg-[#e2f2ff] text-[#008cff] rounded-[4px] px-2 py-1 flex-1"
+            >
               <div className="flex px-1 py-1 font-[700]">TOP 1</div>
               <div className="flex flex-1 flex-col items-center justify-center text-[32px] font-[500] pb-5">
                 {user?.company?.Dashboard?.op?.by_nguoituyen?.[0]?.total}

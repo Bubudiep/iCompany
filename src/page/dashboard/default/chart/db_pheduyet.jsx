@@ -9,6 +9,7 @@ const Db_pheduyet_card = ({ user }) => {
   const [labelSeries, setLabelSeries] = useState([]);
   useEffect(() => {
     const dashboardData = user?.company?.Dashboard?.approve || {};
+    console.log(dashboardData);
     const allDatesSet = new Set();
     const map = {};
     dashboardData?.baoung?.forEach((item) => {
@@ -74,7 +75,7 @@ const Db_pheduyet_card = ({ user }) => {
       setLabelSeries(allDates);
     }, 300);
     return () => clearTimeout(timeout);
-  }, []);
+  }, [user?.company?.Dashboard]);
   const chartOptions = {
     chart: {
       type: "bar",

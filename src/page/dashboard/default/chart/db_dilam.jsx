@@ -35,7 +35,7 @@ const Db_dilam_card = ({ user }) => {
       setLabelSeries(top10Labels); // nếu cần set lại labels biểu đồ
     }, 300);
     return () => clearTimeout(timeout);
-  }, []);
+  }, [user?.company?.Dashboard]);
   const chartOptions = {
     chart: {
       type: "bar",

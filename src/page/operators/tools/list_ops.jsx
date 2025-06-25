@@ -35,7 +35,7 @@ const List_operators = () => {
             total: res.count,
           });
         } else {
-          setData((old) => [...old, res.results]);
+          setData((old) => [...old, ...res.results]);
         }
         if (res?.next) {
           fetchData(params, res?.next?.replace("http", "https"), false);
@@ -252,6 +252,7 @@ const List_operators = () => {
             placeholder="Trạng thái"
             allowClear={true}
           >
+            <Select.Option value="all">Tất cả</Select.Option>
             <Select.Option value="working">Đang đi làm</Select.Option>
             <Select.Option value="notworking">Chưa đi làm</Select.Option>
           </Select>

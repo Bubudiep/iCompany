@@ -17,9 +17,6 @@ const removeQueryParam = (key) => {
 const Homepage_layout = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const all_rooms = JSON.parse(localStorage.getItem("rooms") || "[]").filter(
-    (r) => r != null && r != undefined
-  );
   const { user, setUser } = useUser();
   const [cookies] = useCookies(["newversion_token"]);
   const [breadcrumbs, setBreadcrumbs] = useState([]);
