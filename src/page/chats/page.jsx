@@ -103,18 +103,13 @@ const Chat_page = () => {
                       <div className="name">
                         {to?.profile?.full_name || to?.cardID}
                       </div>
-                      <div className="msg">
+                      <div className="msg line-clamp-1">
                         {chat?.last_message ? (
                           <>
                             {chat?.last_message?.sender === user.id ? (
                               "Bạn: "
                             ) : (
-                              <>
-                                {to?.profile?.nick_name ||
-                                  to?.profile?.full_name ||
-                                  to?.cardID}
-                                :{" "}
-                              </>
+                              <></>
                             )}
                             {chat?.last_message?.message}
                           </>
