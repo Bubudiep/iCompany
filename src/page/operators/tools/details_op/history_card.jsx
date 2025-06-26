@@ -1,7 +1,15 @@
 import React from "react";
 import Customer_view from "../../../../components/by_id/customer_view";
 import { FaEdit } from "react-icons/fa";
-import { Modal, Form, Input, DatePicker, message, Popconfirm } from "antd";
+import {
+  Modal,
+  Form,
+  Input,
+  DatePicker,
+  message,
+  Popconfirm,
+  Select,
+} from "antd";
 import dayjs from "dayjs";
 import api from "../../../../components/api";
 import { useUser } from "../../../../components/context/userContext";
@@ -63,6 +71,7 @@ const OP_History_card = ({ work, onDelete, callback, op }) => {
           title="Chỉnh sửa thông tin công việc"
           onCancel={() => setOpen(false)}
           className="popupcontent"
+          width={600}
           footer={[
             <Popconfirm
               key="delete"
@@ -95,26 +104,50 @@ const OP_History_card = ({ work, onDelete, callback, op }) => {
             </button>,
           ]}
         >
-          <Form form={form} layout="vertical">
-            <Form.Item name="ho_ten" label="Tên đi làm">
+          <Form
+            form={form}
+            layout="horizontal"
+            labelCol={{ span: 5 }}
+            wrapperCol={{ span: 18 }}
+          >
+            <Form.Item name="customer" label="Công ty" className="!mb-2">
+              <Select
+                placeholder="Công ty"
+                options={user?.company?.Customer?.map((cus) => ({
+                  value: cus.id,
+                  label: cus.name,
+                }))}
+                className="w-[160px]"
+                allowClear={true}
+                showSearch={true}
+                filterOption={(input, option) =>
+                  option?.label?.toLowerCase().includes(input.toLowerCase())
+                }
+              />
+            </Form.Item>
+            <Form.Item name="ho_ten" label="Tên đi làm" className="!mb-2">
               <Input />
             </Form.Item>
-            <Form.Item name="ma_nhanvien" label="Mã nhân viên">
+            <Form.Item
+              name="ma_nhanvien"
+              label="Mã nhân viên"
+              className="!mb-2"
+            >
               <Input />
             </Form.Item>
-            <Form.Item name="so_cccd" label="Số CCCD">
+            <Form.Item name="so_cccd" label="Số CCCD" className="!mb-2">
               <Input />
             </Form.Item>
-            <Form.Item name="vitri" label="Công việc">
+            <Form.Item name="vitri" label="Công việc" className="!mb-2">
               <Input />
             </Form.Item>
-            <Form.Item name="start_date" label="Ngày bắt đầu">
+            <Form.Item name="start_date" label="Ngày bắt đầu" className="!mb-2">
               <DatePicker format="YYYY-MM-DD" className="w-full" />
             </Form.Item>
-            <Form.Item name="end_date" label="Ngày kết thúc">
+            <Form.Item name="end_date" label="Ngày kết thúc" className="!mb-2">
               <DatePicker format="YYYY-MM-DD" className="w-full" />
             </Form.Item>
-            <Form.Item name="reason" label="Lý do nghỉ">
+            <Form.Item name="reason" label="Lý do nghỉ" className="!mb-2">
               <Input />
             </Form.Item>
           </Form>
