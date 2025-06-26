@@ -82,7 +82,9 @@ const List_operators = () => {
           </div>
           <div className="flex flex-col flex-1 w-[180px] ml-3">
             <div className="flex font-[500] text-[14px]">
-              {record?.ho_ten || "Chưa đặt tên"}
+              {record?.ho_ten
+                ? app.beautifyName(record?.ho_ten)
+                : "Chưa đặt tên"}
             </div>
             <div className="flex text-[13px] text-[#5f5f5f]">
               {record?.congty_hientai ? (

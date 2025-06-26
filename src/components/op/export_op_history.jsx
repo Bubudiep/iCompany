@@ -4,6 +4,7 @@ import * as XLSX from "xlsx";
 import api from "../api";
 import { useUser } from "../context/userContext";
 import dayjs from "dayjs";
+import app from "../app";
 
 const Export_op_history = ({ children }) => {
   const { user } = useUser();
@@ -63,6 +64,8 @@ const Export_op_history = ({ children }) => {
                   (cp) => cp.id == item[key]
                 );
                 result[fieldMap[key]] = cust?.name || "";
+              } else if (key === "ho_ten") {
+                result[fieldMap[key]] = app.beautifyName(item[key]);
               } else {
                 result[fieldMap[key]] = item[key];
               }

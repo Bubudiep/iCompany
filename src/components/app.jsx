@@ -213,6 +213,13 @@ const setCookie = (name, value, options = {}) => {
   }
   document.cookie = cookieString;
 };
+const beautifyName = (str) => {
+  return str
+    .toLowerCase() // chuyển toàn bộ về thường
+    .split(" ") // tách theo dấu cách
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
 const send = (a, b) => {
   try {
     window.electron.send(a, b);
@@ -359,6 +366,7 @@ function excelDateToJSDate(serial) {
 }
 
 export default {
+  beautifyName,
   excelDateToJSDate,
   TimeSinceText,
   copyToClipboard,
