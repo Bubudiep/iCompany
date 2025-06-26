@@ -23,6 +23,7 @@ const Card_bank_user = ({
   const [banknumber, setBanknumber] = useState("");
   const [bankname, setBankname] = useState("");
   const [bankCode, setBankCode] = useState("");
+  const [ghichu, setGhichu] = useState("");
 
   useEffect(() => {
     if (user_type === "new") {
@@ -36,6 +37,7 @@ const Card_bank_user = ({
           setFullname(res?.chu_taikhoan);
           setBanknumber(res?.so_taikhoan);
           setBankname(res?.nganhang);
+          setGhichu(res?.ghichu_taikhoan);
           const banktoQR = qrcode.BankQR(
             res?.so_taikhoan,
             res?.nganhang,
@@ -81,7 +83,7 @@ const Card_bank_user = ({
       api
         .post(
           `/ops/${user_id}/bank/`,
-          { fullname, banknumber, bankname },
+          { fullname, banknumber, bankname, ghichu_taikhoan: ghichu },
           user.token
         )
         .then((res) => {
@@ -98,7 +100,7 @@ const Card_bank_user = ({
       api
         .patch(
           `/profile/${
-            user?.company?.Staff?.find((st) => st.id === user_id)?.profile?.id
+            user?.company?.Staff?.find((st) => st.id == user_id)?.profile?.id
           }/`,
           {
             chu_taikhoan: fullname,
@@ -251,6 +253,11 @@ const Card_bank_user = ({
                         ?.name
                     : "-"}
                 </div>
+                {user_type === "op" && (
+                  <div className="bankname text-semibold text-[#707070]">
+                    Ghi chú tài khoản: {ghichu || "-"}
+                  </div>
+                )}
               </>
             )}
             {user_type === "staff" &&
@@ -309,6 +316,13 @@ const Card_bank_user = ({
               option?.label?.toLowerCase().includes(input.toLowerCase())
             }
           />
+          {user_type === "op" && (
+            <Input
+              placeholder="Ghi chú tài khoản"
+              value={ghichu}
+              onChange={(e) => setGhichu(e.target.value)}
+            />
+          )}
         </div>
       </Modal>
     </>
