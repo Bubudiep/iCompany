@@ -32,6 +32,7 @@ import Update_op_info from "../../../components/op/update_info";
 import OP_dilamroi from "../../../components/op/bao_dadilam";
 import Card_bank_user from "../../../components/cards/user-bank-card";
 import OP_History_card from "./details_op/history_card";
+import Update_op_nguoituyen from "../../../components/op/update_nguoituyen";
 
 const Details_op = () => {
   const [loading, setLoading] = useState(true);
@@ -394,7 +395,21 @@ const Details_op = () => {
                   </div>
                   <Card_bank_user user_type="op" user_id={op?.id} />
                   <div className="whitebox flex-1 !p-0 min-w-[500px]">
-                    <div className="header">Thông tin tài khoản</div>
+                    <div className="header flex justify-between items-center">
+                      Thông tin tài khoản
+                      <Update_op_nguoituyen
+                        op={op}
+                        update={(data) => {
+                          setOp(data);
+                        }}
+                      >
+                        <Button
+                          icon={<FaEdit />}
+                          variant="text"
+                          color="primary"
+                        ></Button>
+                      </Update_op_nguoituyen>
+                    </div>
                     <div className="md:col-span-2 space-y-3 p-3">
                       <div className="grid grid-cols-2 sm:grid-cols-2 gap-2">
                         <Info
@@ -405,8 +420,18 @@ const Details_op = () => {
                           label="Người quản lý"
                           value={<Staff_view id={op.nguoibaocao} />}
                         />
-                        <Info label="Ngày cập nhập" value={0} />
-                        <Info label="Ngày khởi tạo" value={0} />
+                        <Info
+                          label="Ngày cập nhập"
+                          value={dayjs(op.updated_date).format(
+                            "HH:mm DD/MM/YYYY"
+                          )}
+                        />
+                        <Info
+                          label="Ngày khởi tạo"
+                          value={dayjs(op.created_at).format(
+                            "HH:mm DD/MM/YYYY"
+                          )}
+                        />
                       </div>
                     </div>
                   </div>
@@ -420,97 +445,6 @@ const Details_op = () => {
               <FaHistory />
             </div>
             <div className="his-items pl-2 pb-1 pr-1  gap-2 flex flex-1 flex-col h-[calc(100%-54px)] overflow-auto mr-1">
-              {/* <Modal
-                className="popupcontent text-center !w-[900px]"
-                title="Chi tiết lịch sử tác động"
-                open={modalData}
-                onCancel={() => setModalData(false)}
-                footer={null}
-              >
-                <div className="w-full overflow-hidden max-h-[600px] flex flex-col">
-                  <div className="overflow-auto">
-                    <Descriptions column={2} bordered>
-                      {modalData?.new_data &&
-                        Object.keys(modalData?.new_data).map((newDT) => {
-                          return (
-                            ![
-                              "id",
-                              "created_at",
-                              "updated_at",
-                              "cccd_back",
-                              "avatar",
-                              "cccd_front",
-                            ].includes(newDT) &&
-                            modalData?.old_data?.[newDT] !=
-                              modalData?.new_data?.[newDT] && (
-                              <Descriptions.Item
-                                label={
-                                  newDT === "ho_ten"
-                                    ? "Họ tên"
-                                    : newDT === "sdt"
-                                    ? "Điện thoại"
-                                    : newDT === "ghichu"
-                                    ? "Ghi chú"
-                                    : newDT === "vendor"
-                                    ? "Vendor"
-                                    : newDT === "quequan"
-                                    ? "Quê quán"
-                                    : newDT === "ten_goc"
-                                    ? "Tên gốc"
-                                    : newDT === "ngaysinh"
-                                    ? "Ngày sinh"
-                                    : newDT === "gioi_tinh"
-                                    ? "Giới tính"
-                                    : newDT === "so_cccd"
-                                    ? "Số CCCD"
-                                    : newDT === "diachi"
-                                    ? "Địa chỉ"
-                                    : newDT === "ngay_phongvan"
-                                    ? "Ngày phỏng vấn"
-                                    : newDT === "congty_danglam"
-                                    ? "Công ty đang làm"
-                                    : newDT === "nguoituyen"
-                                    ? "Người tuyển"
-                                    : newDT === "nguoibaocao"
-                                    ? "Người báo cáo"
-                                    : newDT === "chu_taikhoan"
-                                    ? "Chủ tài khoản"
-                                    : newDT === "company"
-                                    ? "Công ty"
-                                    : newDT === "nganhang"
-                                    ? "Ngân hàng"
-                                    : newDT === "nhachinh"
-                                    ? "Nhà chính"
-                                    : newDT === "trangthai"
-                                    ? "Trạng thái"
-                                    : newDT === "ma_nhanvien"
-                                    ? "Mã nhân viên"
-                                    : newDT === "so_taikhoan"
-                                    ? "Số tài khoản"
-                                    : newDT === "ghichu_taikhoan"
-                                    ? "Ghi chú tài khoản"
-                                    : newDT
-                                }
-                                key={newDT}
-                                className="!p-2 text-nowrap"
-                              >
-                                <div className="flex gap-2 items-center">
-                                  <div className="text-nowrap">
-                                    {modalData?.old_data?.[newDT]}
-                                  </div>
-                                  <FaArrowRight />
-                                  <div className="text-nowrap">
-                                    {modalData?.new_data?.[newDT]}
-                                  </div>
-                                </div>
-                              </Descriptions.Item>
-                            )
-                          );
-                        })}
-                    </Descriptions>
-                  </div>
-                </div>
-              </Modal> */}
               {op?.history?.map((his) => (
                 <div
                   key={his.id}
