@@ -80,9 +80,7 @@ const Card_bank_user = ({
     if (user_id && user_type === "op") {
       api
         .post(
-          `/ops/${
-            user?.company?.Staff?.find((st) => st.id === user_id)?.id
-          }/bank/`,
+          `/ops/${user_id}/bank/`,
           { fullname, banknumber, bankname },
           user.token
         )
@@ -93,12 +91,15 @@ const Card_bank_user = ({
         })
         .catch((e) => {
           console.log(e);
+          api.error(e);
         });
     }
     if (user_type === "staff") {
       api
         .patch(
-          `/profile/${user?.id}/`,
+          `/profile/${
+            user?.company?.Staff?.find((st) => st.id === user_id)?.profile?.id
+          }/`,
           {
             chu_taikhoan: fullname,
             so_taikhoan: banknumber,
@@ -113,6 +114,7 @@ const Card_bank_user = ({
         })
         .catch((e) => {
           console.log(e);
+          api.error(e);
         });
     }
   };
