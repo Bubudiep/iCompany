@@ -212,7 +212,7 @@ const Operator_news = () => {
       })
       .catch((e) => {
         console.log(e);
-        message.error(e?.response?.data?.detail || "Có lỗi khi thêm NLĐ mới!");
+        app.error(e);
       });
   };
 
