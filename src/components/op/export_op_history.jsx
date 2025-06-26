@@ -3,6 +3,7 @@ import { Modal, Table, Button } from "antd";
 import * as XLSX from "xlsx";
 import api from "../api";
 import { useUser } from "../context/userContext";
+import dayjs from "dayjs";
 
 const Export_op_history = ({ children }) => {
   const { user } = useUser();
@@ -62,10 +63,6 @@ const Export_op_history = ({ children }) => {
                   (cp) => cp.id == item[key]
                 );
                 result[fieldMap[key]] = cust?.name || "";
-              } else if (key === "h_start_date" || key === "h_end_date") {
-                result[fieldMap[key]] = item[key]
-                  ? new Date(item[key]).toLocaleDateString("vi-VN")
-                  : "-";
               } else {
                 result[fieldMap[key]] = item[key];
               }
@@ -79,7 +76,40 @@ const Export_op_history = ({ children }) => {
   };
 
   const handleDownload = () => {
-    const ws = XLSX.utils.json_to_sheet(data);
+    const dateKeys = ["Ngày sinh", "Ngày vào làm", "Ngày nghỉ"]; // tên tiêu đề cột
+    const formattedData = data.map((row) => {
+      const newRow = { ...row };
+      dateKeys.forEach((key) => {
+        const value = newRow[key];
+        if (!value) return;
+        let parsedDate = null;
+        if (value?.includes("-")) {
+          const temp = new Date(value);
+          if (!isNaN(temp)) {
+            parsedDate = temp;
+          }
+        }
+        if (parsedDate instanceof Date && !isNaN(parsedDate)) {
+          newRow[key] = parsedDate;
+        }
+      });
+      return newRow;
+    });
+    const ws = XLSX.utils.json_to_sheet(formattedData);
+    const range = XLSX.utils.decode_range(ws["!ref"]);
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+      const colLetter = XLSX.utils.encode_col(C);
+      const colName = Object.keys(formattedData[0])[C];
+      if (!dateKeys.includes(colName)) continue;
+      for (let R = range.s.r + 1; R <= range.e.r; ++R) {
+        const cellAddress = `${colLetter}${R + 1}`;
+        const cell = ws[cellAddress];
+        if (cell && cell.v instanceof Date) {
+          cell.t = "d"; // kiểu date
+          cell.z = "mm/dd/yyyy"; // định dạng hiển thị
+        }
+      }
+    }
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "History");
     XLSX.writeFile(wb, "op_history.xlsx");
@@ -116,22 +146,6 @@ const Export_op_history = ({ children }) => {
               dataIndex: fieldMap[key],
               key,
             };
-            if (key === "h_nguoituyen") {
-              column.render = (text, rc) =>
-                text
-                  ? user?.company?.Staff?.find((cp) => cp.id === text)?.profile
-                      ?.full_name
-                  : user?.company?.Staff?.find((cp) => cp.id === rc?.nguoituyen)
-                      ?.profile?.full_name;
-            }
-            if (key === "h_customer") {
-              column.render = (text) =>
-                user?.company?.Customer?.find((cp) => cp.id === text)?.name;
-            }
-            if (key === "h_start_date" || key === "h_end_date") {
-              column.render = (text) =>
-                text ? new Date(text).toLocaleDateString("vi-VN") : "-";
-            }
             return column;
           })}
           rowKey={(record, idx) => idx}
