@@ -394,7 +394,11 @@ const Approve_details = () => {
                     </Descriptions.Item>
                   ) : (
                     <Descriptions.Item label="TT chuyển khoản" span={2}>
-                      {approve.payment_status === "not" ? (
+                      {["reject", "cancel"].includes(approve?.status) ? (
+                        <div className="font-[500] text-[#c91919]">
+                          Đã {approve?.status}
+                        </div>
+                      ) : approve.payment_status === "not" ? (
                         <Card_bank_user
                           show_logo={false}
                           user_type={approve?.nguoiThuhuong}
