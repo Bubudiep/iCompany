@@ -297,7 +297,7 @@ const Details_op = () => {
                               ?.reduce((sum, item) => {
                                 return item.payment_status === "done" &&
                                   item.retrieve_status === "not"
-                                  ? sum + parseInt(item.amount)
+                                  ? sum + parseInt(item.payout_amount)
                                   : sum;
                               }, 0)
                               .toLocaleString() + " vnđ"
