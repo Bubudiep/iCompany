@@ -85,7 +85,7 @@ const Export_approve_all = ({ children, option = "all" }) => {
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "History");
-    XLSX.writeFile(wb, "op_history.xlsx");
+    XLSX.writeFile(wb, `export_pheduyet_${option}.xlsx`);
     setVisible(false);
   };
 
