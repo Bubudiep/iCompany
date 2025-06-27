@@ -296,19 +296,19 @@ const Details_op = () => {
                               <table className="w-full">
                                 <thead>
                                   <tr>
-                                    <th className="text-[11px] text-[#999] p-0 m-0">
+                                    <th className="text-[11px] text-[#999] p-0 pb-2 m-0">
                                       ID
                                     </th>
-                                    <th className="text-[11px] text-[#999] p-0 m-0">
+                                    <th className="text-[11px] text-[#999] p-0 pb-2 m-0">
                                       Loại
                                     </th>
-                                    <th className="text-[11px] text-[#999] p-0 m-0">
+                                    <th className="text-[11px] text-[#999] p-0 pb-2 m-0">
                                       Người yêu cầu
                                     </th>
-                                    <th className="text-[11px] text-[#999] p-0 m-0">
+                                    <th className="text-[11px] text-[#999] p-0 pb-2 m-0">
                                       Số tiền yêu cầu
                                     </th>
-                                    <th className="text-[11px] text-[#999] p-0 m-0">
+                                    <th className="text-[11px] text-[#999] p-0 pb-2 m-0">
                                       Số tiền đã giải ngân
                                     </th>
                                   </tr>
@@ -329,7 +329,10 @@ const Details_op = () => {
                                           {item.requesttype}
                                         </td>
                                         <td>
-                                          <Staff_view id={item.requester} />
+                                          <Staff_view
+                                            className="justify-center flex w-full"
+                                            id={item.requester}
+                                          />
                                         </td>
                                         <td className="text-center">
                                           {parseInt(
