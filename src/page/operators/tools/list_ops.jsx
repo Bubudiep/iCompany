@@ -226,7 +226,9 @@ const List_operators = () => {
   };
   const filteredData = data.filter(
     (item) =>
-      item?.ho_ten?.toLowerCase().includes(filterText?.toLowerCase()) &&
+      `${item?.ho_ten}${item?.ma_nhanvien}`
+        ?.toLowerCase()
+        .includes(filterText?.toLowerCase()) &&
       (filterOption?.working !== 0
         ? filterOption?.working === "working"
           ? item?.congty_danglam !== null
