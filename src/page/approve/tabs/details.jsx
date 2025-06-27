@@ -150,7 +150,7 @@ const Approve_details = () => {
       .get(`approve/${approve_id}/`, user?.token)
       .then((res) => {
         setApprove(res);
-        setAmoutPay(res?.amount);
+        setAmoutPay(res?.amountPay || res?.amount);
         setComment(
           localStorage.getItem(
             (res?.requesttype?.typecode || "_approve") + "_comment"
@@ -434,6 +434,7 @@ const Approve_details = () => {
               <div className="flex justify-end items-center !text-[30px] !text-[#5e5e5e] font-[600]">
                 Số tiền giải ngân:
                 <Input
+                  disabled={approve?.payment_status === "done"}
                   placeholder="Số tiền giải ngân"
                   value={parseInt(amountPay).toLocaleString()}
                   onChange={(e) =>
