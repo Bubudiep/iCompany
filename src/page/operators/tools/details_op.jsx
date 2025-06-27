@@ -228,14 +228,7 @@ const Details_op = () => {
                             console.log("Xoá công việc ID:", work.id);
                           }}
                           callback={(data) => {
-                            setOp((old) => ({
-                              ...old,
-                              work: [
-                                ...old?.work.map((hist) =>
-                                  hist.id === data.id ? data : hist
-                                ),
-                              ],
-                            }));
+                            setOp(data);
                           }}
                         />
                       ))}
