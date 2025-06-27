@@ -290,19 +290,83 @@ const Details_op = () => {
                               .toLocaleString() + " vnđ"
                           }
                         />
-                        <Info
-                          label="Đã ứng (chưa thu hồi)"
-                          value={
-                            op?.baoung
-                              ?.reduce((sum, item) => {
-                                return item.payment_status === "done" &&
-                                  item.retrieve_status === "not"
-                                  ? sum + parseInt(item.payout_amount)
-                                  : sum;
-                              }, 0)
-                              .toLocaleString() + " vnđ"
+                        <Tooltip
+                          title={
+                            <div className="w-[600px] text-[#000] py-1">
+                              <table className="w-full">
+                                <thead>
+                                  <tr>
+                                    <th className="text-[11px] text-[#999] p-0 m-0">
+                                      ID
+                                    </th>
+                                    <th className="text-[11px] text-[#999] p-0 m-0">
+                                      Loại
+                                    </th>
+                                    <th className="text-[11px] text-[#999] p-0 m-0">
+                                      Người yêu cầu
+                                    </th>
+                                    <th className="text-[11px] text-[#999] p-0 m-0">
+                                      Số tiền yêu cầu
+                                    </th>
+                                    <th className="text-[11px] text-[#999] p-0 m-0">
+                                      Số tiền đã giải ngân
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {op?.baoung
+                                    ?.filter(
+                                      (item) =>
+                                        item.payment_status === "done" &&
+                                        item.retrieve_status === "not"
+                                    )
+                                    .map((item) => (
+                                      <tr key={item?.id}>
+                                        <td className="text-center">
+                                          {item.request_code}
+                                        </td>
+                                        <td className="text-center">
+                                          {item.requesttype}
+                                        </td>
+                                        <td>
+                                          <Staff_view id={item.requester} />
+                                        </td>
+                                        <td className="text-center">
+                                          {parseInt(
+                                            item.amount
+                                          ).toLocaleString()}
+                                          vnđ
+                                        </td>
+                                        <td className="text-center">
+                                          {parseInt(
+                                            item.payout_amount
+                                          ).toLocaleString()}
+                                          vnđ
+                                        </td>
+                                      </tr>
+                                    ))}
+                                </tbody>
+                              </table>
+                            </div>
                           }
-                        />
+                          color="white"
+                        >
+                          <div>
+                            <p className="text-gray-600 text-sm">
+                              Đã ứng (chưa thu hồi)
+                            </p>
+                            <p className="text-[#000102] font-[400]">
+                              {op?.baoung
+                                ?.reduce((sum, item) => {
+                                  return item.payment_status === "done" &&
+                                    item.retrieve_status === "not"
+                                    ? sum + parseInt(item.payout_amount)
+                                    : sum;
+                                }, 0)
+                                .toLocaleString() + " vnđ" || "—"}
+                            </p>
+                          </div>
+                        </Tooltip>
                         <Info
                           label="Đã giải ngân giữ lương"
                           value={
