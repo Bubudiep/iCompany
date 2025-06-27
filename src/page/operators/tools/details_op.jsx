@@ -393,7 +393,13 @@ const Details_op = () => {
                       </div>
                     </div>
                   </div>
-                  <Card_bank_user user_type="op" user_id={op?.id} />
+                  <div className="whitebox flex-1 !py-3 min-w-[500px]">
+                    <Card_bank_user
+                      user_type="op"
+                      user_id={op?.id}
+                      shadow={false}
+                    />
+                  </div>
                   <div className="whitebox flex-1 !p-0 min-w-[500px]">
                     <div className="header flex justify-between items-center">
                       Thông tin tài khoản

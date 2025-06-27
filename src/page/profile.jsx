@@ -207,7 +207,11 @@ const Profile = () => {
             </Descriptions>
           </div>
           <div className="whitebox !py-3">
-            <Card_bank_user user_id={user?.id} user_type="staff" />
+            <Card_bank_user
+              user_id={user?.id}
+              user_type="staff"
+              shadow={false}
+            />
           </div>
           <div className="whitebox">
             <div className="flex font-[500] text-[13px] gap-1 items-center px-2 mt-1 mb-3">
