@@ -1644,6 +1644,31 @@ body,
     .name {
       font-weight: 500;
     }
+    &.approved {
+      background-color: #e7ffdb;
+      .id {
+        color: #028d0e;
+      }
+      &.active {
+        background-color: #b3e799;
+        .id {
+          color: #025508;
+        }
+      }
+    }
+    &.cancel,
+    &.reject {
+      background-color: #ffe8e8;
+      .id {
+        color: #d41717;
+      }
+      &.active {
+        background-color: #ffc2c2;
+        .id {
+          color: #8d0202;
+        }
+      }
+    }
   }
 }
 .whitebox {

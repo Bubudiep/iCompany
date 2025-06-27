@@ -310,29 +310,39 @@ const Approve_details = () => {
                 <>
                   {approve.payment_status === "not" ? (
                     <Descriptions.Item label="Nội dung CK" span={2}>
-                      <div className="flex flex-col">
-                        <div className="text-[#999]">
-                          Hướng dẫn: {`{ten} - là tên người lao động`}
+                      {["reject", "cancel"].includes(approve?.status) ? (
+                        <div className="font-[500] text-[#c91919]">
+                          Đã {approve?.status}
                         </div>
-                        <Input
-                          value={comment}
-                          onChange={(e) => {
-                            setComment(e.target.value);
-                            localStorage.setItem(
-                              (approve?.requesttype?.typecode || "approve") +
-                                "_comment",
-                              e.target.value
-                            );
-                          }}
-                        />
-                      </div>
+                      ) : (
+                        <div className="flex flex-col">
+                          <div className="text-[#999]">
+                            Hướng dẫn: {`{ten} - là tên người lao động`}
+                          </div>
+                          <Input
+                            value={comment}
+                            onChange={(e) => {
+                              setComment(e.target.value);
+                              localStorage.setItem(
+                                (approve?.requesttype?.typecode || "approve") +
+                                  "_comment",
+                                e.target.value
+                              );
+                            }}
+                          />
+                        </div>
+                      )}
                     </Descriptions.Item>
                   ) : (
                     <></>
                   )}
                   {["staff", "opertor"].includes(approve?.nguoiThuhuong) ? (
                     <Descriptions.Item label="TT chuyển khoản" span={2}>
-                      {approve.payment_status === "not" ? (
+                      {["reject", "cancel"].includes(approve?.status) ? (
+                        <div className="font-[500] text-[#c91919]">
+                          Đã {approve?.status}
+                        </div>
+                      ) : approve.payment_status === "not" ? (
                         <Card_bank_user
                           show_logo={false}
                           user_type={approve?.nguoiThuhuong}
@@ -431,22 +441,31 @@ const Approve_details = () => {
               )}
             </Descriptions>
             <div className="flex flex-col justify-between mt-auto gap-1">
-              <div className="flex justify-end items-center !text-[30px] !text-[#5e5e5e] font-[600]">
-                Số tiền giải ngân:
-                <Input
-                  disabled={approve?.payment_status === "done"}
-                  placeholder="Số tiền giải ngân"
-                  value={parseInt(amountPay).toLocaleString()}
-                  onChange={(e) =>
-                    setAmoutPay(parseInt(e.target.value.replaceAll(".", "")))
-                  }
-                  className="text-right !w-[220px] !text-[30px] !border-none !text-[#ff5b0e] font-[600]"
-                />
-                VNĐ
-              </div>
-              <div className="flex text-[#999] text-[13px] flex-row-reverse">
-                (*) Bấm phím cách: Phê duyệt và giải ngân và qua phê duyệt tiếp
-              </div>
+              {["reject", "cancel"].includes(approve?.status) ? (
+                <></>
+              ) : (
+                <>
+                  <div className="flex justify-end items-center !text-[30px] !text-[#5e5e5e] font-[600]">
+                    Số tiền giải ngân:
+                    <Input
+                      disabled={approve?.payment_status === "done"}
+                      placeholder="Số tiền giải ngân"
+                      value={parseInt(amountPay).toLocaleString()}
+                      onChange={(e) =>
+                        setAmoutPay(
+                          parseInt(e.target.value.replaceAll(".", ""))
+                        )
+                      }
+                      className="text-right !w-[220px] !text-[30px] !border-none !text-[#ff5b0e] font-[600]"
+                    />
+                    VNĐ
+                  </div>
+                  <div className="flex text-[#999] text-[13px] flex-row-reverse">
+                    (*) Bấm phím cách: Phê duyệt và giải ngân và qua phê duyệt
+                    tiếp
+                  </div>
+                </>
+              )}
               <div className="flex gap-1">
                 {approve.status === "pending" && (
                   <Button onClick={handleCancel} danger icon={<FaXmark />}>

@@ -77,7 +77,7 @@ const List_operators = () => {
                 className="w-full h-full object-cover rounded-[8px]"
               />
             ) : (
-              record.ho_ten.split(" ").pop()?.[0] || "?"
+              record?.ho_ten?.split(" ").pop()?.[0] || "?"
             )}
           </div>
           <div className="flex flex-col flex-1 w-[180px] ml-3">
