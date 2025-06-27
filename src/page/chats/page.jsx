@@ -49,7 +49,9 @@ const Chat_page = () => {
     <div className="flex flex-1 overflow-hidden">
       <LeftNav>
         <div className="tools p-2 flex items-center justify-between h-[60px] border-b-1 border-b-[#d6d6d6]">
-          <div className="text-[18px]">{chatboxs.length} cuộc trò chuyện</div>
+          <div className="text-[18px] title-chat">
+            {chatboxs.length} cuộc trò chuyện
+          </div>
           <New_chats>
             <Button
               type="primary"
@@ -75,33 +77,26 @@ const Chat_page = () => {
                       id?.id_room == chat.id ? "active" : ""
                     }`}
                   >
-                    <div className="relative">
-                      <div className="avatar !rounded-[12px]">
-                        {to?.profile?.avatar_base64 ? (
-                          <Image
-                            src={to?.profile?.avatar_base64}
-                            preview={{
-                              mask: (
-                                <span className="text-[14px]">
-                                  <FaEye />
-                                </span>
-                              ),
-                            }}
-                          />
-                        ) : (
-                          <FaUser size={20} />
+                    <div className="abox">
+                      <div className="relative">
+                        <div className="avatar !rounded-[12px]">
+                          {to?.profile?.avatar_base64 ? (
+                            <img src={to?.profile?.avatar_base64} />
+                          ) : (
+                            <FaUser size={20} />
+                          )}
+                        </div>
+                        {user?.onlines?.find((user) => user.id === to?.id) && (
+                          <Tooltip title="Đang hoạt động">
+                            <div
+                              className="absolute right-0 bottom-0
+                            w-[12px] h-[12px] bg-[#07c400] rounded-full border-2 border-[#fff]"
+                            ></div>
+                          </Tooltip>
                         )}
                       </div>
-                      {user?.onlines?.find((user) => user.id === to?.id) && (
-                        <Tooltip title="Đang hoạt động">
-                          <div
-                            className="absolute right-0 bottom-0
-                            w-[12px] h-[12px] bg-[#07c400] rounded-full border-2 border-[#fff]"
-                          ></div>
-                        </Tooltip>
-                      )}
                     </div>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col in4">
                       <div className="name">
                         {to?.profile?.full_name || to?.cardID}
                       </div>

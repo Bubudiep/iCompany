@@ -363,8 +363,53 @@ body,
           }
         }
       }
+      .title-chat {
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      .chat_items {
+        a {
+          overflow: hidden;
+          .in4 {
+            overflow: hidden;
+            .name {
+              overflow: hidden;
+              white-space: nowrap;
+            }
+          }
+        }
+      }
       &.mini {
         width: 90px;
+        .title-chat {
+          width: 0px;
+          overflow: hidden;
+          display: none;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+        .tools {
+          justify-content: center;
+        }
+        .chat_items {
+          a {
+            .in4 {
+              width: 0px;
+              overflow: hidden;
+              display: none;
+              .name,
+              .msg {
+                overflow: hidden;
+                white-space: nowrap;
+              }
+            }
+            .abox {
+              width: 100%;
+              display: flex;
+              justify-content: center;
+            }
+          }
+        }
         .show-btn {
           svg {
             transform: rotate(180deg);

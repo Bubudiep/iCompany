@@ -37,45 +37,51 @@ const Request_card = ({ approve }) => {
           </div>
         </div>
       </div>
-      <div className="flex w-[100px] flex-col gap-1">
+      <div
+        className={`flex ${
+          approve_id ? "w-[20px]" : "w-[100px]"
+        } flex-col gap-1`}
+      >
         <div className={`status flex ${approve?.status} flex-nowrap`}>
           {approve?.status === "approved" ? (
             <div className="text-[#00a30e] flex items-center gap-1">
               <FaCheckCircle />
-              Đã duyệt
+              {!approve_id && "Đã duyệt"}
             </div>
           ) : approve?.status === "pending" ? (
-            <div className="text-[#dd6300]">Chờ duyệt</div>
+            <div className="text-[#dd6300]">{!approve_id && "Chờ duyệt"}</div>
           ) : approve?.status === "cancel" ? (
-            <div className="text-[#464646]">Đã hủy</div>
+            <div className="text-[#464646]">{!approve_id && "Đã hủy"}</div>
           ) : approve?.status === "reject" ? (
-            <div className="text-[#d62b00]">Đã reject</div>
+            <div className="text-[#d62b00]">{!approve_id && "Đã reject"}</div>
           ) : (
-            <div className="text-[#00a30e]">{approve?.status}</div>
+            <div className="text-[#00a30e]">
+              {!approve_id && approve?.status}
+            </div>
           )}
         </div>
         {approve?.payment_status === "not" ? (
           <div className={`status flex ${approve?.payment_status}`}>
-            {approve?.payment_status_display}
+            {!approve_id && approve?.payment_status_display}
           </div>
         ) : approve?.requesttype?.need_retrive ? (
           <div className={`status flex`}>
             {approve?.retrieve_status === "not" ? (
               <div className="text-[#ec6a00] flex items-center gap-1 font-[500]">
                 <MdSettingsBackupRestore size={15} />
-                Chờ thu
+                {!approve_id && "Chờ thu"}
               </div>
             ) : (
               <div className="text-[#00a30e] flex items-center gap-1">
                 <FaCheckCircle />
-                Đã thu
+                {!approve_id && "Đã thu"}
               </div>
             )}
           </div>
         ) : (
           <div className="text-[#00a30e] flex items-center gap-1">
             <FaCheckCircle />
-            Hoàn thành
+            {!approve_id && "Hoàn thành"}
           </div>
         )}
       </div>

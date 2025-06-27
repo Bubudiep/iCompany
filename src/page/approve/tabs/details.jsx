@@ -212,7 +212,7 @@ const Approve_details = () => {
   return (
     <>
       {loading ? (
-        <div className="flex flex-1 whitebox justify-center">
+        <div className="flex flex-1 justify-center items-center">
           <div className="mt-8 flex flex-col">
             <Spin size="large" />
             <div className="text-[#999] mt-4">Đang tải thông tin</div>

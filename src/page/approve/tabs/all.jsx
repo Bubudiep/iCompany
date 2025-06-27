@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import api from "../../../components/api";
 import { useUser } from "../../../components/context/userContext";
-import { Button, message, Select, Spin } from "antd";
+import { Button, message, Select, Spin, Tooltip } from "antd";
 import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
 import { IoSearchOutline } from "react-icons/io5";
 import Staff_view from "../../../components/by_id/staff_view";
@@ -18,6 +18,8 @@ import { MdSettingsBackupRestore } from "react-icons/md";
 import app from "../../../components/app";
 import TimeSinceText from "../../../components/ui/timesinceText";
 import Request_card from "./request_card";
+import { BsChatSquareQuote } from "react-icons/bs";
+import Export_approve_all from "../../../components/export/export_approve_all";
 
 const Approve_all = () => {
   const [total, setTotal] = useState(9999);
@@ -26,44 +28,52 @@ const Approve_all = () => {
   const [filter, setFilter] = useState({ staff: 0, status: 0 });
   const [approve, setApprove] = useState([]);
   const location = useLocation();
-  const [page, setPage] = useState(1);
+  const [nextpage, setNextpage] = useState("");
   const [loading, setLoading] = useState(false);
   const { user, setUser } = useUser();
   const scrollRef = useRef(null);
-  const loadApprove = () => {
+  const loadApprove = (zt) => {
     setLoading(true);
     api
       .get(
-        `approve/?from=app${filter?.type ? `&banktype=${filter?.type}` : ``}${
-          filter?.staff !== 0 ? `&staff=${filter?.staff}` : ``
-        }${filter?.status !== 0 ? `&status=${filter?.status}` : ""}${
-          type === "baoung"
-            ? "&type=Báo ứng"
-            : type === "chitieu"
-            ? "&type=Chi tiêu"
-            : type === "giuluong"
-            ? "&type=Báo giữ lương"
-            : ""
-        }&page=${page}&page_size=15`,
+        nextpage && !zt
+          ? "approve/" + nextpage.split("/").pop()
+          : `approve/?from=app${
+              filter?.type ? `&banktype=${filter?.type}` : ``
+            }${filter?.staff !== 0 ? `&staff=${filter?.staff}` : ``}${
+              filter?.status !== 0 ? `&status=${filter?.status}` : ""
+            }${
+              type === "baoung"
+                ? "&type=Báo ứng"
+                : type === "chitieu"
+                ? "&type=Chi tiêu"
+                : type === "giuluong"
+                ? "&type=Báo giữ lương"
+                : ""
+            }&page_size=15`,
         user?.token
       )
       .then((res) => {
         if (res?.results) {
           setTotal(res?.count);
-          setApprove((old) => [
-            ...old?.filter((item) =>
-              res?.results.findIndex((i) => i.id === item.id)
-            ),
-            ...res?.results,
-          ]);
-          setPage((prev) => prev + 1);
+          setNextpage(res.next);
+          if (zt === 1) {
+            setApprove(res?.results);
+          } else {
+            setApprove((old) => [
+              ...old?.filter((item) =>
+                res?.results.findIndex((i) => i.id === item.id)
+              ),
+              ...res?.results,
+            ]);
+          }
         }
       })
       .finally(() => setLoading(false));
   };
   useEffect(() => {
-    loadApprove();
-  }, [type, filter]);
+    loadApprove(1);
+  }, [filter, type]);
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -78,11 +88,17 @@ const Approve_all = () => {
   }, [loading, approve.length, total]);
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
-      <div className="min-h-[60px] bg-white flex border-b-1 border-[#0003]"></div>
-      <div className="flex flex-1 overflow-hidden">
+      <div
+        className="min-h-[60px] bg-white items-center px-5 text-[16px] flex
+        gap-3 border-b-1 border-[#0003] fadeInBot"
+      >
+        <BsChatSquareQuote />
+        {type === "all" ? "Tất cả yêu cầu phê duyệt" : ""}
+      </div>
+      <div className="flex flex-1 overflow-hidden fadeInTop">
         <div className="flex flex-col gap-2 flex-1 overflow-hidden">
           <div className="flex gap-2 whitebox items-center overflow-hidden fadeInTop mt-2 mx-2">
-            <div className="search !p-1">
+            {/* <div className="search !p-1">
               <div className="searchbox">
                 <label className="icon p-2">
                   <IoSearchOutline />
@@ -95,15 +111,13 @@ const Approve_all = () => {
                   placeholder="Tìm kiếm..."
                 />
               </div>
-            </div>
+            </div> */}
             <Select
               className="w-[200px] !h-[40px]"
               placeholder="Người tuyển"
               value={filter?.staff}
               showSearch
               onChange={(e) => {
-                setPage(1);
-                setApprove([]);
                 setFilter((old) => ({ ...old, staff: e }));
               }}
               filterOption={(input, option) =>
@@ -123,8 +137,6 @@ const Approve_all = () => {
               value={filter?.type || ""}
               showSearch
               onChange={(e) => {
-                setPage(1);
-                setApprove([]);
                 setFilter((old) => ({ ...old, type: e }));
               }}
               filterOption={(input, option) =>
@@ -137,6 +149,81 @@ const Approve_all = () => {
               ]}
             />
             <div className="flex p-1 gap-2 ml-auto">
+              <Tooltip
+                title={
+                  <div className="flex items-start flex-col gap-1.5 min-w-[120px] p-2">
+                    <div className="text-[#000] mb-2">Chọn loại dữ liệu:</div>
+                    <div className="flex flex-col gap-1.5 ml-2">
+                      <Export_approve_all option="pending">
+                        <Button
+                          icon={
+                            <PiMicrosoftExcelLogoFill
+                              size={20}
+                              className="mt-1"
+                            />
+                          }
+                          type="primary"
+                          className="!h-[40px]"
+                        >
+                          Chờ giải ngân
+                        </Button>
+                      </Export_approve_all>
+                      <Export_approve_all option="complete">
+                        <Button
+                          icon={
+                            <PiMicrosoftExcelLogoFill
+                              size={20}
+                              className="mt-1"
+                            />
+                          }
+                          type="primary"
+                          className="!h-[40px]"
+                        >
+                          Đã hoàn thành
+                        </Button>
+                      </Export_approve_all>
+                      <Export_approve_all option="rejected">
+                        <Button
+                          icon={
+                            <PiMicrosoftExcelLogoFill
+                              size={20}
+                              className="mt-1"
+                            />
+                          }
+                          type="primary"
+                          className="!h-[40px]"
+                        >
+                          Đã bị rejected
+                        </Button>
+                      </Export_approve_all>
+                      <Export_approve_all>
+                        <Button
+                          icon={
+                            <PiMicrosoftExcelLogoFill
+                              size={20}
+                              className="mt-1"
+                            />
+                          }
+                          type="primary"
+                          className="!h-[40px]"
+                        >
+                          Tất cả phê duyệt
+                        </Button>
+                      </Export_approve_all>
+                    </div>
+                  </div>
+                }
+                color="white"
+              >
+                <div
+                  className="flex ml-auto items-center p-2 border-1 hover:border-[#007add] 
+                  text-[#999] transition-all duration-300
+                hover:text-[#007add] px-4 rounded-[8px] gap-2 cursor-pointer border-[#999]"
+                >
+                  <PiMicrosoftExcelLogoFill size={20} />
+                  Xuất Excel
+                </div>
+              </Tooltip>
               {/* <Select
                 className="w-[160px] !h-[40px]"
                 placeholder="Trạng thái"
