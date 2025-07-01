@@ -19,7 +19,9 @@ const Db_pheduyet_card = ({ user }) => {
       map[date][item?.status] =
         (map?.[date]?.[item?.status] || 0) + parseInt(item?.amount);
     });
-    const allDates = Array.from(allDatesSet).sort();
+    const allDates = Array.from(allDatesSet).sort((a, b) =>
+      dayjs(a, "DD-MM").isAfter(dayjs(b, "DD-MM")) ? 1 : -1
+    );
     const timeout = setTimeout(() => {
       setChartData([
         {
