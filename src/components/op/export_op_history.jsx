@@ -17,6 +17,10 @@ const Export_op_history = ({ children }) => {
     gioi_tinh: "Giới tính",
     so_cccd: "Số CCCD",
     ngaysinh: "Ngày sinh",
+    so_taikhoan: "Số tài khoản",
+    chu_taikhoan: "Chủ tài khoản",
+    nganhang: "Ngân hàng",
+    nhachinh: "Nhà chính",
     h_customer: "Công ty",
     h_ho_ten: "Tên đi làm",
     h_ma_nhanvien: "Mã nhân viên đi làm",
@@ -59,6 +63,11 @@ const Export_op_history = ({ children }) => {
                   (cp) => cp.id == (item[key] || item.nguoituyen)
                 );
                 result[fieldMap[key]] = staff?.profile?.full_name || "";
+              } else if (key === "nhachinh") {
+                const cust = user?.company?.Vendor?.find(
+                  (cp) => cp.id == item[key]
+                );
+                result[fieldMap[key]] = cust?.name || "";
               } else if (key === "h_customer") {
                 const cust = user?.company?.Customer?.find(
                   (cp) => cp.id == item[key]
@@ -66,6 +75,10 @@ const Export_op_history = ({ children }) => {
                 result[fieldMap[key]] = cust?.name || "";
               } else if (key === "ho_ten") {
                 result[fieldMap[key]] = app.beautifyName(item[key]);
+              } else if (key === "nganhang") {
+                result[fieldMap[key]] = user?.banks?.data?.find(
+                  (b) => b.bin == item[key]
+                )?.shortName;
               } else {
                 result[fieldMap[key]] = item[key];
               }
