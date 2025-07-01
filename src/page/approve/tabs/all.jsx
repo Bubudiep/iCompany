@@ -25,7 +25,12 @@ const Approve_all = () => {
   const [total, setTotal] = useState(9999);
   const { approve_id, type } = useParams();
   const [filterText, setFilterText] = useState("");
-  const [filter, setFilter] = useState({ staff: 0, status: 0 });
+  const [filter, setFilter] = useState({
+    staff: 0,
+    status: 0,
+    op: 0,
+    code: "",
+  });
   const [approve, setApprove] = useState([]);
   const location = useLocation();
   const [nextpage, setNextpage] = useState("");
@@ -40,6 +45,8 @@ const Approve_all = () => {
           ? "approve/" + nextpage.split("/").pop()
           : `approve/?from=app${
               filter?.type ? `&banktype=${filter?.type}` : ``
+            }${filter?.code ? `&request_code=${filter?.code}` : ``}${
+              filter?.op ? `&operator=${filter?.op}` : ``
             }${filter?.staff !== 0 ? `&staff=${filter?.staff}` : ``}${
               filter?.status !== 0 ? `&status=${filter?.status}` : ""
             }${
@@ -98,20 +105,41 @@ const Approve_all = () => {
       <div className="flex flex-1 overflow-hidden fadeInTop">
         <div className="flex flex-col gap-2 flex-1 overflow-hidden">
           <div className="flex gap-2 whitebox items-center overflow-hidden fadeInTop mt-2 mx-2">
-            {/* <div className="search !p-1">
+            <div className="search !p-1">
               <div className="searchbox">
                 <label className="icon p-2">
                   <IoSearchOutline />
                 </label>
                 <input
-                  value={filterText}
-                  onChange={(e) => setFilterText(e.target.value)}
+                  value={filter.code}
+                  onChange={(e) =>
+                    setFilter((old) => ({ ...old, code: e.target.value }))
+                  }
                   className="!w-[240px]"
                   type="text"
                   placeholder="Tìm kiếm..."
                 />
               </div>
-            </div> */}
+            </div>
+            <Select
+              className="w-[200px] !h-[40px]"
+              placeholder="Người lao động"
+              value={filter?.staff}
+              showSearch
+              onChange={(e) => {
+                setFilter((old) => ({ ...old, staff: e }));
+              }}
+              filterOption={(input, option) =>
+                option?.label?.toLowerCase().includes(input.toLowerCase())
+              }
+              options={[
+                { value: 0, label: "Tất cả người lao động" },
+                ...user?.company?.Operator?.map((emp) => ({
+                  label: app.beautifyName(emp?.ho_ten || ""),
+                  value: emp?.id,
+                })),
+              ]}
+            />
             <Select
               className="w-[200px] !h-[40px]"
               placeholder="Người tuyển"
@@ -124,15 +152,15 @@ const Approve_all = () => {
                 option?.label?.toLowerCase().includes(input.toLowerCase())
               }
               options={[
-                { value: 0, label: "Của tất cả nhân viên" },
+                { value: 0, label: "Tất cả nhân viên" },
                 ...user?.company?.Staff?.map((emp) => ({
-                  label: emp?.profile?.full_name,
+                  label: app.beautifyName(emp?.profile?.full_name || ""),
                   value: emp?.id,
                 })),
               ]}
             />
             <Select
-              className="w-[200px] !h-[40px]"
+              className="w-[160px] !h-[40px]"
               placeholder="Phân loại"
               value={filter?.type || ""}
               showSearch
