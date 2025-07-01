@@ -5,6 +5,7 @@ import TimeSinceText from "../../../components/ui/timesinceText";
 import { FaCaretLeft, FaCheckCircle } from "react-icons/fa";
 import { MdSettingsBackupRestore } from "react-icons/md";
 import app from "../../../components/app";
+import { FaXmark } from "react-icons/fa6";
 
 const Request_card = ({ approve }) => {
   const { approve_id } = useParams();
@@ -12,12 +13,12 @@ const Request_card = ({ approve }) => {
     <Link
       to={`/app/approve/all/${approve?.request_code}`}
       className={`flex item gap-2 items-center relative !text-[12px] ${
-        approve.request_code === approve_id ? "active" : ""
-      }`}
+        approve?.status
+      } ${approve.request_code === approve_id ? "active" : ""}`}
     >
       <div className="w-[180px] flex flex-col gap-1">
         <div
-          className="flex text-[#3993cf] hover:text-[#0076c5] transition-all 
+          className="flex id transition-all 
                           duration-300 font-[500] hover:underline"
         >
           {approve?.request_code}
@@ -51,16 +52,24 @@ const Request_card = ({ approve }) => {
           ) : approve?.status === "pending" ? (
             <div className="text-[#dd6300]">{!approve_id && "Chờ duyệt"}</div>
           ) : approve?.status === "cancel" ? (
-            <div className="text-[#464646]">{!approve_id && "Đã hủy"}</div>
+            <div className="text-[#d62b00] flex items-center gap-1">
+              <FaXmark />
+              {!approve_id && "Đã hủy"}
+            </div>
           ) : approve?.status === "reject" ? (
-            <div className="text-[#d62b00]">{!approve_id && "Đã reject"}</div>
+            <div className="text-[#d62b00] flex items-center gap-1">
+              <FaXmark />
+              {!approve_id && "Đã reject"}
+            </div>
           ) : (
             <div className="text-[#00a30e]">
               {!approve_id && approve?.status}
             </div>
           )}
         </div>
-        {approve?.payment_status === "not" ? (
+        {["reject", "cancel"].includes(approve?.status) ? (
+          ""
+        ) : approve?.payment_status === "not" ? (
           <div className={`status flex ${approve?.payment_status}`}>
             {!approve_id && approve?.payment_status_display}
           </div>
