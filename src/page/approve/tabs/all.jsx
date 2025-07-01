@@ -113,7 +113,10 @@ const Approve_all = () => {
                 <input
                   value={filter.code}
                   onChange={(e) =>
-                    setFilter((old) => ({ ...old, code: e.target.value }))
+                    setFilter((old) => ({
+                      ...old,
+                      code: e.target.value.toUpperCase(),
+                    }))
                   }
                   className="!w-[240px]"
                   type="text"
