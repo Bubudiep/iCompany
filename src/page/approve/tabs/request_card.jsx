@@ -6,6 +6,7 @@ import { FaCaretLeft, FaCheckCircle } from "react-icons/fa";
 import { MdSettingsBackupRestore } from "react-icons/md";
 import app from "../../../components/app";
 import { FaXmark } from "react-icons/fa6";
+import Operator_view from "../../../components/by_id/op_view";
 
 const Request_card = ({ approve }) => {
   const { approve_id } = useParams();
@@ -96,10 +97,12 @@ const Request_card = ({ approve }) => {
       </div>
       <>
         <div className="flex w-[120px] flex-col gap-1">
-          <div className="flex">
-            <Staff_view id={approve?.requester} />
+          <div className="flex text-[#115ed1] hover:underline">
+            {approve?.operator && <Operator_view id={approve?.operator} />}
           </div>
-          <div className="flex">{approve?.operator || "-"}</div>
+          <div className="flex ">
+            <Staff_view id={approve?.requester} className="!text-[#000]" />
+          </div>
         </div>
         <div className="flex flex-col gap-1">
           <div className="flex">
