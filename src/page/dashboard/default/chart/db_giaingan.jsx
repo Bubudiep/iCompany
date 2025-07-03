@@ -76,7 +76,7 @@ const DB_giaingan_card = ({ user }) => {
         ]);
         setLoading(false);
       });
-  }, [user?.company?.Dashboard, range]);
+  }, [range]);
 
   const chartOptions = {
     chart: {

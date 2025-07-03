@@ -84,7 +84,7 @@ const DB_nguoimoi_card = ({ user }) => {
         ]);
         setLoading(false);
       });
-  }, [user?.company?.Dashboard, range]);
+  }, [range]);
 
   const chartOptions = {
     chart: {
