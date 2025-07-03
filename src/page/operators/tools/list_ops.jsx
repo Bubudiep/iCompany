@@ -11,6 +11,7 @@ import dayjs from "dayjs";
 import * as XLSX from "xlsx";
 import Staff_view from "../../../components/by_id/staff_view";
 import Export_op_history from "../../../components/op/export_op_history";
+import Vendor_view from "../../../components/by_id/vendor_view";
 
 const List_operators = () => {
   const [data, setData] = useState([]);
@@ -144,7 +145,17 @@ const List_operators = () => {
             {record?.nguoituyen ? (
               <Staff_view className="ml-1" id={record?.nguoituyen} />
             ) : (
-              "-"
+              record?.vendor && (
+                <div className="flex gap-1 ml-1">
+                  <div
+                    className="flex px-1 py-0 bg-[#6a4396] rounded-[4px] text-[10px]
+                  items-center justify-center text-[#fff] font-[500]"
+                  >
+                    Vendor
+                  </div>{" "}
+                  <Vendor_view id={record?.vendor} />
+                </div>
+              )
             )}
           </div>
           <div className="flex text-[13px] text-[#5f5f5f]  text-nowrap">

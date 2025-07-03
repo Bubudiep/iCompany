@@ -26,6 +26,7 @@ const Export_op_history = ({ children }) => {
     h_ma_nhanvien: "Mã nhân viên đi làm",
     h_so_cccd: "Số CCCD đi làm",
     h_nguoituyen: "Người tuyển",
+    vendor: "Vendor",
     h_start_date: "Ngày vào làm",
     h_end_date: "Ngày nghỉ",
     h_reason: "Lý do nghỉ",
@@ -68,6 +69,11 @@ const Export_op_history = ({ children }) => {
                   (cp) => cp.id == item[key]
                 );
                 result[fieldMap[key]] = cust?.name || "";
+              } else if (key === "vendor") {
+                const cust = user?.company?.Vendor?.find(
+                  (cp) => cp.id == item[key]
+                );
+                result[fieldMap[key]] = cust?.fullname || "";
               } else if (key === "h_customer") {
                 const cust = user?.company?.Customer?.find(
                   (cp) => cp.id == item[key]
