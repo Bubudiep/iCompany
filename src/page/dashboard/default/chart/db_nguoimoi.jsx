@@ -8,6 +8,8 @@ import api from "../../../../components/api";
 import Staff_view from "../../../../components/by_id/staff_view";
 import Operator_view from "../../../../components/by_id/op_view";
 import Vendor_view from "./../../../../components/by_id/vendor_view";
+import { DatePicker } from "antd";
+const { RangePicker } = DatePicker;
 
 dayjs.extend(isoWeek);
 const { Option } = Select;
@@ -20,10 +22,17 @@ const DB_nguoimoi_card = ({ user }) => {
   const [visible, setVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
-  const [range, setRange] = useState("this_week"); // this_week | last_week | this_month
+  const [customRange, setCustomRange] = useState([dayjs(), dayjs()]);
+  const [range, setRange] = useState("this_week");
 
   const getDateRange = () => {
     const today = dayjs();
+    if (range === "custom" && customRange.length === 2) {
+      return {
+        from: customRange[0].format("YYYY-MM-DD"),
+        to: customRange[1].format("YYYY-MM-DD"),
+      };
+    }
     if (range === "this_week") {
       return {
         from: today.startOf("isoWeek").format("YYYY-MM-DD"),
@@ -84,7 +93,7 @@ const DB_nguoimoi_card = ({ user }) => {
         ]);
         setLoading(false);
       });
-  }, [range]);
+  }, [range, customRange]);
 
   const chartOptions = {
     chart: {
@@ -153,18 +162,33 @@ const DB_nguoimoi_card = ({ user }) => {
             </div>
           </Tooltip>
         </div>
-        <Select
-          value={range}
-          onChange={setRange}
-          className="ml-auto w-[150px] !text-[11px] !h-[32px]"
-        >
-          <Option value="this_week">Tuần này</Option>
-          <Option value="last_week">Tuần trước</Option>
-          <Option value="this_month">Tháng này</Option>
-          <Option value="last_month">Tháng trước</Option>
-          <Option value="last_2_month">Tháng trước nữa</Option>
-          <Option value="last_3_month">3 tháng trước</Option>
-        </Select>
+        <div className="ml-auto flex gap-1">
+          <Select
+            value={range}
+            onChange={setRange}
+            className="w-[150px] !text-[11px] !h-[32px]"
+          >
+            <Option value="this_week">Tuần này</Option>
+            <Option value="last_week">Tuần trước</Option>
+            <Option value="this_month">Tháng này</Option>
+            <Option value="last_month">Tháng trước</Option>
+            <Option value="last_2_month">Tháng trước nữa</Option>
+            <Option value="last_3_month">3 tháng trước</Option>
+            <Option value="custom">Tuỳ chọn</Option>
+          </Select>
+          {range === "custom" && (
+            <RangePicker
+              allowClear={false}
+              className="!h-[32px] !text-[10px] w-[220px]"
+              size="small"
+              format="DD-MM-YYYY"
+              value={customRange}
+              onChange={(dates) => {
+                setCustomRange(dates || []);
+              }}
+            />
+          )}
+        </div>
       </div>
       <div className="flex-1 mt-4 min-w-[500px]">
         {loading ? (
@@ -213,7 +237,7 @@ const DB_nguoimoi_card = ({ user }) => {
                     Người báo cáo
                   </td>
                   <td className="text-[12px] font-[500] text-[#999] pb-2">
-                    tdời gian
+                    Thời gian
                   </td>
                 </tr>
                 {filteredData.map((item, idx) => (
