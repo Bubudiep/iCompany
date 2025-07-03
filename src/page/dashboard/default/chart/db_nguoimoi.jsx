@@ -179,7 +179,7 @@ const DB_nguoimoi_card = ({ user }) => {
           {range === "custom" && (
             <RangePicker
               allowClear={false}
-              className="!h-[32px] !text-[10px] w-[220px]"
+              className="!h-[32px] !text-[10px] w-[220px] font-[400]"
               size="small"
               format="DD-MM-YYYY"
               value={customRange}
