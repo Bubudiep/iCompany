@@ -5,7 +5,7 @@ import { FaUser } from "react-icons/fa";
 
 const Operator_view = ({ id, className }) => {
   const { user } = useUser();
-  const op = user?.company?.Operator?.find((op) => op.id === id);
+  const op = user?.company?.Operator?.find((op) => op.id == id);
   return op ? (
     <Tooltip
       title={

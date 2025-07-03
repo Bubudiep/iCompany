@@ -148,9 +148,9 @@ const Db_pheduyet_card = ({ user }) => {
     ],
   };
   return (
-    <div className="flex flex-col flex-1 h-[320px]">
+    <div className="flex flex-col flex-1 h-[330px]">
       <div className="text-[15px] text-[#666] font-[500] flex justify-between">
-        Thống kê phê duyệt báo ứng
+        Thống kê phê duyệt
         <Tooltip
           color="white"
           title={

@@ -13,6 +13,7 @@ import { FaInfoCircle } from "react-icons/fa";
 import Db_baokhac_card from "./default/db_baokhac";
 import Db_op_today from "./default/db_op_today";
 import api from "../../components/api";
+import DB_giaingan_card from "./default/chart/db_giaingan";
 
 const Dashboard_index = () => {
   const { user, setUser } = useUser();
@@ -54,8 +55,13 @@ const Dashboard_index = () => {
                     <Db_baogiu_card user={user} />
                   </div>
                 </div>
-                <div className="flex whitebox flex-1/10">
-                  <Db_pheduyet_card user={user} />
+                <div className="flex flex-col gap-4 flex-1">
+                  <div className="flex whitebox flex-1/10">
+                    <Db_pheduyet_card user={user} />
+                  </div>
+                  <div className="flex whitebox flex-1/10">
+                    <DB_giaingan_card user={user} />
+                  </div>
                 </div>
               </div>
               <div className="flex gap-4">

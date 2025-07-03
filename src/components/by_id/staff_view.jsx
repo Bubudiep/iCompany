@@ -5,7 +5,7 @@ import { FaUser } from "react-icons/fa";
 
 const Staff_view = ({ id, className }) => {
   const { user } = useUser();
-  const staff = user?.company?.Staff?.find((staff) => staff.id === id);
+  const staff = user?.company?.Staff?.find((staff) => staff.id == id);
   return staff ? (
     <Tooltip
       title={
