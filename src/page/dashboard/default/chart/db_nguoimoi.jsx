@@ -1,17 +1,18 @@
 import { Empty, Modal, Select, Spin, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
-import { FaInfoCircle } from "react-icons/fa";
+import { FaInfoCircle, FaUserTie } from "react-icons/fa";
 import ReactApexChart from "react-apexcharts";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import api from "../../../../components/api";
 import Staff_view from "../../../../components/by_id/staff_view";
 import Operator_view from "../../../../components/by_id/op_view";
+import Vendor_view from "./../../../../components/by_id/vendor_view";
 
 dayjs.extend(isoWeek);
 const { Option } = Select;
 
-const DB_giaingan_card = ({ user }) => {
+const DB_nguoimoi_card = ({ user }) => {
   const [chartData, setChartData] = useState([]);
   const [labels, setLabels] = useState([]);
   const [rawData, setRawData] = useState([]);
@@ -55,7 +56,7 @@ const DB_giaingan_card = ({ user }) => {
     setLoading(true);
     api
       .get(
-        `/approvehis/?page_size=9999&payout=1&created_at_from=${from}&created_at_to=${to}`,
+        `/op_all/?page_size=99999&created_at_from=${from}&created_at_to=${to}`,
         user?.token
       )
       .then((res) => {
@@ -63,16 +64,23 @@ const DB_giaingan_card = ({ user }) => {
         const dateMap = {};
         results.forEach((item) => {
           const date = dayjs(item.created_at).format("DD-MM");
-          dateMap[date] = (dateMap[date] || 0) + parseInt(item.amount || 0);
+          // ✅ chỉ đếm số lượng người tuyển được mỗi ngày
+          dateMap[date] = (dateMap[date] || 0) + 1;
         });
-        const allDates = Object.keys(dateMap).sort((a, b) =>
+
+        let allDates = Object.keys(dateMap).sort((a, b) =>
           dayjs(a, "DD-MM").diff(dayjs(b, "DD-MM"))
         );
+
+        // ✅ Giới hạn chỉ 8 ngày gần nhất
+        if (allDates.length > 8) {
+          allDates = allDates.slice(-8);
+        }
 
         setLabels(allDates);
         setRawData(results);
         setChartData([
-          { name: "Hoàn tất", data: allDates.map((d) => dateMap[d]) },
+          { name: "Người mới", data: allDates.map((d) => dateMap[d]) },
         ]);
         setLoading(false);
       });
@@ -99,12 +107,12 @@ const DB_giaingan_card = ({ user }) => {
       bar: {
         horizontal: false,
         borderRadius: 6,
-        columnWidth: "50%",
+        columnWidth: "30%",
         dataLabels: {
           total: {
             enabled: true,
-            style: { fontSize: "12px", fontWeight: 500, color: "#999" },
-            formatter: (val) => (val / 1e6).toFixed(1) + " tr",
+            style: { fontSize: "11px", fontWeight: 600, color: "#999" },
+            formatter: (val) => `${val}`,
           },
         },
       },
@@ -116,24 +124,24 @@ const DB_giaingan_card = ({ user }) => {
     },
     yaxis: {
       labels: {
-        formatter: (val) => (val / 1e6).toFixed(1) + " tr",
+        formatter: (val) => `${val}`,
         style: { fontSize: "11px" },
       },
     },
     tooltip: {
-      y: { formatter: (val) => `${val.toLocaleString()} vnđ` },
+      y: { formatter: (val) => `${val} người` },
     },
   };
   return (
     <div className="flex flex-col flex-1 h-[310px]">
       <div className="text-[15px] text-[#666] font-[500] flex justify-between ">
         <div className="flex gap-4 items-center relative ml-1">
-          Thống kê giải ngân
+          Người lao động mới được thêm vào
           <Tooltip
             color="white"
             title={
               <div className="text-[#636363] max-w-[200px] p-1">
-                Dựa theo dữ liệu phê duyệt
+                Dựa theo dữ liệu báo cáo đi làm hàng ngày của nhân viên.
               </div>
             }
           >
@@ -188,52 +196,50 @@ const DB_giaingan_card = ({ user }) => {
         {filteredData.length === 0 ? (
           <Empty description="Không có dữ liệu" />
         ) : (
-          <div className="max-h-[600px] overflow-auto text-sm">
+          <div className="max-h-[600px] min-h-[300px] overflow-auto text-sm">
             <table className="w-full">
               <tbody>
                 <tr className="sticky top-0 bg-[#fff] z-10 shadow">
-                  <th className="text-[12px] font-[500] text-[#999] pb-2">
-                    CODE
-                  </th>
-                  <th className="text-[12px] font-[500] text-[#999] pb-2">
-                    Người tạo
-                  </th>
-                  <th className="text-[12px] font-[500] text-[#999] pb-2">
-                    Người lao động
-                  </th>
-                  <th className="text-[12px] font-[500] text-[#999] pb-2">
-                    Số tiền
-                  </th>
-                  <th className="text-[12px] font-[500] text-[#999] pb-2">
-                    Thời gian
-                  </th>
+                  <td className="text-[12px] font-[500] text-[#999] pb-2">
+                    Mã NV
+                  </td>
+                  <td className="text-[12px] font-[500] text-[#999] pb-2">
+                    Họ và tên
+                  </td>
+                  <td className="text-[12px] font-[500] text-[#999] pb-2">
+                    Người tuyển
+                  </td>
+                  <td className="text-[12px] font-[500] text-[#999] pb-2">
+                    Người báo cáo
+                  </td>
+                  <td className="text-[12px] font-[500] text-[#999] pb-2">
+                    tdời gian
+                  </td>
                 </tr>
                 {filteredData.map((item, idx) => (
                   <tr
                     key={idx}
                     className="border-b-[#c2c2c2] border-b text-[#555] text-[13px]"
                   >
-                    <td className="py-2">
-                      <a className="font-[500]">{item?.code || "N/A"}</a>
-                    </td>
+                    <td className="py-2">{item?.ma_nhanvien || "N/A"}</td>
+                    <td className="py-2">{item?.ho_ten || "N/A"}</td>
                     <td>
-                      {item?.requester ? (
-                        <Staff_view id={item?.requester} />
+                      {item?.nguoituyen ? (
+                        <Staff_view id={item?.nguoituyen} />
                       ) : (
-                        "N/A"
+                        <div className="flex gap-1">
+                          <div
+                            className="flex text-[#fff] bg-[#106c97] px-1 rounded-[4px]
+                            text-[9px] items-center justify-center"
+                          >
+                            Vendor
+                          </div>
+                          <Vendor_view id={item?.vendor} />
+                        </div>
                       )}
                     </td>
                     <td>
-                      {item?.operator ? (
-                        <Operator_view id={item?.operator} />
-                      ) : (
-                        "N/A"
-                      )}
-                    </td>
-                    <td>
-                      <b className="text-[#5a9e00] font-[500]">
-                        {parseInt(item.amount).toLocaleString()} đ
-                      </b>
+                      <Staff_view id={item?.nguoibaocao} />
                     </td>
                     <td>
                       <b className="text-[#999] font-[400]">
@@ -251,4 +257,4 @@ const DB_giaingan_card = ({ user }) => {
   );
 };
 
-export default DB_giaingan_card;
+export default DB_nguoimoi_card;

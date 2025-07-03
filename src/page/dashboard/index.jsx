@@ -14,6 +14,7 @@ import Db_baokhac_card from "./default/db_baokhac";
 import Db_op_today from "./default/db_op_today";
 import api from "../../components/api";
 import DB_giaingan_card from "./default/chart/db_giaingan";
+import DB_nguoimoi_card from "./default/chart/db_nguoimoi";
 
 const Dashboard_index = () => {
   const { user, setUser } = useUser();
@@ -48,11 +49,16 @@ const Dashboard_index = () => {
           {user?.company?.Dashboard && (
             <>
               <div className="flex gap-4">
-                <div className="flex gap-4 flex-1">
-                  <Db_baoung_card user={user} />
-                  <div className="flex flex-col gap-4 w-full">
-                    <Db_baokhac_card />
-                    <Db_baogiu_card user={user} />
+                <div className="flex flex-col gap-4 flex-1">
+                  <div className="flex gap-4 flex-1">
+                    <Db_baoung_card user={user} />
+                    <div className="flex flex-col gap-4 w-full">
+                      <Db_baokhac_card />
+                      <Db_baogiu_card user={user} />
+                    </div>
+                  </div>
+                  <div className="flex whitebox flex-1/10">
+                    <DB_nguoimoi_card user={user} />
                   </div>
                 </div>
                 <div className="flex flex-col gap-4 flex-1">
@@ -72,8 +78,10 @@ const Dashboard_index = () => {
                     <Db_op_today user={user} />
                   </div>
                 </div>
-                <div className="flex whitebox flex-1/10">
-                  <Db_dilam_card user={user} />
+                <div className="flex flex-1">
+                  <div className="flex whitebox flex-1/10">
+                    <Db_dilam_card user={user} />
+                  </div>
                 </div>
               </div>
             </>
