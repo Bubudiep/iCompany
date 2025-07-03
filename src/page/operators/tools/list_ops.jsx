@@ -258,7 +258,7 @@ const List_operators = () => {
     };
   };
   return (
-    <div className="fadeInTop flex flex-col flex-1 overflow-hidden">
+    <div className="fadeInTop flex flex-col flex-1 overflow-hidden min-w-[800px]">
       <div
         className="flex gap-2 items-center min-h-[54px] bg-white overflow-hidden
       border-b-1 border-[#0003]"
