@@ -98,11 +98,7 @@ const Details_op = () => {
               setOp({});
             })
             .catch((e) => {
-              console.log(e);
-              message.error(
-                e?.response?.data?.details ||
-                  "Phát sinh lỗi khi tải dữ liệu người lao động!"
-              );
+              api.error(e);
             })
             .finally(() => setLoading(false));
         },
