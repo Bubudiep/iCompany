@@ -54,6 +54,11 @@ const Export_approve_all = ({ children, option = "all" }) => {
                 result[fieldMap[key]] = dayjs(item[key]).format(
                   "YYYY-MM-DD HH:mm:ss"
                 );
+              } else if (key === "operator") {
+                const staff = user?.company?.Operator?.find(
+                  (cp) => cp.id == item[key]
+                );
+                result[fieldMap[key]] = staff?.ho_ten || "";
               } else if (key === "amount" || key === "payout_amount") {
                 result[fieldMap[key]] = parseInt(item[key]);
               } else if (key === "khacNganhang") {
