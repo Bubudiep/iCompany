@@ -19,7 +19,15 @@ const Export_approve_all = ({ children, option = "all" }) => {
     payout_amount: "$ giải ngân",
     retrieve_status_display: "Thu hồi",
     requester: "Người tạo",
-    operator: "Người lao động",
+    operator: "Tên NLĐ",
+    operator_ID: "ID NLĐ",
+    operator_NT: "Người tuyển NLĐ",
+    operator_VD: "Vendor NLĐ",
+    operator_CT: "Công ty NLĐ",
+    operator_TEN: "Tên đi làm",
+    operator_MNV: "MNV đi làm",
+    operator_CCD: "CCCD đi làm",
+    operator_NVL: "Ngày vào làm",
     hinhthucThanhtoan_display: "Hình thức thanh toán",
     nguoiThuhuong_display: "Người thụ hưởng",
     created_at: "Ngày tạo",
@@ -28,15 +36,15 @@ const Export_approve_all = ({ children, option = "all" }) => {
     setVisible(true);
     setData([]);
     setLoading(true);
-    let link = "/approve/?page_size=9999";
+    let link = "/approveX/?page_size=9999";
     if (option === "pending") {
-      link = "/approve/?page_size=9999&is_pending=1";
+      link = "/approveX/?page_size=9999&is_pending=1";
     }
     if (option === "complete") {
-      link = "/approve/?page_size=9999&payout=done";
+      link = "/approveX/?page_size=9999&payout=done";
     }
     if (option === "rejected") {
-      link = "/approve/?page_size=9999&status=rejected";
+      link = "/approveX/?page_size=9999&status=rejected";
     }
     api
       .get(link, user?.token)
@@ -55,10 +63,29 @@ const Export_approve_all = ({ children, option = "all" }) => {
                   "YYYY-MM-DD HH:mm:ss"
                 );
               } else if (key === "operator") {
-                const staff = user?.company?.Operator?.find(
-                  (cp) => cp.id == item[key]
-                );
-                result[fieldMap[key]] = staff?.ho_ten || "";
+                result[fieldMap[key]] = item[key]?.ho_ten || "";
+                result["Người tuyển NLĐ"] = item[key]?.nguoituyen
+                  ? user?.company?.Staff?.find(
+                      (s) => s?.id === item[key]?.nguoituyen
+                    )?.profile?.full_name
+                  : "";
+                result["Vendor NLĐ"] = item[key]?.vendor
+                  ? user?.company?.Vendor?.find(
+                      (s) => s?.id === item[key]?.vendor
+                    )?.fullname
+                  : "";
+                if (item[key]?.work) {
+                  result["ID NLĐ"] = item[key]?.work?.ma_nhanvien || "";
+                  result["Công ty NLĐ"] = item[key]?.work?.customer
+                    ? user?.company?.Customer?.find(
+                        (c) => c?.id == item[key]?.work?.customer
+                      )?.name
+                    : "";
+                  result["Tên đi làm"] = item[key]?.work?.ho_ten || "";
+                  result["MNV đi làm"] = item[key]?.work?.ma_nhanvien || "";
+                  result["CCCD đi làm"] = item[key]?.work?.so_cccd || "";
+                  result["Ngày vào làm"] = item[key]?.work?.start_date || "";
+                }
               } else if (key === "amount" || key === "payout_amount") {
                 result[fieldMap[key]] = parseInt(item[key]);
               } else if (key === "khacNganhang") {
