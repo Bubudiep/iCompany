@@ -74,8 +74,8 @@ const Export_approve_all = ({ children, option = "all" }) => {
                       (s) => s?.id === item[key]?.vendor
                     )?.fullname
                   : "";
+                result["ID NLĐ"] = item[key]?.ma_nhanvien || "";
                 if (item[key]?.work) {
-                  result["ID NLĐ"] = item[key]?.ma_nhanvien || "";
                   result["Công ty NLĐ"] = item[key]?.work?.customer
                     ? user?.company?.Customer?.find(
                         (c) => c?.id == item[key]?.work?.customer
