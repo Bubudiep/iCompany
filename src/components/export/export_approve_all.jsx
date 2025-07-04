@@ -75,7 +75,7 @@ const Export_approve_all = ({ children, option = "all" }) => {
                     )?.fullname
                   : "";
                 if (item[key]?.work) {
-                  result["ID NLĐ"] = item[key]?.work?.ma_nhanvien || "";
+                  result["ID NLĐ"] = item[key]?.ma_nhanvien || "";
                   result["Công ty NLĐ"] = item[key]?.work?.customer
                     ? user?.company?.Customer?.find(
                         (c) => c?.id == item[key]?.work?.customer
@@ -136,7 +136,7 @@ const Export_approve_all = ({ children, option = "all" }) => {
         className="popupcontent !top-10 hidden-footer"
       >
         <>
-          <div className="absolute left-3 bottom-4">
+          <div className="absolute left-3 bottom-4 z-10">
             <Button key="download" type="primary" onClick={handleDownload}>
               Lưu Excel
             </Button>
