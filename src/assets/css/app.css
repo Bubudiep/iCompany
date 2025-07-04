@@ -2744,3 +2744,11 @@ input,
     min-width: 200px;
   }
 }
+.hidden-footer {
+  .ant-modal-footer {
+    display: none !important;
+  }
+  .ant-modal-body {
+    padding-bottom: 0px !important;
+  }
+}

@@ -130,34 +130,34 @@ const Export_approve_all = ({ children, option = "all" }) => {
       <Modal
         open={visible}
         onCancel={() => setVisible(false)}
-        footer={[
-          <Button key="cancel" onClick={() => setVisible(false)}>
-            Đóng
-          </Button>,
-          <Button key="download" type="primary" onClick={handleDownload}>
-            Lưu Excel
-          </Button>,
-        ]}
+        footer={false}
         width={1000}
         title="Xem trước dữ liệu xuất Excel"
-        className="popupcontent !top-10"
+        className="popupcontent !top-10 hidden-footer"
       >
-        <Table
-          dataSource={data}
-          loading={loading}
-          columns={Object.keys(fieldMap).map((key) => {
-            const column = {
-              title: fieldMap[key],
-              dataIndex: fieldMap[key],
-              key,
-            };
-            return column;
-          })}
-          rowKey={(record, idx) => idx}
-          pagination={{ pageSize: 15 }}
-          scroll={{ x: "max-content" }}
-          className="ant-mini"
-        />
+        <>
+          <div className="absolute left-3 bottom-4">
+            <Button key="download" type="primary" onClick={handleDownload}>
+              Lưu Excel
+            </Button>
+          </div>
+          <Table
+            dataSource={data}
+            loading={loading}
+            columns={Object.keys(fieldMap).map((key) => {
+              const column = {
+                title: fieldMap[key],
+                dataIndex: fieldMap[key],
+                key,
+              };
+              return column;
+            })}
+            rowKey={(record, idx) => idx}
+            pagination={{ pageSize: 15 }}
+            scroll={{ x: "max-content" }}
+            className="ant-mini"
+          />
+        </>
       </Modal>
     </>
   );
