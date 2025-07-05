@@ -1,19 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import LeftNav from "../../components/layout/LeftNav";
 import { FaQrcode } from "react-icons/fa";
-import { Link, Outlet } from "react-router-dom";
-
+import { Link, Outlet, useLocation } from "react-router-dom";
+const menus = [
+  {
+    id: 1,
+    icon: <FaQrcode />,
+    label: "QRBanks",
+    link: "/app/extends/qrbanks",
+  },
+];
 const Extends_index = () => {
+  const location = useLocation();
+  const [activeMenu, setActiveMenu] = useState(menus[0]);
+  useEffect(() => {
+    menus.forEach(
+      (items) => location.pathname.includes(items.link) && setActiveMenu(items)
+    );
+  }, []);
   return (
     <div className="flex flex-1">
       <LeftNav>
-        <div className="items px-2 py-1">
-          <Link to="qrbanks" className="item">
-            <div className="icon">
-              <FaQrcode />
-            </div>
-            <div className="font-[500] name">QRBanks</div>
-          </Link>
+        <div className="items">
+          {menus.map((menu) => (
+            <Link
+              key={menu.id}
+              to={menu.link}
+              className={`item ${activeMenu.id === menu.id ? "active" : ""}`}
+              onClick={() => setActiveMenu(menu)}
+            >
+              <div className="icon">{menu.icon}</div>
+              <div className="name">{menu.label}</div>
+            </Link>
+          ))}
         </div>
       </LeftNav>
       <Outlet />
