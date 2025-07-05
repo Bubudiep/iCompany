@@ -21,8 +21,8 @@ const Chat_rooms = () => {
   const [leftTab, setLeftTab] = useState(false);
   const [isGroup, setIsGroup] = useState(false);
   const [room, setRoom] = useState(
-    JSON.parse(localStorage.getItem("rooms") || "[]").filter(
-      (room) => room.id == id?.id_room
+    JSON.parse(localStorage.getItem("rooms") || "[]")?.filter(
+      (room) => room?.id == id?.id_room
     ) || {}
   );
   const [messs, setMesss] = useState(false);

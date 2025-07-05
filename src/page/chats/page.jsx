@@ -71,10 +71,10 @@ const Chat_page = () => {
                 const to = chat?.members?.find((item) => item.id != user?.id);
                 return (
                   <Link
-                    to={`/app/chat/${chat.id}`}
-                    key={chat.id}
+                    to={`/app/chat/${chat?.id}`}
+                    key={chat?.id}
                     className={`item fadeInTop ${
-                      id?.id_room == chat.id ? "active" : ""
+                      id?.id_room == chat?.id ? "active" : ""
                     }`}
                   >
                     <div className="abox">
