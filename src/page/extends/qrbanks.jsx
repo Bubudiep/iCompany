@@ -171,21 +171,40 @@ const QR_banks = () => {
               onChange={(e) => setComment(app.removeSpecial(e.target.value))}
             />
           </div>
-          <Divider />
-          <div className="flex justify-center">
-            <div className="borderrounded-md p-4">
-              {accountNumber && amount && bankCode && comment ? (
+          <div className="flex flex-col items-center justify-center">
+            {accountNumber && amount && bankCode && comment ? (
+              <>
+                <div className="text-[#5f5f5f]">
+                  {bankCode && (
+                    <img
+                      src={
+                        user?.banks?.data?.find((i) => i.bin === bankCode)?.logo
+                      }
+                      className="h-12"
+                    />
+                  )}
+                </div>
                 <QrCodeComponent
                   width={180}
                   height={180}
-                  color="#000"
+                  color="#1b2e47"
                   data={qrString || ""}
                   image={user?.info?.profile?.avatar_base64}
                 />
-              ) : (
-                <Empty description="Chưa nhập đủ thông tin" />
-              )}
-            </div>
+                <div className="text-center text-[#1b2e47] text-[15px] font-[700]">
+                  {accountName}
+                </div>
+                <div className="text-center text-[#006eff] text-[13px] font-[500]">
+                  {amount?.toLocaleString()} VNĐ
+                </div>
+                <div className="text-[#5f5f5f]">
+                  {bankCode &&
+                    user?.banks?.data?.find((i) => i.bin === bankCode)?.name}
+                </div>
+              </>
+            ) : (
+              <Empty description="Chưa nhập đủ thông tin" />
+            )}
           </div>
         </div>
       )}
