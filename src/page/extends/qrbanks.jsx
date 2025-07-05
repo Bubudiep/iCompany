@@ -189,7 +189,7 @@ const QR_banks = () => {
                   height={180}
                   color="#1b2e47"
                   data={qrString || ""}
-                  image={user?.info?.profile?.avatar_base64}
+                  image={user?.info?.profile?.avatar_base64 || false}
                 />
                 <div className="text-center text-[#1b2e47] text-[15px] font-[700]">
                   {accountName}
