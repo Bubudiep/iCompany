@@ -8,6 +8,7 @@ import contacts_icon from "../../assets/icon/contacts_app.png";
 import company_icon from "../../assets/icon/company_app.png";
 import users_app from "../../assets/icon/user_report.png";
 import user_pers from "../../assets/icon/user_pers.png";
+import extends_icon from "../../assets/icon/extends_app.png";
 import logout from "../../assets/icon/logout.png";
 import { Modal, Tooltip } from "antd";
 import { useCookies } from "react-cookie";
@@ -49,6 +50,13 @@ const menuItems = [
     name: "Công ty",
     icon: company_icon,
     link: "/app/companys",
+  },
+  {
+    id: 5,
+    show: true,
+    name: "Tiện ích",
+    icon: extends_icon,
+    link: "/app/extends",
   },
   // {
   //   id: 5,

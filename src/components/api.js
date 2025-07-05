@@ -211,6 +211,7 @@ const error = (e) => {
   );
 };
 const mapBreadcrumb = {
+  extends: "Tiện ích",
   config: "Cài đặt",
   user: "Cá nhân hóa",
   app: "Trang chủ",
@@ -221,6 +222,7 @@ const mapBreadcrumb = {
   contacts: "Danh bạ",
   settings: "Cài đặt",
   all: "Tất cả",
+  qrbanks: "QRBanks",
   approve: "Phê duyệt",
   baoung: "Báo ứng",
   giuluong: "Giữ lương",

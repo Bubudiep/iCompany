@@ -14,7 +14,6 @@ import LoginModal from "../page/app_login";
 import Contacts_layout from "../page/contacts/layout";
 import Contacts_list from "../page/contacts/list_contacts";
 import Company_layout from "../page/company/layout";
-import Chat_room from "../page/chat/messages/chatroom";
 import Operators_layout from "../page/operators/layouts";
 import Operator_list from "../page/operators/tools/list_op";
 import Operator_news from "../page/operators/tools/new_op";
@@ -37,11 +36,9 @@ import Approves_layout from "../page/approve/layout";
 import Approve_all from "../page/approve/tabs/all";
 import Approve_details from "../page/approve/tabs/details";
 import Dashboard_index from "../page/dashboard";
-import Approve_baoung from "../page/approve/tabs/baoung";
-import Approve_chitieu from "../page/approve/tabs/chitieu";
-import Approve_giuluong from "../page/approve/tabs/giuluong";
-import { useEffect } from "react";
 import OP_giolamviec from "./../page/operators/tools/bangcong/index";
+import Extends_index from "../page/extends";
+import QR_banks from "../page/extends/qrbanks";
 
 function App() {
   return (
@@ -52,6 +49,9 @@ function App() {
           <Route path="/app" element={<Homepage_layout />}>
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard_index />} />
+            <Route path="extends" element={<Extends_index />}>
+              <Route path="qrbanks" element={<QR_banks />} />
+            </Route>
             <Route path="chat" element={<Chat_page />}>
               <Route index element={<Chat_rooms />} />
               <Route path=":id_room" element={<Chat_rooms />} />

@@ -54,6 +54,21 @@ const Update_op_nguoituyen = ({ op, children, className, update }) => {
         cancelText="Hủy"
       >
         <Form form={form} layout="horizontal" initialValues={op}>
+          <Form.Item name="vendor" label="Vendor">
+            <Select
+              placeholder="Vendor"
+              options={user?.company?.Vendor?.map((cus) => ({
+                value: cus.id,
+                label: cus?.fullname || cus?.name,
+              }))}
+              className="w-[160px]"
+              allowClear={true}
+              showSearch={true}
+              filterOption={(input, option) =>
+                option?.label?.toLowerCase().includes(input.toLowerCase())
+              }
+            />
+          </Form.Item>
           <Form.Item name="nguoituyen" label="Người tuyển">
             <Select
               placeholder="Nhân viên"

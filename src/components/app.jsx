@@ -179,14 +179,22 @@ const TimeSinceText = ({ createdAt }) => {
 
   return <span>{text}</span>;
 };
+// function removeSpecial(str) {
+//   if (str) {
+//     const nonAccentStr = str?.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+//     const cleanedStr = nonAccentStr?.replace(/[^a-zA-Z0-9\s]/g, "");
+//     return cleanedStr.replace(/\s+/g, " ").trim();
+//   } else {
+//     return null;
+//   }
+// }
 function removeSpecial(str) {
   if (str) {
-    const nonAccentStr = str?.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    const cleanedStr = nonAccentStr?.replace(/[^a-zA-Z0-9\s]/g, "");
-    return cleanedStr.replace(/\s+/g, " ").trim();
-  } else {
-    return null;
+    let result = str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    result = result.replace(/Đ/g, "D").replace(/đ/g, "d");
+    return result;
   }
+  return null;
 }
 const getCookie = (name) => {
   const value = `; ${document.cookie}`;
