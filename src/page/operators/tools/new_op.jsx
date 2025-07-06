@@ -23,6 +23,7 @@ import * as XLSX from "xlsx";
 const Operator_news = () => {
   const [listUser, setListUser] = useState([]);
   const { user } = useUser();
+  const [adding, setAdding] = useState(false);
   const [date, setDate] = useState(dayjs().format("YYYY-MM-DD"));
   const [banks, setBanks] = useState([]);
   const [vendors, setVendors] = useState([]);
@@ -191,6 +192,7 @@ const Operator_news = () => {
       operators: listUser,
       date: date,
     };
+    setAdding(true);
     api
       .post("/op/add/", add_data, user.token)
       .then((res) => {
@@ -213,6 +215,9 @@ const Operator_news = () => {
       .catch((e) => {
         console.log(e);
         app.error(e);
+      })
+      .finally(() => {
+        setAdding(false);
       });
   };
 
@@ -315,6 +320,7 @@ const Operator_news = () => {
                 type="primary"
                 icon={<FaSave />}
                 onClick={handleSave}
+                loading={adding}
               >
                 Lưu lại{" "}
                 {listUser.filter((item) => item.fullname !== null).length > 0 &&
