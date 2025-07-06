@@ -11,6 +11,7 @@ import {
   Button,
   Upload,
   message,
+  Tooltip,
 } from "antd";
 import qrcode from "../../components/qrcode";
 import app from "../../components/app";
@@ -82,21 +83,37 @@ const QR_banks = () => {
           Tạo QR ngân hàng
         </div>
         <div className="flex gap-2 ml-auto items-center">
-          <Button
-            icon={<DownloadOutlined />}
-            onClick={downloadSampleExcel}
-            type="primary"
+          <Tooltip
+            color="white"
+            title={
+              <div className="flex flex-col gap-1 text-[#000]">
+                <Button
+                  icon={<DownloadOutlined />}
+                  onClick={downloadSampleExcel}
+                  type="primary"
+                >
+                  Tải file mẫu
+                </Button>
+                <Upload
+                  beforeUpload={handleUpload}
+                  accept=".xlsx,.xls"
+                  className="flex gap-1"
+                  showUploadList={false}
+                >
+                  <Button icon={<UploadOutlined />}>Tải lên file Excel</Button>
+                </Upload>
+              </div>
+            }
+            trigger="click"
           >
-            Tải file mẫu
-          </Button>
-          <Upload
-            beforeUpload={handleUpload}
-            accept=".xlsx,.xls"
-            className="flex gap-1"
-            showUploadList={false}
-          >
-            <Button icon={<UploadOutlined />}>Tải lên file Excel</Button>
-          </Upload>
+            <div
+              className="text-[13px] border-1 p-2 border-[#999] rounded-[6px] px-3
+            text-[#999] cursor-pointer transition-all duration-300
+              hover:text-[#007dd1] hover:border-[#007dd1]"
+            >
+              Tạo hàng loạt
+            </div>
+          </Tooltip>
         </div>
       </div>
       {multipleQR.length > 0 ? (
