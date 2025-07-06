@@ -214,7 +214,7 @@ const Operator_news = () => {
       })
       .catch((e) => {
         console.log(e);
-        app.error(e);
+        api.error(e);
       })
       .finally(() => {
         setAdding(false);

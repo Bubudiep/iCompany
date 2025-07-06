@@ -3,7 +3,7 @@ import { useUser } from "../context/userContext";
 import { Descriptions, Tooltip } from "antd";
 import { HiOutlineOfficeBuilding } from "react-icons/hi";
 
-const Customer_view = ({ id, working }) => {
+const Customer_view = ({ id, working, className }) => {
   const { user } = useUser();
   const customer = user?.company?.Customer?.find(
     (customer) => customer.id === id
@@ -61,8 +61,8 @@ const Customer_view = ({ id, working }) => {
         </div>
       }
       color="white"
-      className="transition-all duration-300 text-[#115ed1] !max-w-full
-      hover:underline hover:text-[#0066ff] cursor-pointer font-[500]"
+      className={`transition-all duration-300 text-[#115ed1] !max-w-full
+      hover:underline hover:text-[#0066ff] cursor-pointer font-[500] ${className}`}
     >
       {customer?.name ?? "-"}
     </Tooltip>

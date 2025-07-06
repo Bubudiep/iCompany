@@ -59,7 +59,7 @@ const Update_op_nguoituyen = ({ op, children, className, update }) => {
               placeholder="Vendor"
               options={user?.company?.Vendor?.map((cus) => ({
                 value: cus.id,
-                label: cus?.fullname || cus?.name,
+                label: cus?.name || cus?.name,
               }))}
               className="w-[160px]"
               allowClear={true}

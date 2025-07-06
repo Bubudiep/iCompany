@@ -72,7 +72,7 @@ const Export_approve_all = ({ children, option = "all" }) => {
                 result["Vendor NLĐ"] = item[key]?.vendor
                   ? user?.company?.Vendor?.find(
                       (s) => s?.id === item[key]?.vendor
-                    )?.fullname
+                    )?.name
                   : "";
                 result["ID NLĐ"] = item[key]?.ma_nhanvien || "";
                 if (item[key]?.work) {

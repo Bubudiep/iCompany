@@ -20,6 +20,7 @@ const List_operators = () => {
   const [filterOption, setFilterOption] = useState({
     working: 0,
     company: 0,
+    nguoituyen: 0,
   });
   const [pagination, setPagination] = useState({
     total: 0,
@@ -135,6 +136,32 @@ const List_operators = () => {
       ),
     },
     {
+      title: "Thông tin đi làm",
+      dataIndex: "ma_nhanvien",
+      key: "id",
+      render: (work, record) => {
+        const working = record?.work?.find((c) => c?.end_date === null);
+        if (working) {
+          return (
+            <div className="block md:!max-w-[180px] md:!w-[180px] md:!ml-[0px]">
+              <div className="flex text-[13px]">
+                Đang làm:{" "}
+                {<Customer_view className="ml-1" id={working?.customer} />}
+              </div>
+              <div className="flex text-[13px] text-[#5f5f5f]">
+                Mã NV: {working?.ma_nhanvien || "-"}
+              </div>
+              <div className="flex text-[13px] text-[#5f5f5f]">
+                Ngày vào: {working?.start_date}
+              </div>
+            </div>
+          );
+        } else {
+          return <div className="text-[#999]">Chưa đi làm</div>;
+        }
+      },
+    },
+    {
       title: "Ngày phỏng vấn",
       dataIndex: "ngay_phongvan",
       key: "ngay_phongvan",
@@ -245,6 +272,8 @@ const List_operators = () => {
           ? item?.congty_danglam !== null
           : filterOption?.working === "notworking"
           ? item?.congty_danglam === null
+          : filterOption?.working === "isme"
+          ? item?.nguoituyen === user?.id
           : false
         : true) &&
       (filterOption?.company !== 0
@@ -292,6 +321,10 @@ const List_operators = () => {
             <Select.Option value="notworking">
               Chưa đi làm (
               {data?.filter((d) => d.congty_danglam === null)?.length})
+            </Select.Option>
+            <Select.Option value="isMe">
+              Người của tôi (
+              {data?.filter((op) => op?.nguoituyen === user?.id)?.length})
             </Select.Option>
           </Select>
           <Select
