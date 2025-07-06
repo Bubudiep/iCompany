@@ -68,7 +68,6 @@ const OP_baoung = ({ children, op, user, callback, className }) => {
           {children}
         </span>
       </Tooltip>
-
       <Modal
         open={open}
         onCancel={onClose}

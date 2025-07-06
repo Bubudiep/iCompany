@@ -54,7 +54,13 @@ const OP_dilamroi = ({ children, op, user, callback, className }) => {
     <>
       <Tooltip
         title={
-          op?.congty_danglam ? `Đang làm việc tại ${op?.congty_danglam}` : false
+          op?.congty_danglam
+            ? `Đang làm việc tại ${
+                user?.company?.Customer?.find(
+                  (cpn) => cpn.id === op?.congty_danglam
+                )?.name
+              }`
+            : false
         }
         className={className}
       >

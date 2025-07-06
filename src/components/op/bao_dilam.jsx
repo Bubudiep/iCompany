@@ -46,7 +46,13 @@ const OP_dilam = ({ children, op, user, callback, className }) => {
     <>
       <Tooltip
         title={
-          op?.congty_danglam ? `Đang làm việc tại ${op?.congty_danglam}` : false
+          op?.congty_danglam
+            ? `Đang làm việc tại ${
+                user?.company?.Customer?.find(
+                  (cpn) => cpn.id === op?.congty_danglam
+                )?.name
+              }`
+            : false
         }
         className={className}
       >
@@ -61,7 +67,7 @@ const OP_dilam = ({ children, op, user, callback, className }) => {
         onCancel={() => setOpen(false)}
         okText="Xác nhận"
         cancelText="Hủy"
-        className="popupcontent"
+        className="popupcontent mini"
       >
         <Form
           layout="vertical"
@@ -121,7 +127,19 @@ const OP_dilam = ({ children, op, user, callback, className }) => {
           >
             <Input />
           </Form.Item>
-
+          <Form.Item label="Nhà chính" name="nhachinh">
+            <Select
+              showSearch
+              placeholder="Chọn nhà chính"
+              options={user?.company?.Vendor?.map((staff) => ({
+                value: staff.name,
+                label: `${staff?.name}`,
+              }))}
+              filterOption={(input, option) =>
+                option.label.toLowerCase().includes(input.toLowerCase())
+              }
+            />
+          </Form.Item>
           <Form.Item label={`Tên đi làm`} name="ten">
             <Input />
           </Form.Item>

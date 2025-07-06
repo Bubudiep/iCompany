@@ -125,6 +125,19 @@ const OP_History_card = ({ work, onDelete, callback, op }) => {
                 }
               />
             </Form.Item>
+            <Form.Item label="Nhà chính" name="nhachinh">
+              <Select
+                showSearch
+                placeholder="Chọn nhà chính"
+                options={user?.company?.Vendor?.map((staff) => ({
+                  value: staff.name,
+                  label: `${staff?.name}`,
+                }))}
+                filterOption={(input, option) =>
+                  option.label.toLowerCase().includes(input.toLowerCase())
+                }
+              />
+            </Form.Item>
             <Form.Item name="ho_ten" label="Tên đi làm" className="!mb-2">
               <Input />
             </Form.Item>
