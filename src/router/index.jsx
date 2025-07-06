@@ -50,6 +50,7 @@ function App() {
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard_index />} />
             <Route path="extends" element={<Extends_index />}>
+              <Route index element={<Navigate to="qrbanks" replace />} />
               <Route path="qrbanks" element={<QR_banks />} />
             </Route>
             <Route path="chat" element={<Chat_page />}>
