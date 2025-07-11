@@ -39,6 +39,7 @@ import Dashboard_index from "../page/dashboard";
 import OP_giolamviec from "./../page/operators/tools/bangcong/index";
 import Extends_index from "../page/extends";
 import QR_banks from "../page/extends/qrbanks";
+import Notes_records from "../page/extends/notes";
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
             <Route path="extends" element={<Extends_index />}>
               <Route index element={<Navigate to="qrbanks" replace />} />
               <Route path="qrbanks" element={<QR_banks />} />
+              <Route path="notes" element={<Notes_records />} />
             </Route>
             <Route path="chat" element={<Chat_page />}>
               <Route index element={<Chat_rooms />} />

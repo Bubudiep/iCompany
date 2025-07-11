@@ -18,6 +18,7 @@
     "axios": "^1.8.4",
     "clsx": "^2.1.1",
     "emoji-picker-react": "^4.12.2",
+    "jodit-react": "^5.2.19",
     "jsqr": "^1.4.0",
     "lodash": "^4.17.21",
     "qr-code-styling": "^1.9.2",

@@ -2,12 +2,19 @@ import React, { useEffect, useState } from "react";
 import LeftNav from "../../components/layout/LeftNav";
 import { FaQrcode } from "react-icons/fa";
 import { Link, Outlet, useLocation } from "react-router-dom";
+import { FaNoteSticky } from "react-icons/fa6";
 const menus = [
   {
     id: 1,
     icon: <FaQrcode />,
     label: "QRBanks",
     link: "/app/extends/qrbanks",
+  },
+  {
+    id: 2,
+    icon: <FaNoteSticky />,
+    label: "Notes",
+    link: "/app/extends/notes",
   },
 ];
 const Extends_index = () => {
@@ -19,7 +26,7 @@ const Extends_index = () => {
     );
   }, []);
   return (
-    <div className="flex flex-1">
+    <div className="flex flex-1 overflow-hidden">
       <LeftNav>
         <div className="items">
           {menus.map((menu) => (
