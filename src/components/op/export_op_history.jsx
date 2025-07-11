@@ -31,6 +31,8 @@ const Export_op_history = ({ children }) => {
     h_end_date: "Ngày nghỉ",
     h_reason: "Lý do nghỉ",
     h_vitri: "Công việc",
+    tinhtrang: "Tình trạng",
+    thamnien: "Thâm niên",
   };
   const handleExportHistory = () => {
     setVisible(true);
@@ -55,8 +57,30 @@ const Export_op_history = ({ children }) => {
             });
           })
           .flat();
+        console.log(
+          merged.sort((a, b) => a.ma_nhanvien.localeCompare(b.ma_nhanvien))
+        );
         const cleaned = merged.map((item) => {
           const result = {};
+          const old_hist = merged.filter(
+            (op) =>
+              op.id === item.id &&
+              new Date(op.h_start_date) < new Date(item.h_start_date) &&
+              op.h_end_date !== null
+          );
+          const thisDiff = dayjs(item.h_end_date || dayjs()).diff(
+            dayjs(item.h_start_date),
+            "day"
+          );
+          const totalDays =
+            old_hist.reduce((sum, entry) => {
+              const start = dayjs(entry.h_start_date);
+              const end = dayjs(entry.h_end_date);
+              const diffDays = end.diff(start, "day"); // tính số ngày
+              return sum + diffDays;
+            }, 0) + thisDiff;
+          item.tinhtrang = "-";
+          item.thamnien = 0;
           Object.keys(fieldMap).forEach((key) => {
             if (key in item) {
               if (key === "h_nguoituyen") {
@@ -85,6 +109,15 @@ const Export_op_history = ({ children }) => {
                 result[fieldMap[key]] = user?.banks?.data?.find(
                   (b) => b.bin == item[key]
                 )?.shortName;
+              } else if (key == "tinhtrang") {
+                const cust = user?.company?.Customer?.find(
+                  (cp) => cp.id == item.congty_danglam
+                );
+                console.log(fieldMap[key]);
+                result[fieldMap[key]] = cust?.name || "-";
+              } else if (key == "thamnien") {
+                console.log(fieldMap[key]);
+                result[fieldMap[key]] = totalDays || 0;
               } else {
                 result[fieldMap[key]] = item[key];
               }
