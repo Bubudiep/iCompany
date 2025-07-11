@@ -21,7 +21,7 @@ const DB_giaingan_card = ({ user }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
   const [customRange, setCustomRange] = useState([dayjs(), dayjs()]);
-  const [range, setRange] = useState("this_week"); // this_week | last_week | this_month
+  const [range, setRange] = useState("last_7_days"); // this_week | last_week | this_month
 
   const getDateRange = () => {
     const today = dayjs();
@@ -29,6 +29,12 @@ const DB_giaingan_card = ({ user }) => {
       return {
         from: customRange[0].format("YYYY-MM-DD"),
         to: customRange[1].format("YYYY-MM-DD"),
+      };
+    }
+    if (range === "last_7_days") {
+      return {
+        from: today.subtract(6, "day").format("YYYY-MM-DD"),
+        to: today.format("YYYY-MM-DD"),
       };
     }
     if (range === "this_week") {
@@ -159,6 +165,7 @@ const DB_giaingan_card = ({ user }) => {
             onChange={setRange}
             className="w-[150px] !text-[11px] !h-[32px]"
           >
+            <Option value="last_7_days">7 ngày gần nhất</Option>
             <Option value="this_week">Tuần này</Option>
             <Option value="last_week">Tuần trước</Option>
             <Option value="this_month">Tháng này</Option>

@@ -23,14 +23,19 @@ const DB_nguoimoi_card = ({ user }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
   const [customRange, setCustomRange] = useState([dayjs(), dayjs()]);
-  const [range, setRange] = useState("this_week");
-
+  const [range, setRange] = useState("last_7_days");
   const getDateRange = () => {
     const today = dayjs();
     if (range === "custom" && customRange.length === 2) {
       return {
         from: customRange[0].format("YYYY-MM-DD"),
         to: customRange[1].format("YYYY-MM-DD"),
+      };
+    }
+    if (range === "last_7_days") {
+      return {
+        from: today.subtract(6, "day").format("YYYY-MM-DD"),
+        to: today.format("YYYY-MM-DD"),
       };
     }
     if (range === "this_week") {
@@ -116,7 +121,7 @@ const DB_nguoimoi_card = ({ user }) => {
       bar: {
         horizontal: false,
         borderRadius: 6,
-        columnWidth: "30%",
+        columnWidth: "50%",
         dataLabels: {
           total: {
             enabled: true,
@@ -168,6 +173,7 @@ const DB_nguoimoi_card = ({ user }) => {
             onChange={setRange}
             className="w-[150px] !text-[11px] !h-[32px]"
           >
+            <Option value="last_7_days">7 ngày gần nhất</Option>
             <Option value="this_week">Tuần này</Option>
             <Option value="last_week">Tuần trước</Option>
             <Option value="this_month">Tháng này</Option>

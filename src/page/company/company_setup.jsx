@@ -9,7 +9,7 @@ import api from "../../components/api";
 const CheckboxItem = ({ label, description, value, onChange }) => (
   <div className={`item !gap-6 !px-6 ${value ? "enable" : ""}`}>
     <label className="checkbox_container">
-      <input type="checkbox" checked={value} onChange={onChange} />
+      <input type="checkbox" checked={value || false} onChange={onChange} />
       <div className="checkmark"></div>
     </label>
     <div className="c">
@@ -103,87 +103,89 @@ const CompanySetup = () => {
               value={config?.baoung_active}
               onChange={() => handleToggle("baoung_active")}
             />
-            <div
-              className={`item !gap-6 !px-6 ${
-                config?.baoung_active_time ? "enable" : ""
-              }`}
-            >
-              <label className="checkbox_container">
-                <input
-                  type="checkbox"
-                  checked={config?.baoung_active_time || false}
-                  onChange={() => handleToggle("baoung_active_time")}
-                />
-                <div className="checkmark"></div>
-              </label>
-              <div className="c">
-                <div className="n">Báo ứng cố định</div>
-                <div className="m">
-                  Chỉ những ngày được chọn mới có thể báo ứng
+            {config?.baoung_active && (
+              <div
+                className={`item !gap-6 !px-6 ${
+                  config?.baoung_active_time ? "enable" : ""
+                }`}
+              >
+                <label className="checkbox_container">
+                  <input
+                    type="checkbox"
+                    checked={config?.baoung_active_time || false}
+                    onChange={() => handleToggle("baoung_active_time")}
+                  />
+                  <div className="checkmark"></div>
+                </label>
+                <div className="c">
+                  <div className="n">Báo ứng cố định</div>
+                  <div className="m">
+                    Chỉ những ngày được chọn mới có thể báo ứng
+                  </div>
                 </div>
-              </div>
 
-              {/* --- Select khi bật báo ứng cố định --- */}
-              {config?.baoung_active_time && (
-                <div className="flex ml-auto gap-2">
-                  <Select
-                    className="w-[120px]"
-                    value={config?.baoung_active_type || "week"}
-                    onChange={(value) =>
-                      setConfig((prev) => ({
-                        ...prev,
-                        baoung_active_type: value,
-                        baoung_active_date: [],
-                      }))
-                    }
-                    options={[
-                      { label: "Theo tuần", value: "week" },
-                      { label: "Theo tháng", value: "month" },
-                    ]}
-                  />
-                  <Select
-                    mode="multiple"
-                    allowClear
-                    className="w-[160px] custom-select"
-                    maxTagCount={0}
-                    optionFilterProp="label"
-                    maxTagPlaceholder={(omitted) =>
-                      `Đã chọn ${omitted.length} ${
-                        config?.baoung_active_type === "week" ? "thứ" : "ngày"
-                      }`
-                    }
-                    placeholder={
-                      config?.baoung_active_type === "week"
-                        ? "Chọn thứ"
-                        : "Chọn ngày"
-                    }
-                    value={config?.baoung_active_date || []}
-                    onChange={(value) =>
-                      setConfig((prev) => ({
-                        ...prev,
-                        baoung_active_date: value,
-                      }))
-                    }
-                    options={
-                      config?.baoung_active_type === "week"
-                        ? [
-                            "Thứ 2",
-                            "Thứ 3",
-                            "Thứ 4",
-                            "Thứ 5",
-                            "Thứ 6",
-                            "Thứ 7",
-                            "Chủ nhật",
-                          ].map((day, i) => ({ label: day, value: i + 1 }))
-                        : Array.from({ length: 31 }, (_, i) => ({
-                            label: `Ngày ${i + 1}`,
-                            value: i + 1,
-                          }))
-                    }
-                  />
-                </div>
-              )}
-            </div>
+                {/* --- Select khi bật báo ứng cố định --- */}
+                {config?.baoung_active_time && (
+                  <div className="flex ml-auto gap-2">
+                    <Select
+                      className="w-[120px]"
+                      value={config?.baoung_active_type || "week"}
+                      onChange={(value) =>
+                        setConfig((prev) => ({
+                          ...prev,
+                          baoung_active_type: value,
+                          baoung_active_date: [],
+                        }))
+                      }
+                      options={[
+                        { label: "Theo tuần", value: "week" },
+                        { label: "Theo tháng", value: "month" },
+                      ]}
+                    />
+                    <Select
+                      mode="multiple"
+                      allowClear
+                      className="w-[160px] custom-select"
+                      maxTagCount={0}
+                      optionFilterProp="label"
+                      maxTagPlaceholder={(omitted) =>
+                        `Đã chọn ${omitted.length} ${
+                          config?.baoung_active_type === "week" ? "thứ" : "ngày"
+                        }`
+                      }
+                      placeholder={
+                        config?.baoung_active_type === "week"
+                          ? "Chọn thứ"
+                          : "Chọn ngày"
+                      }
+                      value={config?.baoung_active_date || []}
+                      onChange={(value) =>
+                        setConfig((prev) => ({
+                          ...prev,
+                          baoung_active_date: value,
+                        }))
+                      }
+                      options={
+                        config?.baoung_active_type === "week"
+                          ? [
+                              "Thứ 2",
+                              "Thứ 3",
+                              "Thứ 4",
+                              "Thứ 5",
+                              "Thứ 6",
+                              "Thứ 7",
+                              "Chủ nhật",
+                            ].map((day, i) => ({ label: day, value: i + 1 }))
+                          : Array.from({ length: 31 }, (_, i) => ({
+                              label: `Ngày ${i + 1}`,
+                              value: i + 1,
+                            }))
+                      }
+                    />
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
