@@ -13,6 +13,7 @@ import logout from "../../assets/icon/logout.png";
 import { Modal, Tooltip } from "antd";
 import { useCookies } from "react-cookie";
 import { useUser } from "../../components/context/userContext";
+import { FaPowerOff } from "react-icons/fa";
 
 const menuItems = [
   {
@@ -198,9 +199,14 @@ const App_lists = () => {
               <div className="name">{item.name}</div>
             </Link>
           ))}
-          <Tooltip title="Đăng xuất" onClick={handleLogout} className="item">
+          <Tooltip
+            title="Đăng xuất"
+            onClick={handleLogout}
+            className="item !text-[#80131398] hover:!text-[#ff000098]
+            hover:!bg-[#eee]"
+          >
             <div className="icon">
-              <img src={logout} alt="Đăng xuất" />
+              <FaPowerOff size={13} />
             </div>
             <div className="name"></div>
           </Tooltip>
