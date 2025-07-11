@@ -3,8 +3,9 @@ import { FaInfoCircle } from "react-icons/fa";
 
 const Db_baokhac_card = ({ rawData, loading }) => {
   const baoung =
-    rawData?.filter((i) => !["Báo ứng", "Báo giữ"].includes(i?.requesttype)) ||
-    [];
+    rawData?.filter(
+      (i) => !["Báo ứng", "Báo giữ lương"].includes(i?.requesttype)
+    ) || [];
   const statusConfigs = [
     {
       label: "Hoàn thành",

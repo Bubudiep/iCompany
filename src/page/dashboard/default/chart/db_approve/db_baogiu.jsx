@@ -4,7 +4,7 @@ import { FaInfoCircle } from "react-icons/fa";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 
 const Db_baogiu_card = ({ rawData, loading }) => {
-  const baoung = rawData.filter((i) => i.requesttype === "Báo giữ") || [];
+  const baoung = rawData.filter((i) => i.requesttype === "Báo giữ lương") || [];
   const statusConfigs = [
     {
       label: "Hoàn thành",
