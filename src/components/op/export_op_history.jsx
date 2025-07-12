@@ -32,7 +32,8 @@ const Export_op_history = ({ children }) => {
     h_reason: "Lý do nghỉ",
     h_vitri: "Công việc",
     tinhtrang: "Tình trạng",
-    thamnien: "Thâm niên",
+    thamnien: "Thâm niên trước đó",
+    thamniencu: "Thâm niên công ty hiện tại",
   };
   const handleExportHistory = () => {
     setVisible(true);
@@ -72,15 +73,15 @@ const Export_op_history = ({ children }) => {
             dayjs(item.h_start_date),
             "day"
           );
-          const totalDays =
-            old_hist.reduce((sum, entry) => {
-              const start = dayjs(entry.h_start_date);
-              const end = dayjs(entry.h_end_date);
-              const diffDays = end.diff(start, "day"); // tính số ngày
-              return sum + diffDays;
-            }, 0) + thisDiff;
+          const totalDays = old_hist.reduce((sum, entry) => {
+            const start = dayjs(entry.h_start_date);
+            const end = dayjs(entry.h_end_date);
+            const diffDays = end.diff(start, "day"); // tính số ngày
+            return sum + diffDays;
+          }, 0);
           item.tinhtrang = "-";
           item.thamnien = 0;
+          item.thamniencu = 0;
           Object.keys(fieldMap).forEach((key) => {
             if (key in item) {
               if (key === "h_nguoituyen") {
@@ -113,11 +114,11 @@ const Export_op_history = ({ children }) => {
                 const cust = user?.company?.Customer?.find(
                   (cp) => cp.id == item.congty_danglam
                 );
-                console.log(fieldMap[key]);
                 result[fieldMap[key]] = cust?.name || "-";
               } else if (key == "thamnien") {
-                console.log(fieldMap[key]);
                 result[fieldMap[key]] = totalDays || 0;
+              } else if (key == "thamniencu") {
+                result[fieldMap[key]] = thisDiff || 0;
               } else {
                 result[fieldMap[key]] = item[key];
               }
