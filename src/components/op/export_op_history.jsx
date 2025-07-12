@@ -32,8 +32,8 @@ const Export_op_history = ({ children }) => {
     h_reason: "Lý do nghỉ",
     h_vitri: "Công việc",
     tinhtrang: "Tình trạng",
-    thamnien: "Thâm niên trước đó",
-    thamniencu: "Thâm niên công ty hiện tại",
+    thamnien: "Tổng thâm niên cũ",
+    thamniencu: "Thâm niên hiện tại",
   };
   const handleExportHistory = () => {
     setVisible(true);
