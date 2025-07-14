@@ -9,10 +9,10 @@ import { FaXmark } from "react-icons/fa6";
 import Operator_view from "../../../components/by_id/op_view";
 
 const Request_card = ({ approve }) => {
-  const { approve_id } = useParams();
+  const { approve_id, type } = useParams();
   return (
     <Link
-      to={`/app/approve/all/${approve?.request_code}`}
+      to={`/app/approve/${type}/${approve?.request_code}`}
       className={`flex item gap-2 items-center relative !text-[12px] ${
         approve?.status
       } ${approve.request_code === approve_id ? "active" : ""}`}
