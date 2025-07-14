@@ -105,15 +105,12 @@ const Request_card = ({ approve }) => {
             {approve?.requesttype === "Báo giữ lương" ? (
               <>
                 {approve?.operator?.congty_danglam ? (
-                  <div className="flex gap-1">
-                    <Customer_view
-                      id={approve?.operator?.congty_danglam?.id}
-                      className="!text-[#000]"
-                    />
+                  <div className="flex gap-1 !text-[#0082fc]">
+                    <Customer_view id={approve?.operator?.congty_danglam?.id} />
                     ({approve?.operator?.congty_danglam?.ma_nhanvien})
                   </div>
                 ) : (
-                  <>Không đi làm</>
+                  <div className="text-[#c95757]">Không đi làm</div>
                 )}
               </>
             ) : (
