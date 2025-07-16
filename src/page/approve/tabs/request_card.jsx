@@ -7,12 +7,13 @@ import { MdSettingsBackupRestore } from "react-icons/md";
 import app from "../../../components/app";
 import { FaXmark } from "react-icons/fa6";
 import Operator_view from "../../../components/by_id/op_view";
+import Customer_view from "../../../components/by_id/customer_view";
 
 const Request_card = ({ approve }) => {
-  const { approve_id } = useParams();
+  const { approve_id, type } = useParams();
   return (
     <Link
-      to={`/app/approve/all/${approve?.request_code}`}
+      to={`/app/approve/${type}/${approve?.request_code}`}
       className={`flex item gap-2 items-center relative !text-[12px] ${
         approve?.status
       } ${approve.request_code === approve_id ? "active" : ""}`}
@@ -98,10 +99,23 @@ const Request_card = ({ approve }) => {
       <>
         <div className="flex w-[120px] flex-col gap-1">
           <div className="flex text-[#115ed1] hover:underline">
-            {approve?.operator && <Operator_view id={approve?.operator} />}
+            {approve?.operator && <Operator_view id={approve?.operator?.id} />}
           </div>
           <div className="flex ">
-            <Staff_view id={approve?.requester} className="!text-[#000]" />
+            {approve?.requesttype === "Báo giữ lương" ? (
+              <>
+                {approve?.operator?.congty_danglam ? (
+                  <div className="flex gap-1 !text-[#0082fc]">
+                    <Customer_view id={approve?.operator?.congty_danglam?.id} />
+                    ({approve?.operator?.congty_danglam?.ma_nhanvien})
+                  </div>
+                ) : (
+                  <div className="text-[#c95757]">Không đi làm</div>
+                )}
+              </>
+            ) : (
+              <Staff_view id={approve?.requester} className="!text-[#000]" />
+            )}
           </div>
         </div>
         <div className="flex flex-col gap-1">
