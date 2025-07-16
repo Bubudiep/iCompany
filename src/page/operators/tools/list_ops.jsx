@@ -16,11 +16,6 @@ import { debounce } from "lodash";
 import OP_Avatar from "./op_avatar";
 
 const List_operators = () => {
-  const [data, setData] = useState(
-    localStorage.getItem("list_operator")?.includes("[")
-      ? JSON.parse(localStorage.getItem("list_operator"))
-      : []
-  );
   const [filterText, setFilterText] = useState("");
   const [loading, setLoading] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
@@ -33,6 +28,13 @@ const List_operators = () => {
     total: 0,
   });
   const { user } = useUser();
+  const [data, setData] = useState(
+    localStorage.getItem("list_operator_id") == user?.id
+      ? localStorage.getItem("list_operator")?.includes("[")
+        ? JSON.parse(localStorage.getItem("list_operator"))
+        : []
+      : []
+  );
   const navigate = useNavigate();
   // Giữ nguyên api.get đệ quy như bạn yêu cầu
   const fetchData = (params = {}, max_update, replace = true) => {
@@ -51,6 +53,7 @@ const List_operators = () => {
             oldMap.set(newItem.id, newItem); // nếu đã có thì ghi đè (update), nếu chưa thì thêm mới
           });
           const maped = Array.from(oldMap.values());
+          localStorage.setItem("list_operator_id", JSON.stringify(user?.id));
           localStorage.setItem("list_operator", JSON.stringify(maped));
           return maped;
         });
