@@ -16,13 +16,20 @@ import { useUser } from "../../components/context/userContext";
 import { FaPowerOff } from "react-icons/fa";
 
 const menuItems = [
+  // {
+  //   id: 1,
+  //   show: true,
+  //   name: "Chat",
+  //   icon: chat_icon,
+  //   link: "/app/chat",
+  //   unread_field: "chat_not_read",
+  // },
   {
-    id: 1,
+    id: 2,
     show: true,
-    name: "Chat",
-    icon: chat_icon,
-    link: "/app/chat",
-    unread_field: "chat_not_read",
+    name: "Nhân lực",
+    icon: users_app,
+    link: "/app/operators",
   },
   {
     id: 6,
@@ -30,13 +37,6 @@ const menuItems = [
     name: "Phê duyệt",
     icon: approve_icon,
     link: "/app/approve",
-  },
-  {
-    id: 2,
-    show: true,
-    name: "Nhân lực",
-    icon: users_app,
-    link: "/app/operators",
   },
   {
     id: 3,
