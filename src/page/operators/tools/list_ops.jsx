@@ -16,9 +16,14 @@ import { debounce } from "lodash";
 import OP_Avatar from "./op_avatar";
 
 const List_operators = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(
+    localStorage.getItem("list_operator")?.includes("[")
+      ? JSON.parse(localStorage.getItem("list_operator"))
+      : []
+  );
   const [filterText, setFilterText] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
   const [filterOption, setFilterOption] = useState({
     working: 0,
     company: 0,
@@ -29,37 +34,47 @@ const List_operators = () => {
   });
   const { user } = useUser();
   const navigate = useNavigate();
-
   // Giữ nguyên api.get đệ quy như bạn yêu cầu
-  const fetchData = (
-    params = {},
-    link = `/ops/?page_size=99999`,
-    replace = true
-  ) => {
-    setLoading(true);
+  const fetchData = (params = {}, max_update, replace = true) => {
+    let timer = setTimeout(() => setShowLoading(true), 500);
     api
-      .get(link, user.token)
+      .get(
+        `/ops/?page_size=99999${
+          max_update?.updated_at ? `&max_update=${max_update.id}` : ""
+        }`,
+        user.token
+      )
       .then((res) => {
-        if (replace) {
-          setData(res.results);
-          setPagination({
-            total: res.count,
+        setData((old) => {
+          const oldMap = new Map(old.map((item) => [item.id, item]));
+          res.results.forEach((newItem) => {
+            oldMap.set(newItem.id, newItem); // nếu đã có thì ghi đè (update), nếu chưa thì thêm mới
           });
-        } else {
-          setData((old) => [...old, ...res.results]);
-        }
-        if (res?.next) {
-          fetchData(params, res?.next?.replace("http", "https"), false);
-        }
+          const maped = Array.from(oldMap.values());
+          localStorage.setItem("list_operator", JSON.stringify(maped));
+          return maped;
+        });
       })
       .catch(() => {
         message.error("Lỗi tải dữ liệu");
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+        clearTimeout(timer);
+        setShowLoading(false);
+      });
   };
 
   useEffect(() => {
-    fetchData();
+    fetchData(
+      {},
+      data?.length > 0 &&
+        data?.reduce((max, item) => {
+          return new Date(item.updated_at) > new Date(max.updated_at)
+            ? item
+            : max;
+        })
+    );
   }, []);
 
   // Debounce input tìm kiếm
@@ -396,7 +411,7 @@ const List_operators = () => {
         rowKey={(record) => record.id}
         rowClassName="user-item"
         dataSource={filteredData}
-        loading={loading}
+        loading={showLoading}
         scroll={{ y: 600 }}
         onRow={onRowClick}
         pagination={{ pageSize: 20, showSizeChanger: false }}
