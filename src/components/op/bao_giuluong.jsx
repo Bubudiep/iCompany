@@ -79,7 +79,7 @@ const OP_giuluong = ({ children, op, user, callback, className }) => {
             <InputNumber
               className="!w-[200px]"
               min={20000}
-              max={2000000}
+              max={20000000}
               step={100000}
               formatter={(value) =>
                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")

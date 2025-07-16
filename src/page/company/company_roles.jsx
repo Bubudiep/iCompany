@@ -3,9 +3,10 @@ import { useOutletContext } from "react-router-dom";
 import Alert_box from "../../components/alert-box";
 import { useUser } from "../../components/context/userContext";
 import app from "../../components/app";
-import { Button, Input, message, Modal } from "antd";
-import { FaEdit, FaPlus } from "react-icons/fa";
+import { Button, Input, message, Modal, Tooltip } from "antd";
+import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import api from "../../components/api";
+import { HiDotsHorizontal } from "react-icons/hi";
 
 const Company_roles = () => {
   const { menu } = useOutletContext();
@@ -147,12 +148,12 @@ const Company_roles = () => {
               return (
                 <div key={dept.id} className="flex flex-col">
                   <div
-                    className={`flex gap-2 items-center p-2 py-1.5 rounded-[8px] 
-                    relative bg-[#f1f3f8] border-1 border-[#a8a8a8] transition-all text-[13px]`}
+                    className={`flex gap-2 items-center p-1.5 rounded-[8px] 
+                    relative transition-all text-[13px] hover:bg-[#eee]`}
                   >
                     <div className="flex flex-col w-[50px] items-center">
                       <div
-                        className="avatar text-[20px] w-[44px] h-[44px] bg-[#0084ff] rounded-xl flex 
+                        className="avatar text-[18px] w-[44px] h-[44px] bg-[#0084ff] rounded-[6px] flex 
                         items-center justify-center text-[#fff] font-[700]"
                       >
                         {`${dept?.name.split(" ")[0][0]}${
@@ -162,45 +163,61 @@ const Company_roles = () => {
                         }`.toUpperCase()}
                       </div>
                     </div>
-                    <div className="flex flex-col w-[180px]">
-                      <div className="name text-[#777]">{dept?.name}</div>
-                      <div className="name font-[500]">
-                        {dept?.description ?? "/ Không có mô tả"}
+                    <div className="flex flex-col gap-0.5">
+                      <div className="name font-[500]">{dept?.name}</div>
+                      <div className="name text-[#777] text-[12px]">
+                        {dept?.description ?? "--"}
                       </div>
                     </div>
-                    <div className="flex flex-col w-[120px] ml-auto text-[#999]">
-                      <div className="name">
-                        Sửa {app.timeSince(dept?.updated_at)}
-                      </div>
-                      <div className="name">
-                        Tạo {app.timeSince(dept?.created_at)}
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <Button
-                        icon={<FaEdit />}
-                        type="primary"
-                        size="small"
-                        className="!text-[12px]"
-                        onClick={() => {
-                          setEditingDept(dept);
-                          setIsModalOpen(true);
-                        }}
+                    <div className="flex flex-col gap-1 ml-auto">
+                      <Tooltip
+                        trigger="hover"
+                        color="white"
+                        title={
+                          <div className="flex flex-col gap-1">
+                            <Button
+                              icon={<FaEdit />}
+                              type="primary"
+                              className="!text-[12px]"
+                              onClick={() => {
+                                setEditingDept(dept);
+                                setIsModalOpen(true);
+                              }}
+                            >
+                              Chỉnh sửa
+                            </Button>
+                            <Button
+                              type="primary"
+                              className="!text-[12px]"
+                              onClick={() => {
+                                setIsAddPosOpen(true);
+                                setNewPos({ ...newPos, department: dept.id });
+                              }}
+                              icon={<FaPlus />}
+                            >
+                              Thêm chức vụ
+                            </Button>
+                            <Button
+                              type="default"
+                              color="danger"
+                              className="!text-[12px] hover:!text-[red] !border-none"
+                              onClick={() => {
+                                message.warning("Chưa đủ quyền");
+                              }}
+                              icon={<FaTrash />}
+                            >
+                              Xóa
+                            </Button>
+                          </div>
+                        }
                       >
-                        Sửa
-                      </Button>
-                      <Button
-                        size="small"
-                        type="primary"
-                        className="!text-[12px]"
-                        onClick={() => {
-                          setIsAddPosOpen(true);
-                          setNewPos({ ...newPos, department: dept.id });
-                        }}
-                        icon={<FaPlus />}
-                      >
-                        Chức vụ
-                      </Button>
+                        <div
+                          className="mr-1 text-[#999] hover:bg-[#fff] px-2 py-2 rounded-[6px]
+                          transition-all duration-300 cursor-pointer hover:text-[#000]"
+                        >
+                          <HiDotsHorizontal />
+                        </div>
+                      </Tooltip>
                     </div>
                   </div>
                   {dept?.Possition?.length > 0 && (
@@ -212,25 +229,50 @@ const Company_roles = () => {
                             className="flex gap-1 pl-3 items-center p-2 text-[#999] role-item
                             transition-all bg-[#f3f5f8] rounded-[4px] border-[#c9c9c9] border-1"
                           >
-                            <div className="name font-[600] text-[14px]">
+                            <div className="name flex flex-col font-[600] text-[12px]">
                               {pos.name}
-                            </div>
-                            <div className="flex ml-auto gap-5">
-                              <div className="name text-[13px]">
-                                {pos?.description ?? "/ Không có mô tả"}
+                              <div className="name text-[11px] font-[400]">
+                                {pos?.description ?? "--"}
                               </div>
-                              <Button
-                                icon={<FaEdit />}
-                                type="primary"
-                                size="small"
-                                className="!text-[12px]"
-                                onClick={() => {
-                                  setEditingPos(pos);
-                                  setIsPosModalOpen(true);
-                                }}
+                            </div>
+                            <div className="flex ml-auto items-center gap-5">
+                              <Tooltip
+                                trigger="hover"
+                                color="white"
+                                title={
+                                  <div className="flex flex-col gap-1">
+                                    <Button
+                                      icon={<FaEdit />}
+                                      type="primary"
+                                      className="!text-[12px]"
+                                      onClick={() => {
+                                        setEditingPos(pos);
+                                        setIsPosModalOpen(true);
+                                      }}
+                                    >
+                                      Chỉnh sửa
+                                    </Button>
+                                    <Button
+                                      type="default"
+                                      color="danger"
+                                      className="!text-[12px] hover:!text-[red] !border-none"
+                                      onClick={() => {
+                                        message.warning("Chưa đủ quyền");
+                                      }}
+                                      icon={<FaTrash />}
+                                    >
+                                      Xóa
+                                    </Button>
+                                  </div>
+                                }
                               >
-                                Sửa
-                              </Button>
+                                <div
+                                  className="mr-1 text-[#999] hover:bg-[#fff] px-2 py-2 rounded-[6px]
+                          transition-all duration-300 cursor-pointer hover:text-[#000]"
+                                >
+                                  <HiDotsHorizontal />
+                                </div>
+                              </Tooltip>
                             </div>
                           </div>
                         );
