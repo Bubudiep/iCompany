@@ -14,6 +14,7 @@ const Card_bank_user = ({
   show_logo = true,
   shadow = true,
   showQR = false,
+  className,
 }) => {
   const { user, setUser } = useUser();
   const [loading, setLoading] = useState(true);
@@ -132,7 +133,7 @@ const Card_bank_user = ({
         <div
           className={`whitebox min-w-[400px] fadeInTop flex gap-3 p-4 rounded-xl bg-white relative ${
             shadow ? "shadow-md" : "!shadow-none"
-          }`}
+          } ${className}`}
         >
           {show_logo && (
             <div className="avatar h-[80px] rounded-xl flex items-center justify-center text-[#c7c7c7] text-xl">
@@ -180,6 +181,12 @@ const Card_bank_user = ({
                       <div className="text-[#999]">Số tiền:</div>
                       <div className="font-[700] text-[15px] flex ml-auto">
                         {parseInt(sotien).toLocaleString()} vnđ
+                      </div>
+                    </div>
+                    <div className="flex flex-nowrap mb-1 mt-0.5 border-b-1 pb-1 border-[#cfcfcf]">
+                      <div className="text-[#999]">Bằng chữ:</div>
+                      <div className="text-[13px] flex ml-auto">
+                        {api.numberToVietnameseText(parseInt(sotien))}
                       </div>
                     </div>
                     <div className="flex gap-3 text-shadow-2xs flex-nowrap">

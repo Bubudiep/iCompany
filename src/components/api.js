@@ -238,7 +238,90 @@ const mapBreadcrumb = {
   permission: "Phân quyền",
   dashboard: "Tổng quan",
 };
+function numberToVietnameseText(number) {
+  if (typeof number !== "number") {
+    number = parseInt(number);
+  }
+
+  if (isNaN(number)) return "Không hợp lệ";
+
+  if (number === 0) return "Không đồng";
+
+  const chuSo = [
+    "không",
+    "một",
+    "hai",
+    "ba",
+    "bốn",
+    "năm",
+    "sáu",
+    "bảy",
+    "tám",
+    "chín",
+  ];
+  const hangDonVi = [
+    "",
+    "nghìn",
+    "triệu",
+    "tỷ",
+    "nghìn tỷ",
+    "triệu tỷ",
+    "tỷ tỷ",
+  ];
+
+  function docBaSo(num) {
+    let tram = Math.floor(num / 100);
+    let chuc = Math.floor((num % 100) / 10);
+    let donvi = num % 10;
+    let result = "";
+
+    if (tram !== 0) {
+      result += chuSo[tram] + " trăm";
+      if (chuc === 0 && donvi !== 0) result += " linh";
+    }
+
+    if (chuc !== 0 && chuc !== 1) {
+      result += " " + chuSo[chuc] + " mươi";
+      if (donvi === 1) result += " mốt";
+      else if (donvi === 5) result += " lăm";
+      else if (donvi !== 0) result += " " + chuSo[donvi];
+    } else if (chuc === 1) {
+      result += " mười";
+      if (donvi === 1) result += " một";
+      else if (donvi === 5) result += " lăm";
+      else if (donvi !== 0) result += " " + chuSo[donvi];
+    } else if (donvi !== 0) {
+      result += " " + chuSo[donvi];
+    }
+
+    return result.trim();
+  }
+
+  let result = "";
+  let i = 0;
+
+  while (number > 0) {
+    let baSo = number % 1000;
+
+    if (baSo !== 0) {
+      let doc = docBaSo(baSo);
+      if (i > 0) result = doc + " " + hangDonVi[i] + " " + result;
+      else result = doc + " " + result;
+    }
+
+    number = Math.floor(number / 1000);
+    i++;
+  }
+
+  // Chuẩn hóa: viết hoa chữ cái đầu và thêm "đồng"
+  result = result.trim();
+  result = result.charAt(0).toUpperCase() + result.slice(1) + " đồng";
+
+  return result;
+}
+
 export default {
+  numberToVietnameseText,
   mapBreadcrumb,
   error,
   get: debounceGet,

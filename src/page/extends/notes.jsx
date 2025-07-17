@@ -111,7 +111,7 @@ const Notes_records = () => {
             note?.history?.map((his) => (
               <div
                 className="item bg-white gap-0.5 flex flex-col p-1.5 px-2 rounded-[6px] shadow text-[13px]"
-                key={his.id}
+                key={his.version}
               >
                 <div className="text-[#3d3d3d]">{his?.note || ""}</div>
                 <div className="flex justify-between text-[10px]">

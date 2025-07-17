@@ -19,6 +19,8 @@ const { Title } = Typography;
 import * as XLSX from "xlsx";
 import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
 import { FaQrcode } from "react-icons/fa";
+import Card_bank_user from "../../components/cards/user-bank-card";
+import { FaCircleCheck } from "react-icons/fa6";
 const QR_banks = () => {
   const { user } = useUser();
   const [qrString, setQrString] = useState(null);
@@ -27,6 +29,7 @@ const QR_banks = () => {
   const [accountNumber, setAccountNumber] = useState("");
   const [comment, setComment] = useState("Chuyen tien");
   const [amount, setAmount] = useState(null);
+  const [seletedQR, setSeletedQR] = useState(null);
   const [multipleQR, setMultipleQR] = useState([]);
   const handleUpload = (file) => {
     const reader = new FileReader();
@@ -36,11 +39,12 @@ const QR_banks = () => {
       const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
       const jsonData = XLSX.utils.sheet_to_json(sheet);
-      setMultipleQR(jsonData);
+      console.log(jsonData);
+      setMultipleQR(jsonData.map((d, i) => ({ ...d, id: i, done: false })));
       message.success("Tải file thành công!");
     };
     reader.readAsArrayBuffer(file);
-    return false; // Ngăn AntD tự upload
+    return false;
   };
   const downloadSampleExcel = () => {
     const sampleData = [
@@ -66,6 +70,37 @@ const QR_banks = () => {
     XLSX.utils.book_append_sheet(workbook, bankSheet, "DS_BANK");
     XLSX.writeFile(workbook, "mau_chuyen_khoan.xlsx");
   };
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.code === "Space" || e.key === " ") {
+        e.preventDefault(); // Ngăn cuộn trang
+
+        if (multipleQR.length === 0) return;
+
+        setMultipleQR((prevList) => {
+          if (!seletedQR) {
+            setSeletedQR(prevList[0]);
+            return prevList;
+          }
+
+          const updatedList = prevList.map((item) =>
+            item.id === seletedQR.id ? { ...item, done: true } : item
+          );
+
+          const currentIndex = updatedList.findIndex(
+            (item) => item.id === seletedQR.id
+          );
+          const nextIndex = (currentIndex + 1) % updatedList.length;
+          setSeletedQR(updatedList[nextIndex]);
+          return updatedList;
+        });
+        message.success("Đã xong!!");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [multipleQR, seletedQR]);
 
   useEffect(() => {
     if (accountNumber && amount && bankCode && comment) {
@@ -74,7 +109,7 @@ const QR_banks = () => {
     }
   }, [accountNumber, bankCode, amount, comment]);
   return (
-    <div className="flex flex-1 flex-col gap-2">
+    <div className="flex flex-1 flex-col">
       <div className="whiteTitle fadeInBot">
         <div className="flex items-center gap-3">
           <div className="icon text-[20px]">
@@ -117,8 +152,76 @@ const QR_banks = () => {
         </div>
       </div>
       {multipleQR.length > 0 ? (
-        <div className="flex flex-1 items-center justify-center gap-2">
-          <Empty description="Chức năng đang được tối ưu lại" />
+        <div className="flex flex-1 gap-2">
+          <div className="flex flex-col bg-white border-r-1 border-[#0003] min-w-[400px] w-[400px] relative">
+            {multipleQR.map((b) => {
+              const bank = user?.banks?.data?.find(
+                (i) => i.bin === b["Ngân hàng (BIN)"]
+              );
+              return (
+                <div
+                  className={`flex items-center p-1 py-3 
+                  hover:cursor-pointer 
+                  hover:border-l-2 hover:bg-[#dfe5f0] gap-1 
+                  overflow-hidden border-[#779acf]
+                  ${
+                    seletedQR?.id === b.id
+                      ? "border-l-2 bg-[#dfe5f0]"
+                      : "border-l-0 "
+                  }
+                  ${b.done ? "!bg-[#bdf1c1] text-[#006d09]" : ""}
+                  transition-colors duration-300`}
+                  key={b.id}
+                  onClick={() => setSeletedQR(b)}
+                >
+                  <div className="flex flex-col">
+                    <div className="flex">
+                      <img src={bank?.logo} className="h-6" />
+                    </div>
+                  </div>
+                  <div className="flex flex-col flex-1 overflow-hidden">
+                    <div className="text-nowrap">{b["Chủ tài khoản"]}</div>
+                    <div className="flex text-nowrap">{b["Số tài khoản"]}</div>
+                  </div>
+                  <div className="flex flex-col flex-1 overflow-hidden">
+                    <div className="text-nowrap">{b["Số tiền"]}</div>
+                    <div className="text-nowrap overflow-ellipsis overflow-hidden">
+                      {b["Nội dung"]} dsa dsa ds ad sad sa ds dsadsads
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="flex flex-1 items-start">
+            {seletedQR ? (
+              <div className="flex flex-1 flex-col py-2 gap-2">
+                {seletedQR?.done && (
+                  <div
+                    className="text-[#00910c] text-[22px] p-5 flex items-center gap-2
+                    bg-white shadow rounded-[8px] mr-2 font-[500]"
+                  >
+                    <FaCircleCheck /> Đã xong
+                  </div>
+                )}
+                <Card_bank_user
+                  user_type="other"
+                  user_id={{
+                    khacCtk: seletedQR["Chủ tài khoản"],
+                    khacStk: seletedQR["Số tài khoản"],
+                    khacNganhang: seletedQR["Ngân hàng (BIN)"],
+                  }}
+                  showQR={true}
+                  show_logo={false}
+                  sotien={seletedQR["Số tiền"]}
+                  comment={seletedQR["Nội dung"]}
+                  className="flex flex-1 mr-2"
+                />
+              </div>
+            ) : (
+              <Empty description="Chọn một" />
+            )}
+          </div>
         </div>
       ) : (
         <div className="flex flex-1 p-2 justify-center items-start fadeInTop">
