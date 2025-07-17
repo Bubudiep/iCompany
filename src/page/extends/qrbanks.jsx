@@ -186,7 +186,7 @@ const QR_banks = () => {
                   <div className="flex flex-col flex-1 overflow-hidden">
                     <div className="text-nowrap">{b["Số tiền"]}</div>
                     <div className="text-nowrap overflow-ellipsis overflow-hidden">
-                      {b["Nội dung"]} dsa dsa ds ad sad sa ds dsadsads
+                      {b["Nội dung"]}
                     </div>
                   </div>
                 </div>
