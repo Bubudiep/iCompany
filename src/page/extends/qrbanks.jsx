@@ -162,7 +162,7 @@ const QR_banks = () => {
                 <div
                   className={`flex items-center p-1 py-3 
                   hover:cursor-pointer 
-                  hover:border-l-2 hover:bg-[#dfe5f0] gap-1 
+                  hover:bg-[#dfe5f0] gap-1 
                   overflow-hidden border-[#779acf]
                   ${
                     seletedQR?.id === b.id
