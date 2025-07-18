@@ -51,7 +51,7 @@ const QR_banks = () => {
       {
         "Chủ tài khoản": "Nguyen Van A",
         "Số tài khoản": "0123456789",
-        "Ngân hàng (BIN)": "970418",
+        "Ngân hàng (shortName)": "VietinBank",
         "Số tiền": 500000,
         "Nội dung": "Thanh toan hoa don",
       },
@@ -156,7 +156,9 @@ const QR_banks = () => {
           <div className="flex flex-col bg-white border-r-1 border-[#0003] min-w-[400px] w-[400px] relative">
             {multipleQR.map((b) => {
               const bank = user?.banks?.data?.find(
-                (i) => i.bin === b["Ngân hàng (BIN)"]
+                (i) =>
+                  i.shortName.toLowerCase() ==
+                  b?.["Ngân hàng (shortName)"]?.toLowerCase()
               );
               return (
                 <div
@@ -172,7 +174,7 @@ const QR_banks = () => {
                   ${b.done ? "!bg-[#bdf1c1] text-[#006d09]" : ""}
                   transition-colors duration-300`}
                   key={b.id}
-                  onClick={() => setSeletedQR(b)}
+                  onClick={() => setSeletedQR({ ...b, bank: bank?.bin })}
                 >
                   <div className="flex flex-col">
                     <div className="flex">
@@ -209,7 +211,7 @@ const QR_banks = () => {
                   user_id={{
                     khacCtk: seletedQR["Chủ tài khoản"],
                     khacStk: seletedQR["Số tài khoản"],
-                    khacNganhang: seletedQR["Ngân hàng (BIN)"],
+                    khacNganhang: seletedQR["bank"],
                   }}
                   showQR={true}
                   show_logo={false}
