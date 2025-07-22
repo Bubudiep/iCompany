@@ -13,6 +13,7 @@ import {
 import dayjs from "dayjs";
 import api from "../../../../components/api";
 import { useUser } from "../../../../components/context/userContext";
+import Vendor_view from "./../../../../components/by_id/vendor_view";
 
 const OP_History_card = ({ work, onDelete, callback, op }) => {
   const [open, setOpen] = React.useState(false);
@@ -130,7 +131,7 @@ const OP_History_card = ({ work, onDelete, callback, op }) => {
                 showSearch
                 placeholder="Chọn nhà chính"
                 options={user?.company?.Vendor?.map((staff) => ({
-                  value: staff.name,
+                  value: staff.id,
                   label: `${staff?.name}`,
                 }))}
                 filterOption={(input, option) =>
@@ -181,6 +182,12 @@ const OP_History_card = ({ work, onDelete, callback, op }) => {
       <div className="flex text-[13px] gap-1">
         Mã nhân viên:
         <a className="flex ml-auto">{work?.ma_nhanvien || "N/A"}</a>
+      </div>
+      <div className="flex text-[13px] gap-1">
+        Nhà chính:
+        <a className="flex ml-auto">
+          {work?.nhachinh ? <Vendor_view id={work?.nhachinh} /> : "N/A"}
+        </a>
       </div>
       <div className="flex text-[13px] gap-1">
         Số CCCD:
