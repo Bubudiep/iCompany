@@ -12,7 +12,7 @@ const Vendor_view = ({ id, working, className, children }) => {
     <Tooltip
       title={
         <div className="flex flex-col !w-[300px] text-[#000] gap-2">
-          <div className="fullname p-2 flex flex-1 items-center justify-center flex-col gap-1">
+          <div className="fullname p-2 flex flex-1 items-center justify-center flex-col">
             <div
               className="flex items-center justify-center rounded-full border-[2px] border-[#fff]
               shadow-2xl w-[80px] h-[80px] bg-[#c2d3eb] text-[#fff]"
@@ -25,6 +25,7 @@ const Vendor_view = ({ id, working, className, children }) => {
                 </>
               )}
             </div>
+            <div className="mt-1">{customer?.name || "Chưa cập nhập"}</div>
             <div>{customer?.fullname || "Chưa cập nhập"}</div>
           </div>
           <Descriptions column={1} className="card-format">
@@ -64,7 +65,7 @@ const Vendor_view = ({ id, working, className, children }) => {
       className={`transition-all duration-300 text-[#115ed1] !max-w-full
       hover:underline hover:text-[#0066ff] cursor-pointer font-[500] ${className}`}
     >
-      {children ?? customer?.fullname ?? "-"}
+      {children ?? customer?.name ?? customer?.fullname ?? "-"}
     </Tooltip>
   ) : (
     <>-</>
