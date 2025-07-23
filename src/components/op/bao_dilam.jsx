@@ -120,11 +120,7 @@ const OP_dilam = ({ children, op, user, callback, className }) => {
           >
             <DatePicker style={{ width: "100%" }} />
           </Form.Item>
-          <Form.Item
-            label="Mã nhân viên"
-            name="manhanvien"
-            rules={[{ required: true, message: "Nhập mã nhân viên" }]}
-          >
+          <Form.Item label="Mã nhân viên" name="manhanvien">
             <Input />
           </Form.Item>
           <Form.Item label="Nhà chính" name="nhachinh">
