@@ -37,6 +37,7 @@ const OP_History_card = ({ work, onDelete, callback, op }) => {
             `ophist/${work.id}/`,
             {
               ...values,
+              nhachinh: values?.nhachinh || null,
               start_date: values?.start_date
                 ? dayjs(values.start_date).format("YYYY-MM-DD")
                 : null,
@@ -129,7 +130,11 @@ const OP_History_card = ({ work, onDelete, callback, op }) => {
             <Form.Item label="Nhà chính" name="nhachinh">
               <Select
                 showSearch
+                allowClear={true}
                 placeholder="Chọn nhà chính"
+                onClear={() => {
+                  form.setFieldsValue({ nhachinh: null });
+                }}
                 options={user?.company?.Vendor?.map((staff) => ({
                   value: staff.id,
                   label: `${staff?.name}`,

@@ -25,6 +25,7 @@ const Vendor_view = ({ id, working, className, children }) => {
                 </>
               )}
             </div>
+            <div>{customer?.name || "Chưa cập nhập"}</div>
             <div>{customer?.fullname || "Chưa cập nhập"}</div>
           </div>
           <Descriptions column={1} className="card-format">
@@ -64,7 +65,7 @@ const Vendor_view = ({ id, working, className, children }) => {
       className={`transition-all duration-300 text-[#115ed1] !max-w-full
       hover:underline hover:text-[#0066ff] cursor-pointer font-[500] ${className}`}
     >
-      {children ?? customer?.fullname ?? "-"}
+      {children ?? customer?.name ?? customer?.fullname ?? "-"}
     </Tooltip>
   ) : (
     <>-</>
