@@ -129,6 +129,8 @@ const OP_History_card = ({ work, onDelete, callback, op }) => {
             <Form.Item label="Nhà chính" name="nhachinh">
               <Select
                 showSearch
+                onClear={() => form.setFieldsValue({ nhachinh: null })}
+                allowClear={true}
                 placeholder="Chọn nhà chính"
                 options={user?.company?.Vendor?.map((staff) => ({
                   value: staff.id,
