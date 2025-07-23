@@ -25,6 +25,7 @@ const Customer_view = ({ id, working, className }) => {
                 </>
               )}
             </div>
+            <div>{customer?.name || "Chưa cập nhập"}</div>
             <div>{customer?.fullname || "Chưa cập nhập"}</div>
           </div>
           <Descriptions column={1} className="card-format">
