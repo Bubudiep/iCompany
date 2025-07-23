@@ -132,7 +132,7 @@ const OP_dilam = ({ children, op, user, callback, className }) => {
               showSearch
               placeholder="Chọn nhà chính"
               options={user?.company?.Vendor?.map((staff) => ({
-                value: staff.name,
+                value: staff.id,
                 label: `${staff?.name}`,
               }))}
               filterOption={(input, option) =>
