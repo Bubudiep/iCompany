@@ -132,11 +132,7 @@ const OP_History_card = ({ work, onDelete, callback, op }) => {
                 showSearch
                 onClear={() => form.setFieldsValue({ nhachinh: null })}
                 allowClear={true}
-                allowClear={true}
                 placeholder="Chọn nhà chính"
-                onClear={() => {
-                  form.setFieldsValue({ nhachinh: null });
-                }}
                 options={user?.company?.Vendor?.map((staff) => ({
                   value: staff.id,
                   label: `${staff?.name}`,
