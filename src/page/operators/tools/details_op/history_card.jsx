@@ -54,6 +54,7 @@ const OP_History_card = ({ work, onDelete, callback, op }) => {
           })
           .catch((e) => {
             console.log(e);
+            api.error(e);
           });
       })
       .catch((info) => {
