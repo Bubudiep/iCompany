@@ -80,8 +80,8 @@ const Chat_page = () => {
                     <div className="abox">
                       <div className="relative">
                         <div className="avatar !rounded-[12px]">
-                          {to?.profile?.avatar_base64 ? (
-                            <img src={to?.profile?.avatar_base64} />
+                          {to?.profile?.avatar_preview ? (
+                            <img src={to?.profile?.avatar_preview} />
                           ) : (
                             <FaUser size={20} />
                           )}

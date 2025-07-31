@@ -152,9 +152,9 @@ const Chat_rooms = () => {
                       <></>
                     ) : (
                       <>
-                        {to?.profile?.avatar_base64 ? (
+                        {to?.profile?.avatar_preview ? (
                           <Image
-                            src={to?.profile?.avatar_base64}
+                            src={to?.profile?.avatar_preview}
                             preview={{
                               mask: (
                                 <span className="text-[14px]">

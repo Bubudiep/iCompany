@@ -85,8 +85,11 @@ const App_lists = () => {
           className="w-[50px] h-[50px] flex items-center justify-center
           bg-white rounded-[8px] overflow-hidden"
         >
-          {user?.info?.profile?.avatar_base64 ? (
-            <img src={user?.info?.profile?.avatar_base64} className="!w-full" />
+          {user?.info?.profile?.avatar_preview ? (
+            <img
+              src={user?.info?.profile?.avatar_preview}
+              className="!w-full"
+            />
           ) : (
             <FaUser size={20} />
           )}

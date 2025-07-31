@@ -65,7 +65,7 @@ const Contacts_list = () => {
                       className="avatar flex flex-1 items-center justify-center text-[#fff] 
                         text-[20px] w-12 h-12 rounded-[18px]"
                       style={{
-                        backgroundColor: item?.profile?.avatar_base64
+                        backgroundColor: item?.profile?.avatar_preview
                           ? "transparent"
                           : app.stringToColor(
                               item?.profile?.full_name
@@ -75,9 +75,9 @@ const Contacts_list = () => {
                             ),
                       }}
                     >
-                      {item?.profile?.avatar_base64 ? (
+                      {item?.profile?.avatar_preview ? (
                         <img
-                          src={item?.profile?.avatar_base64}
+                          src={item?.profile?.avatar_preview}
                           className="w-full h-full object-cover rounded-[18px]"
                         />
                       ) : (

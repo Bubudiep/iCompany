@@ -112,13 +112,13 @@ const Company_accounts = () => {
           className="avatar w-[50px] h-[50px] rounded-xl flex items-center 
         justify-center font-[500] text-[#fff] text-[18px]"
           style={{
-            backgroundColor: acc?.profile?.avatar_base64
+            backgroundColor: acc?.profile?.avatar_preview
               ? undefined
               : app.stringToColor(acc?.profile?.full_name || "G"),
           }}
         >
-          {acc?.profile?.avatar_base64 ? (
-            <img src={acc?.profile?.avatar_base64} alt="" />
+          {acc?.profile?.avatar_preview ? (
+            <img src={acc?.profile?.avatar_preview} alt="" />
           ) : acc?.profile?.full_name ? (
             acc?.profile?.full_name.toUpperCase().split(" ").pop()[0]
           ) : (

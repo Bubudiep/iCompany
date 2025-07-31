@@ -113,9 +113,9 @@ const Profile = () => {
                   alt="Avatar"
                   className="w-full h-full object-cover rounded-2xl"
                 />
-              ) : user?.info?.profile?.avatar_base64 ? (
+              ) : user?.info?.profile?.avatar_preview ? (
                 <img
-                  src={user.info.profile.avatar_base64}
+                  src={user.info.profile.avatar_preview}
                   alt="Avatar"
                   className="w-full h-full object-cover rounded-2xl"
                 />

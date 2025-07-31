@@ -15,8 +15,8 @@ const Staff_view = ({ id, className }) => {
               className="flex items-center justify-center rounded-full border-[2px] border-[#fff]
               shadow-2xl w-[80px] h-[80px] bg-[#c2d3eb] text-[#fff]"
             >
-              {staff?.profile?.avatar_base64 ? (
-                <img src={staff?.profile?.avatar_base6} />
+              {staff?.profile?.avatar_preview ? (
+                <img src={staff?.profile?.avatar_preview} />
               ) : (
                 <>
                   <FaUser size={40} />

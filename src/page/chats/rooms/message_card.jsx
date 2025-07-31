@@ -40,7 +40,7 @@ const Chat_message_card = ({ msg, index, user, messages }) => {
           <div className="avatar">
             <Image
               className="w-full h-full"
-              src={from?.profile?.avatar_base64}
+              src={from?.profile?.avatar_preview}
             />
           </div>
         )}
