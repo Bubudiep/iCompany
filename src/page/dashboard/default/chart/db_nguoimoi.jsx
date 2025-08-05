@@ -218,7 +218,7 @@ const DB_nguoimoi_card = ({ user }) => {
       <Modal
         open={visible}
         onCancel={() => setVisible(false)}
-        title={`Chi tiết giải ngân ngày ${selectedDate} (${filteredData.length} đơn)`}
+        title={`Người lao động được thêm vào ngày ${selectedDate} (${filteredData.length} người)`}
         footer={null}
         width={800}
         className="popupcontent !top-10"
