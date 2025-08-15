@@ -147,143 +147,192 @@ const DB_nguoimoi_card = ({ user }) => {
     },
   };
   return (
-    <div className="flex flex-col flex-1 h-[310px]">
-      <div className="text-[15px] text-[#666] font-[500] flex justify-between ">
-        <div className="flex gap-4 items-center relative ml-1">
-          Người lao động mới được thêm vào
-          <Tooltip
-            color="white"
-            title={
-              <div className="text-[#636363] max-w-[200px] p-1">
-                Dựa theo dữ liệu báo cáo đi làm hàng ngày của nhân viên.
-              </div>
+    <>
+      <div className="flex gap-4 w-full">
+        <div className="flex bg-white p-2 flex-col rounded-[8px] shadow pr-8 flex-1">
+          <div className="text-[15px] font-[500] text-nowrap">
+            Người mới hôm nay
+          </div>
+          <div className="text-[30px] p-4 pt-2 font-bold text-nowrap">
+            {
+              rawData.filter(
+                (i) =>
+                  dayjs(i.created_at).format("YYYY-MM-DD") ===
+                  dayjs().format("YYYY-MM-DD")
+              ).length
             }
-          >
-            <div
-              className="text-[#c4c4c4] hover:text-[#666] cursor-pointer absolute
+            <b className="font-[500] text-[13px] text-[#999]"> Người</b>
+          </div>
+        </div>
+        <div className="flex bg-white p-2 flex-col rounded-[8px] shadow pr-8 flex-1">
+          <div className="text-[15px] font-[500] text-nowrap">
+            Hôm nay đi làm (DJC)
+          </div>
+          <div className="text-[30px] p-4 pt-2 font-bold text-nowrap">
+            {
+              rawData.filter(
+                (i) =>
+                  i.congty_danglam &&
+                  (!i.vendor ||
+                    i.vendor ===
+                      user?.company?.Vendor?.find(
+                        (v) => v.name.toUpperCase() === "DJC"
+                      )?.id)
+              ).length
+            }
+            <b className="font-[500] text-[13px] text-[#999]"> Người</b>
+          </div>
+        </div>
+        <div className="flex bg-white p-2 flex-col rounded-[8px] shadow pr-8 flex-1">
+          <div className="text-[15px] font-[500] text-nowrap">
+            Hôm nay đi làm (Khác)
+          </div>
+          <div className="text-[30px] p-4 pt-2 font-bold text-nowrap">
+            {rawData.filter((i) => i.congty_danglam).length}
+            <b className="font-[500] text-[13px] text-[#999]"> Người</b>
+          </div>
+        </div>
+      </div>
+      <div className="flex whitebox flex-1/10">
+        <div className="flex flex-col flex-1 h-[310px]">
+          <div className="text-[15px] text-[#666] font-[500] flex justify-between ">
+            <div className="flex gap-4 items-center relative ml-1">
+              Người lao động mới được thêm vào
+              <Tooltip
+                color="white"
+                title={
+                  <div className="text-[#636363] max-w-[200px] p-1">
+                    Dựa theo dữ liệu báo cáo đi làm hàng ngày của nhân viên.
+                  </div>
+                }
+              >
+                <div
+                  className="text-[#c4c4c4] hover:text-[#666] cursor-pointer absolute
               top-0 -right-8"
-            >
-              <FaInfoCircle />
+                >
+                  <FaInfoCircle />
+                </div>
+              </Tooltip>
             </div>
-          </Tooltip>
-        </div>
-        <div className="ml-auto flex gap-1">
-          <Select
-            value={range}
-            onChange={setRange}
-            className="w-[150px] !text-[11px] !h-[32px]"
-          >
-            <Option value="last_7_days">7 ngày gần nhất</Option>
-            <Option value="this_week">Tuần này</Option>
-            <Option value="last_week">Tuần trước</Option>
-            <Option value="this_month">Tháng này</Option>
-            <Option value="last_month">Tháng trước</Option>
-            <Option value="last_2_month">Tháng trước nữa</Option>
-            <Option value="last_3_month">3 tháng trước</Option>
-            <Option value="custom">Tuỳ chọn</Option>
-          </Select>
-          {range === "custom" && (
-            <RangePicker
-              allowClear={false}
-              className="!h-[32px] !text-[10px] w-[220px] font-[400]"
-              size="small"
-              format="DD-MM-YYYY"
-              value={customRange}
-              onChange={(dates) => {
-                setCustomRange(dates || []);
-              }}
-            />
-          )}
-        </div>
-      </div>
-      <div className="flex-1 mt-4 min-w-[500px]">
-        {loading ? (
-          <div className="text-center flex flex-col gap-2 text-sm text-gray-400 pt-24">
-            <Spin size="large" />
-            Đang tải...
+            <div className="ml-auto flex gap-1">
+              <Select
+                value={range}
+                onChange={setRange}
+                className="w-[150px] !text-[11px] !h-[32px]"
+              >
+                <Option value="last_7_days">7 ngày gần nhất</Option>
+                <Option value="this_week">Tuần này</Option>
+                <Option value="last_week">Tuần trước</Option>
+                <Option value="this_month">Tháng này</Option>
+                <Option value="last_month">Tháng trước</Option>
+                <Option value="last_2_month">Tháng trước nữa</Option>
+                <Option value="last_3_month">3 tháng trước</Option>
+                <Option value="custom">Tuỳ chọn</Option>
+              </Select>
+              {range === "custom" && (
+                <RangePicker
+                  allowClear={false}
+                  className="!h-[32px] !text-[10px] w-[220px] font-[400]"
+                  size="small"
+                  format="DD-MM-YYYY"
+                  value={customRange}
+                  onChange={(dates) => {
+                    setCustomRange(dates || []);
+                  }}
+                />
+              )}
+            </div>
           </div>
-        ) : chartData.length === 0 ? (
-          <Empty description="Không có dữ liệu" />
-        ) : (
-          <ReactApexChart
-            options={chartOptions}
-            series={chartData}
-            type="bar"
-            className="-mt-5"
-            height={278}
-          />
-        )}
-      </div>
+          <div className="flex-1 mt-4 min-w-[500px]">
+            {loading ? (
+              <div className="text-center flex flex-col gap-2 text-sm text-gray-400 pt-24">
+                <Spin size="large" />
+                Đang tải...
+              </div>
+            ) : chartData.length === 0 ? (
+              <Empty description="Không có dữ liệu" />
+            ) : (
+              <ReactApexChart
+                options={chartOptions}
+                series={chartData}
+                type="bar"
+                className="-mt-5"
+                height={278}
+              />
+            )}
+          </div>
 
-      <Modal
-        open={visible}
-        onCancel={() => setVisible(false)}
-        title={`Người lao động được thêm vào ngày ${selectedDate} (${filteredData.length} người)`}
-        footer={null}
-        width={800}
-        className="popupcontent !top-10"
-      >
-        {filteredData.length === 0 ? (
-          <Empty description="Không có dữ liệu" />
-        ) : (
-          <div className="max-h-[600px] min-h-[300px] overflow-auto text-sm">
-            <table className="w-full">
-              <tbody>
-                <tr className="sticky top-0 bg-[#fff] z-10 shadow">
-                  <td className="text-[12px] font-[500] text-[#999] pb-2">
-                    Mã NV
-                  </td>
-                  <td className="text-[12px] font-[500] text-[#999] pb-2">
-                    Họ và tên
-                  </td>
-                  <td className="text-[12px] font-[500] text-[#999] pb-2">
-                    Người tuyển
-                  </td>
-                  <td className="text-[12px] font-[500] text-[#999] pb-2">
-                    Người báo cáo
-                  </td>
-                  <td className="text-[12px] font-[500] text-[#999] pb-2">
-                    Thời gian
-                  </td>
-                </tr>
-                {filteredData.map((item, idx) => (
-                  <tr
-                    key={idx}
-                    className="border-b-[#c2c2c2] border-b text-[#555] text-[13px]"
-                  >
-                    <td className="py-2">{item?.ma_nhanvien || "N/A"}</td>
-                    <td className="py-2">{item?.ho_ten || "N/A"}</td>
-                    <td>
-                      {item?.nguoituyen ? (
-                        <Staff_view id={item?.nguoituyen} />
-                      ) : (
-                        <div className="flex gap-1">
-                          <div
-                            className="flex text-[#fff] bg-[#106c97] px-1 rounded-[4px]
+          <Modal
+            open={visible}
+            onCancel={() => setVisible(false)}
+            title={`Người lao động được thêm vào ngày ${selectedDate} (${filteredData.length} người)`}
+            footer={null}
+            width={800}
+            className="popupcontent !top-10"
+          >
+            {filteredData.length === 0 ? (
+              <Empty description="Không có dữ liệu" />
+            ) : (
+              <div className="max-h-[600px] min-h-[300px] overflow-auto text-sm">
+                <table className="w-full">
+                  <tbody>
+                    <tr className="sticky top-0 bg-[#fff] z-10 shadow">
+                      <td className="text-[12px] font-[500] text-[#999] pb-2">
+                        Mã NV
+                      </td>
+                      <td className="text-[12px] font-[500] text-[#999] pb-2">
+                        Họ và tên
+                      </td>
+                      <td className="text-[12px] font-[500] text-[#999] pb-2">
+                        Người tuyển
+                      </td>
+                      <td className="text-[12px] font-[500] text-[#999] pb-2">
+                        Người báo cáo
+                      </td>
+                      <td className="text-[12px] font-[500] text-[#999] pb-2">
+                        Thời gian
+                      </td>
+                    </tr>
+                    {filteredData.map((item, idx) => (
+                      <tr
+                        key={idx}
+                        className="border-b-[#c2c2c2] border-b text-[#555] text-[13px]"
+                      >
+                        <td className="py-2">{item?.ma_nhanvien || "N/A"}</td>
+                        <td className="py-2">{item?.ho_ten || "N/A"}</td>
+                        <td>
+                          {item?.nguoituyen ? (
+                            <Staff_view id={item?.nguoituyen} />
+                          ) : (
+                            <div className="flex gap-1">
+                              <div
+                                className="flex text-[#fff] bg-[#106c97] px-1 rounded-[4px]
                             text-[9px] items-center justify-center"
-                          >
-                            Vendor
-                          </div>
-                          <Vendor_view id={item?.vendor} />
-                        </div>
-                      )}
-                    </td>
-                    <td>
-                      <Staff_view id={item?.nguoibaocao} />
-                    </td>
-                    <td>
-                      <b className="text-[#999] font-[400]">
-                        {dayjs(item.created_at).format("HH:mm DD/MM/YYYY")}
-                      </b>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </Modal>
-    </div>
+                              >
+                                Vendor
+                              </div>
+                              <Vendor_view id={item?.vendor} />
+                            </div>
+                          )}
+                        </td>
+                        <td>
+                          <Staff_view id={item?.nguoibaocao} />
+                        </td>
+                        <td>
+                          <b className="text-[#999] font-[400]">
+                            {dayjs(item.created_at).format("HH:mm DD/MM/YYYY")}
+                          </b>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </Modal>
+        </div>
+      </div>
+    </>
   );
 };
 

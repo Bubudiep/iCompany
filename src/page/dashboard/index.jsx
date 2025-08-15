@@ -52,9 +52,7 @@ const Dashboard_index = () => {
               <div className="flex gap-4">
                 <Db_approve user={user} />
                 <div className="flex flex-col gap-4 flex-1">
-                  <div className="flex whitebox flex-1/10">
-                    <DB_nguoimoi_card user={user} />
-                  </div>
+                  <DB_nguoimoi_card user={user} />
                   <div className="flex whitebox flex-1/10">
                     <DB_giaingan_card user={user} />
                   </div>

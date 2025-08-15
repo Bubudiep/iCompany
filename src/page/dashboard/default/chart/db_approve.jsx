@@ -77,6 +77,49 @@ const Db_approve = ({ user }) => {
   }, [range, customRange]);
   return (
     <div className="flex flex-col gap-4 flex-1">
+      <div className="flex gap-4">
+        <div className="flex bg-white p-2 flex-col rounded-[8px] shadow flex-1">
+          <div className="text-[15px] font-[500]">Báo ứng chưa giải ngân</div>
+          <div className="text-[30px] p-4 pt-2 font-bold text-nowrap">
+            {rawData
+              .filter(
+                (i) =>
+                  i.requesttype === "Báo ứng" &&
+                  i.payment_status === "not" &&
+                  ["approved", "pending"].includes(i.status)
+              )
+              .reduce((sum, item) => sum + parseInt(item.amount || 0), 0)
+              .toLocaleString()}
+            <b className="font-[500] text-[13px] text-[#999]"> VNĐ</b>
+          </div>
+        </div>
+        <div className="flex bg-white p-2 flex-col rounded-[8px] shadow flex-1">
+          <div className="text-[15px] font-[500]">Báo ứng đã giải ngân</div>
+          <div className="text-[30px] p-4 pt-2 font-bold text-nowrap">
+            {rawData
+              .filter(
+                (i) =>
+                  i.requesttype === "Báo ứng" && i.payment_status === "done"
+              )
+              .reduce((sum, item) => sum + parseInt(item.amount || 0), 0)
+              .toLocaleString()}
+            <b className="font-[500] text-[13px] text-[#999]"> VNĐ</b>
+          </div>
+        </div>
+        <div className="flex bg-white p-2 flex-col rounded-[8px] shadow flex-1">
+          <div className="text-[15px] font-[500]">Đang giữ lương</div>
+          <div className="text-[30px] p-4 pt-2 font-bold text-nowrap">
+            {rawData
+              .filter(
+                (i) =>
+                  i.requesttype === "Báo giữ lương" && i.status === "approved"
+              )
+              .reduce((sum, item) => sum + parseInt(item.amount || 0), 0)
+              .toLocaleString()}
+            <b className="font-[500] text-[13px] text-[#999]"> VNĐ</b>
+          </div>
+        </div>
+      </div>
       <div className="flex gap-4 flex-1">
         <Db_baoung_card rawData={rawData} loading={loading} />
         <div className="flex flex-col gap-4 w-full">

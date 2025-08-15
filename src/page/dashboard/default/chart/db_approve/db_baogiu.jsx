@@ -8,8 +8,7 @@ const Db_baogiu_card = ({ rawData, loading }) => {
   const statusConfigs = [
     {
       label: "Hoàn thành",
-      condition: (item) =>
-        item.status === "approved" && item.payment_status === "done",
+      condition: (item) => item.status === "approved",
       bg: "#dbffcb",
       textColor: "#3d963d",
     },
