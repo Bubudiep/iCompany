@@ -9,6 +9,8 @@ import Staff_view from "../../../../components/by_id/staff_view";
 import Operator_view from "../../../../components/by_id/op_view";
 import Vendor_view from "./../../../../components/by_id/vendor_view";
 import { DatePicker } from "antd";
+import Customer_view from "../../../../components/by_id/customer_view";
+import { Link } from "react-router-dom";
 const { RangePicker } = DatePicker;
 
 dayjs.extend(isoWeek);
@@ -70,14 +72,14 @@ const DB_nguoimoi_card = ({ user }) => {
     setLoading(true);
     api
       .get(
-        `/op_all/?page_size=99999&created_at_from=${from}&created_at_to=${to}`,
+        `/ophist/?page_size=99999&start_date_from=${from}&start_date_to=${to}`,
         user?.token
       )
       .then((res) => {
         const results = res?.results || [];
         const dateMap = {};
         results.forEach((item) => {
-          const date = dayjs(item.created_at).format("DD-MM");
+          const date = dayjs(item.start_date).format("DD-MM");
           // ✅ chỉ đếm số lượng người tuyển được mỗi ngày
           dateMap[date] = (dateMap[date] || 0) + 1;
         });
@@ -90,7 +92,6 @@ const DB_nguoimoi_card = ({ user }) => {
         if (allDates.length > 8) {
           allDates = allDates.slice(-8);
         }
-
         setLabels(allDates);
         setRawData(results);
         setChartData([
@@ -109,7 +110,7 @@ const DB_nguoimoi_card = ({ user }) => {
         dataPointSelection: (event, chartContext, { dataPointIndex }) => {
           const date = labels[dataPointIndex];
           const matched = rawData.filter(
-            (item) => dayjs(item.created_at).format("DD-MM") === date
+            (item) => dayjs(item.start_date).format("DD-MM") === date
           );
           setSelectedDate(date);
           setFilteredData(matched);
@@ -149,7 +150,21 @@ const DB_nguoimoi_card = ({ user }) => {
   return (
     <>
       <div className="flex gap-4 w-full">
-        <div className="flex bg-white p-2 flex-col rounded-[8px] shadow pr-8 flex-1">
+        <div
+          className="flex bg-white p-2 flex-col rounded-[8px] shadow pr-8 flex-1 
+          cursor-pointer hover:-translate-y-1 transition-all duration-300"
+          onClick={() => {
+            setSelectedDate(dayjs().format("DD-MM"));
+            setFilteredData(
+              rawData.filter(
+                (item) =>
+                  dayjs(item.start_date).format("DD-MM") ===
+                  dayjs().format("DD-MM")
+              )
+            );
+            setVisible(true);
+          }}
+        >
           <div className="text-[15px] font-[500] text-nowrap">
             Người mới hôm nay
           </div>
@@ -157,7 +172,7 @@ const DB_nguoimoi_card = ({ user }) => {
             {
               rawData.filter(
                 (i) =>
-                  dayjs(i.created_at).format("YYYY-MM-DD") ===
+                  dayjs(i.start_date).format("YYYY-MM-DD") ===
                   dayjs().format("YYYY-MM-DD")
               ).length
             }
@@ -166,19 +181,27 @@ const DB_nguoimoi_card = ({ user }) => {
         </div>
         <div className="flex bg-white p-2 flex-col rounded-[8px] shadow pr-8 flex-1">
           <div className="text-[15px] font-[500] text-nowrap">
-            Hôm nay đi làm
+            Vẫn đang đi làm
           </div>
           <div className="text-[30px] p-4 pt-2 font-bold text-nowrap">
-            {rawData.filter((i) => i.congty_danglam && !i.vendor).length}
+            {
+              user?.company?.Operator.filter(
+                (i) => i.congty_danglam && !i.vendor
+              ).length
+            }
             <b className="font-[500] text-[13px] text-[#999]"> Người</b>
           </div>
         </div>
         <div className="flex bg-white p-2 flex-col rounded-[8px] shadow pr-8 flex-1">
           <div className="text-[15px] font-[500] text-nowrap">
-            Hôm nay đi làm (Vendor)
+            Vẫn đi làm (Vendor)
           </div>
           <div className="text-[30px] p-4 pt-2 font-bold text-nowrap">
-            {rawData.filter((i) => i.congty_danglam && i.vendor).length}
+            {
+              user?.company?.Operator.filter(
+                (i) => i.congty_danglam && i.vendor
+              ).length
+            }
             <b className="font-[500] text-[13px] text-[#999]"> Người</b>
           </div>
         </div>
@@ -186,23 +209,28 @@ const DB_nguoimoi_card = ({ user }) => {
       <div className="flex whitebox flex-1/10">
         <div className="flex flex-col flex-1 h-[310px]">
           <div className="text-[15px] text-[#666] font-[500] flex justify-between ">
-            <div className="flex gap-4 items-center relative ml-1">
-              Người lao động mới được thêm vào
-              <Tooltip
-                color="white"
-                title={
-                  <div className="text-[#636363] max-w-[200px] p-1">
-                    Dựa theo dữ liệu báo cáo đi làm hàng ngày của nhân viên.
-                  </div>
-                }
-              >
-                <div
-                  className="text-[#c4c4c4] hover:text-[#666] cursor-pointer absolute
-              top-0 -right-8"
+            <div className="flex flex-col">
+              <div className="flex gap-4 items-center relative ml-1">
+                Người lao động đi làm
+                <Tooltip
+                  color="white"
+                  title={
+                    <div className="text-[#636363] max-w-[200px] p-1">
+                      Dựa theo dữ liệu báo cáo đi làm hàng ngày của nhân viên.
+                    </div>
+                  }
                 >
-                  <FaInfoCircle />
-                </div>
-              </Tooltip>
+                  <div
+                    className="text-[#c4c4c4] hover:text-[#666] cursor-pointer absolute
+              top-0 -right-8"
+                  >
+                    <FaInfoCircle />
+                  </div>
+                </Tooltip>
+              </div>
+              <div className="flex ml-1 text-[12px] font-[400]">
+                Danh sách người lao động báo đi làm hằng ngày
+              </div>
             </div>
             <div className="ml-auto flex gap-1">
               <Select
@@ -255,7 +283,7 @@ const DB_nguoimoi_card = ({ user }) => {
           <Modal
             open={visible}
             onCancel={() => setVisible(false)}
-            title={`Người lao động được thêm vào ngày ${selectedDate} (${filteredData.length} người)`}
+            title={`Người lao động đi làm ${selectedDate} (${filteredData.length} người)`}
             footer={null}
             width={800}
             className="popupcontent !top-10"
@@ -267,6 +295,9 @@ const DB_nguoimoi_card = ({ user }) => {
                 <table className="w-full">
                   <tbody>
                     <tr className="sticky top-0 bg-[#fff] z-10 shadow">
+                      <td className="text-[12px] font-[500] text-[#999] pb-2">
+                        Công ty
+                      </td>
                       <td className="text-[12px] font-[500] text-[#999] pb-2">
                         Mã NV
                       </td>
@@ -280,41 +311,64 @@ const DB_nguoimoi_card = ({ user }) => {
                         Người báo cáo
                       </td>
                       <td className="text-[12px] font-[500] text-[#999] pb-2">
-                        Thời gian
+                        Ngày vào làm
                       </td>
                     </tr>
-                    {filteredData.map((item, idx) => (
-                      <tr
-                        key={idx}
-                        className="border-b-[#c2c2c2] border-b text-[#555] text-[13px]"
-                      >
-                        <td className="py-2">{item?.ma_nhanvien || "N/A"}</td>
-                        <td className="py-2">{item?.ho_ten || "N/A"}</td>
-                        <td>
-                          {item?.nguoituyen ? (
-                            <Staff_view id={item?.nguoituyen} />
-                          ) : (
-                            <div className="flex gap-1">
-                              <div
-                                className="flex text-[#fff] bg-[#106c97] px-1 rounded-[4px]
-                            text-[9px] items-center justify-center"
-                              >
-                                Vendor
+                    {filteredData.map((item, idx) => {
+                      const op = user?.company?.Operator?.find(
+                        (o) => o?.id === item.operator
+                      );
+                      console.log(user);
+                      return (
+                        <tr
+                          key={idx}
+                          className="border-b-[#c2c2c2] border-b text-[#555] text-[13px]"
+                        >
+                          <td className="py-2">
+                            <Customer_view id={item?.customer} />
+                          </td>
+                          <td className="py-2">{item?.ma_nhanvien || "--"}</td>
+                          <td className="py-2">
+                            <Link
+                              to={`/app/operators/all/${op?.id}`}
+                              className="flex flex-col"
+                            >
+                              <div className="flex text-[#000]">
+                                {op?.ho_ten || "--"}
                               </div>
-                              <Vendor_view id={item?.vendor} />
-                            </div>
-                          )}
-                        </td>
-                        <td>
-                          <Staff_view id={item?.nguoibaocao} />
-                        </td>
-                        <td>
-                          <b className="text-[#999] font-[400]">
-                            {dayjs(item.created_at).format("HH:mm DD/MM/YYYY")}
-                          </b>
-                        </td>
-                      </tr>
-                    ))}
+                              <div className="flex text-[#999] leading-3 text-[10px]">
+                                {op?.ma_nhanvien || "--"}
+                              </div>
+                            </Link>
+                          </td>
+                          <td>
+                            {item?.nguoituyen ? (
+                              <Staff_view id={item?.nguoituyen} />
+                            ) : item?.vendor ? (
+                              <div className="flex gap-1">
+                                <div
+                                  className="flex text-[#fff] bg-[#106c97] px-1 rounded-[4px]
+                                  text-[9px] items-center justify-center"
+                                >
+                                  Vendor
+                                </div>
+                                <Vendor_view id={item?.vendor} />
+                              </div>
+                            ) : (
+                              <>--</>
+                            )}
+                          </td>
+                          <td>
+                            <Staff_view id={item?.nguoibaocao} />
+                          </td>
+                          <td>
+                            <b className="text-[#999] font-[400]">
+                              {dayjs(item.start_date).format("DD/MM/YYYY")}
+                            </b>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
