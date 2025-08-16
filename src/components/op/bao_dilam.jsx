@@ -7,6 +7,7 @@ import {
   DatePicker,
   Button,
   message,
+  Checkbox,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import api from "../api";
@@ -145,8 +146,8 @@ const OP_dilam = ({ children, op, user, callback, className }) => {
           <Form.Item label="Ghi chú" name="ghichu">
             <Input.TextArea rows={3} />
           </Form.Item>
-          <Form.Item label="Đi làm mới" name="isnew">
-            <Input type="checkbox" />
+          <Form.Item label="Đi làm mới" name="isnew" valuePropName="checked">
+            <Checkbox />
           </Form.Item>
         </Form>
       </Modal>
