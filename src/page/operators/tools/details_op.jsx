@@ -42,6 +42,7 @@ import Card_bank_user from "../../../components/cards/user-bank-card";
 import OP_History_card from "./details_op/history_card";
 import Update_op_nguoituyen from "../../../components/op/update_nguoituyen";
 import Vendor_view from "../../../components/by_id/vendor_view";
+import { SiSpinrilla } from "react-icons/si";
 
 const Details_op = () => {
   const [loading, setLoading] = useState(true);
@@ -57,6 +58,17 @@ const Details_op = () => {
       <p className="text-[#000102] font-[400]">{value || "—"}</p>
     </div>
   );
+  const handleDilammoi = () => {
+    api
+      .patch(`/ops/${op_id}/`, { created_at: new Date() }, user.token)
+      .then((res) => {
+        setOp(res);
+      })
+      .catch((e) => {
+        api.error(e);
+      })
+      .finally(() => setLoading(false));
+  };
   const formatNote = (text) => {
     if (!text) return ["..."];
     const parts = [];
@@ -243,6 +255,15 @@ const Details_op = () => {
                       </div>
                       Thêm lịch sử đi làm
                     </OP_dilamroi>
+                    <div
+                      onClick={handleDilammoi}
+                      className="item hover:!text-[#006fd6] hover:!bg-[#e8f8ff]"
+                    >
+                      <div className="icon">
+                        <SiSpinrilla />
+                      </div>
+                      Người mới hôm nay
+                    </div>
                     <div
                       onClick={handleDelete}
                       className="item text-[#ff5151] hover:!text-[#d60000] hover:!bg-[#ffe8e8]"
