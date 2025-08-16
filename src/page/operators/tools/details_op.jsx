@@ -63,6 +63,7 @@ const Details_op = () => {
       .patch(`/ops/${op_id}/`, { created_at: new Date() }, user.token)
       .then((res) => {
         setOp(res);
+        message.success("Thành công!");
       })
       .catch((e) => {
         api.error(e);
