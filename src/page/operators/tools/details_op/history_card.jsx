@@ -9,6 +9,7 @@ import {
   message,
   Popconfirm,
   Select,
+  Checkbox,
 } from "antd";
 import dayjs from "dayjs";
 import api from "../../../../components/api";
@@ -168,6 +169,14 @@ const OP_History_card = ({ work, onDelete, callback, op }) => {
             <Form.Item name="reason" label="Lý do nghỉ" className="!mb-2">
               <Input />
             </Form.Item>
+            <Form.Item
+              name="isnew"
+              label="Đi làm mới"
+              className="!mb-2"
+              valuePropName="checked"
+            >
+              <Checkbox />
+            </Form.Item>
           </Form>
         </Modal>
       </div>
@@ -185,12 +194,12 @@ const OP_History_card = ({ work, onDelete, callback, op }) => {
       </div>
       <div className="flex text-[13px] gap-1">
         Mã nhân viên:
-        <a className="flex ml-auto">{work?.ma_nhanvien || "N/A"}</a>
+        <a className="flex ml-auto">{work?.ma_nhanvien || "--"}</a>
       </div>
       <div className="flex text-[13px] gap-1">
         Nhà chính:
         <a className="flex ml-auto">
-          {work?.nhachinh ? <Vendor_view id={work?.nhachinh} /> : "N/A"}
+          {work?.nhachinh ? <Vendor_view id={work?.nhachinh} /> : "--"}
         </a>
       </div>
       <div className="flex text-[13px] gap-1">
@@ -199,7 +208,7 @@ const OP_History_card = ({ work, onDelete, callback, op }) => {
       </div>
       <div className="flex text-[13px] gap-1">
         Công việc:
-        <a className="flex ml-auto">{work?.vitri || "N/A"}</a>
+        <a className="flex ml-auto">{work?.vitri || "--"}</a>
       </div>
       {work?.end_date && (
         <div className="flex text-[13px] gap-1">

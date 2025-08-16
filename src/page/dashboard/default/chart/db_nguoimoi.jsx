@@ -166,29 +166,19 @@ const DB_nguoimoi_card = ({ user }) => {
         </div>
         <div className="flex bg-white p-2 flex-col rounded-[8px] shadow pr-8 flex-1">
           <div className="text-[15px] font-[500] text-nowrap">
-            Hôm nay đi làm (DJC)
+            Hôm nay đi làm
           </div>
           <div className="text-[30px] p-4 pt-2 font-bold text-nowrap">
-            {
-              rawData.filter(
-                (i) =>
-                  i.congty_danglam &&
-                  (!i.vendor ||
-                    i.vendor ===
-                      user?.company?.Vendor?.find(
-                        (v) => v.name.toUpperCase() === "DJC"
-                      )?.id)
-              ).length
-            }
+            {rawData.filter((i) => i.congty_danglam && !i.vendor).length}
             <b className="font-[500] text-[13px] text-[#999]"> Người</b>
           </div>
         </div>
         <div className="flex bg-white p-2 flex-col rounded-[8px] shadow pr-8 flex-1">
           <div className="text-[15px] font-[500] text-nowrap">
-            Hôm nay đi làm (Khác)
+            Hôm nay đi làm (Vendor)
           </div>
           <div className="text-[30px] p-4 pt-2 font-bold text-nowrap">
-            {rawData.filter((i) => i.congty_danglam).length}
+            {rawData.filter((i) => i.congty_danglam && i.vendor).length}
             <b className="font-[500] text-[13px] text-[#999]"> Người</b>
           </div>
         </div>

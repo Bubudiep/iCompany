@@ -145,6 +145,9 @@ const OP_dilam = ({ children, op, user, callback, className }) => {
           <Form.Item label="Ghi chú" name="ghichu">
             <Input.TextArea rows={3} />
           </Form.Item>
+          <Form.Item label="Đi làm mới" name="isnew">
+            <Input type="checkbox" />
+          </Form.Item>
         </Form>
       </Modal>
     </>

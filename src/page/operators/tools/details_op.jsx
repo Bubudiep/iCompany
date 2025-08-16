@@ -41,6 +41,7 @@ import OP_dilamroi from "../../../components/op/bao_dadilam";
 import Card_bank_user from "../../../components/cards/user-bank-card";
 import OP_History_card from "./details_op/history_card";
 import Update_op_nguoituyen from "../../../components/op/update_nguoituyen";
+import Vendor_view from "../../../components/by_id/vendor_view";
 
 const Details_op = () => {
   const [loading, setLoading] = useState(true);
@@ -168,6 +169,12 @@ const Details_op = () => {
                         <p className="text-sm text-[#00407c] text-[13px] font-[600]">
                           ID: {op.ma_nhanvien || "Chưa có mã NV"}
                         </p>
+                        {op?.nhachinh && (
+                          <div className="flex justify-center bg-[#ffffff] rounded-sm">
+                            Nhà chính
+                            <Vendor_view className="ml-1" id={op?.nhachinh} />
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
