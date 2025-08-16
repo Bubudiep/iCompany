@@ -179,37 +179,6 @@ const DB_nguoimoi_card = ({ user }) => {
             <b className="font-[500] text-[13px] text-[#999]"> Người</b>
           </div>
         </div>
-        <div
-          className="flex bg-white p-2 flex-col rounded-[8px] shadow pr-8 flex-1 
-          cursor-pointer hover:-translate-y-1 transition-all duration-300"
-          onClick={() => {
-            setSelectedDate(dayjs().format("DD-MM"));
-            setFilteredData(
-              rawData.filter(
-                (item) =>
-                  dayjs(item.start_date).format("DD-MM") ===
-                    dayjs().format("DD-MM") &&
-                  user?.company?.Operator?.find((o) => o.id === item.id)?.vendor
-              )
-            );
-            setVisible(true);
-          }}
-        >
-          <div className="text-[15px] font-[500] text-nowrap">
-            Người mới (Vendor)
-          </div>
-          <div className="text-[30px] p-4 pt-2 font-bold text-nowrap">
-            {
-              rawData.filter(
-                (i) =>
-                  dayjs(i.start_date).format("YYYY-MM-DD") ===
-                    dayjs().format("YYYY-MM-DD") &&
-                  user?.company?.Operator?.find((o) => o.id === i.id)?.vendor
-              ).length
-            }
-            <b className="font-[500] text-[13px] text-[#999]"> Người</b>
-          </div>
-        </div>
         <div className="flex bg-white p-2 flex-col rounded-[8px] shadow pr-8 flex-1">
           <div className="text-[15px] font-[500] text-nowrap">
             Vẫn đang đi làm
@@ -316,7 +285,7 @@ const DB_nguoimoi_card = ({ user }) => {
             onCancel={() => setVisible(false)}
             title={`Người lao động đi làm ${selectedDate} (${filteredData.length} người)`}
             footer={null}
-            width={800}
+            width={900}
             className="popupcontent !top-10"
           >
             {filteredData.length === 0 ? (
@@ -398,7 +367,7 @@ const DB_nguoimoi_card = ({ user }) => {
                                 <Vendor_view id={op?.vendor} />
                               </div>
                             ) : (
-                              "--"
+                              item?.vendor && <Vendor_view id={item?.vendor} />
                             )}
                           </td>
                           <td>
