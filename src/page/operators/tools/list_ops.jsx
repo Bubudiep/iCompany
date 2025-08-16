@@ -92,11 +92,12 @@ const List_operators = () => {
   }, [debouncedSetFilterText]);
 
   const filteredData = useMemo(() => {
+    console.log(data);
     return data.filter((item) => {
-      const textMatch = `${item?.ho_ten}${item?.ma_nhanvien}`
+      const all_name = item?.work?.reduce((sum, a) => sum + a?.ho_ten, "");
+      const textMatch = `${item?.ho_ten}${item?.ma_nhanvien}${all_name}`
         .toLowerCase()
         .includes(filterText.toLowerCase());
-
       const workingFilter =
         filterOption.working === 0
           ? true
