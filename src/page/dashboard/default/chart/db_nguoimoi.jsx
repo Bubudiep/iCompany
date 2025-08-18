@@ -292,7 +292,75 @@ const DB_nguoimoi_card = ({ user }) => {
               <Empty description="Không có dữ liệu" />
             ) : (
               <div className="max-h-[600px] min-h-[300px] overflow-auto text-sm">
-                <table className="w-full">
+                <div className="flex px-2 gap-4">
+                  <div className="flex flex-col flex-1 p-2 px-3 shadow rounded-[12px]">
+                    <div className="font-[500] mb-1 text-[13px] border-b pb-1 border-[#c2c2c2]">
+                      Theo người tuyển
+                    </div>
+                    {Object.entries(
+                      filteredData.reduce((acc, cur) => {
+                        const key = cur.nguoituyen || "unknown";
+                        acc[key] = (acc[key] || 0) + 1;
+                        return acc;
+                      }, {})
+                    ).map(([staffId, count]) => (
+                      <div key={staffId} className="flex justify-between gap-4">
+                        <div className="font-medium text-sm text-gray-800 flex items-center gap-1">
+                          {staffId !== "unknown" ? (
+                            <Staff_view
+                              id={staffId}
+                              className="font-[400] text-[12px]"
+                            />
+                          ) : (
+                            <span className="italic text-[12px] text-gray-400 font-[400]">
+                              Vendor khác
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-[12px] flex gap-1.5">
+                          <b className="font-[500]">{count}</b> người
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex flex-col flex-1 p-2 px-3 shadow rounded-[12px]">
+                    <div className="font-[500] mb-1 text-[13px] border-b pb-1 border-[#c2c2c2]">
+                      Theo công ty
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      {Object.entries(
+                        filteredData.reduce((acc, cur) => {
+                          const key = cur.customer || "unknown";
+                          acc[key] = (acc[key] || 0) + 1;
+                          return acc;
+                        }, {})
+                      ).map(([customerId, count]) => (
+                        <div
+                          key={customerId}
+                          className="flex justify-between gap-4"
+                        >
+                          <div className="font-medium text-sm text-gray-800 flex items-center gap-1">
+                            {customerId !== "unknown" ? (
+                              <Customer_view
+                                id={customerId}
+                                className="font-[400] text-[12px]"
+                              />
+                            ) : (
+                              <span className="italic text-[12px] text-gray-400 font-[400]">
+                                Vendor khác
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-[12px] flex gap-1.5">
+                            <b className="font-[500]">{count}</b> người
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex font-[500] mt-4">Danh sách chi tiết</div>
+                <table className="w-full mt-3">
                   <tbody>
                     <tr className="sticky top-0 bg-[#fff] z-10 shadow">
                       <td className="text-[12px] font-[500] text-[#999] pb-2">

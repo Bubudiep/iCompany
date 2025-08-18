@@ -6,7 +6,7 @@ import { HiOutlineOfficeBuilding } from "react-icons/hi";
 const Customer_view = ({ id, working, className }) => {
   const { user } = useUser();
   const customer = user?.company?.Customer?.find(
-    (customer) => customer.id === id
+    (customer) => customer.id == id
   );
   return customer ? (
     <Tooltip
