@@ -297,31 +297,74 @@ const DB_nguoimoi_card = ({ user }) => {
                     <div className="font-[500] mb-1 text-[13px] border-b pb-1 border-[#c2c2c2]">
                       Theo người tuyển
                     </div>
-                    {Object.entries(
-                      filteredData.reduce((acc, cur) => {
-                        const key = cur.nguoituyen || "unknown";
-                        acc[key] = (acc[key] || 0) + 1;
-                        return acc;
-                      }, {})
-                    ).map(([staffId, count]) => (
-                      <div key={staffId} className="flex justify-between gap-4">
-                        <div className="font-medium text-sm text-gray-800 flex items-center gap-1">
-                          {staffId !== "unknown" ? (
-                            <Staff_view
-                              id={staffId}
-                              className="font-[400] text-[12px]"
-                            />
-                          ) : (
-                            <span className="italic text-[12px] text-gray-400 font-[400]">
-                              Vendor khác
-                            </span>
-                          )}
-                        </div>
-                        <div className="text-[12px] flex gap-1.5">
-                          <b className="font-[500]">{count}</b> người
-                        </div>
-                      </div>
-                    ))}
+                    <table>
+                      <thead>
+                        <tr>
+                          <th></th>
+                          <th className="text-[11px] w-[80px] font-[500] text-[#999]">
+                            Người mới
+                          </th>
+                          <th className="text-[11px] w-[80px] font-[500] text-[#999]">
+                            Chuyển CT
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {Object.entries(
+                          filteredData.reduce((acc, cur) => {
+                            const key =
+                              cur.nguoituyen || "vendor_" + cur.vendor;
+                            if (!acc[key]) {
+                              acc[key] = {
+                                oldCount: 0,
+                                newCount: 0,
+                                total: 0, // cần khởi tạo total ở đây
+                              };
+                            }
+                            if (cur.isnew) {
+                              acc[key].newCount += 1;
+                            } else {
+                              acc[key].oldCount += 1;
+                            }
+                            acc[key].total += 1; // bây giờ sẽ đúng
+                            return acc;
+                          }, {})
+                        )
+                          // chuyển về mảng object để sort dễ hơn
+                          .map(([staffId, counts]) => ({
+                            staffId,
+                            ...counts,
+                          }))
+                          .sort((a, b) => b.total - a.total) // sort giảm dần theo tổng
+                          .map(({ staffId, newCount, oldCount }) => (
+                            <tr key={staffId} className="justify-between gap-4">
+                              <td className="font-medium text-sm text-gray-800 items-center gap-1">
+                                {!staffId.startsWith("vendor_") ? (
+                                  <Staff_view
+                                    id={staffId}
+                                    className="font-[400] text-[12px]"
+                                  />
+                                ) : (
+                                  <span className="flex gap-1 text-[12px] font-[400] mb-0.5">
+                                    <div className="bg-[#0077ff] text-[white] px-1 rounded-[4px]">
+                                      vendor
+                                    </div>
+                                    <Vendor_view
+                                      id={parseInt(staffId.split("_")[1])}
+                                    />
+                                  </span>
+                                )}
+                              </td>
+                              <td className="text-[12px] text-center gap-1.5">
+                                <b className="font-[500]">{newCount || "-"}</b>
+                              </td>
+                              <td className="text-[12px] text-center gap-1.5">
+                                <b className="font-[500]">{oldCount || "-"}</b>
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
                   </div>
                   <div className="flex flex-col flex-1 p-2 px-3 shadow rounded-[12px]">
                     <div className="font-[500] mb-1 text-[13px] border-b pb-1 border-[#c2c2c2]">
