@@ -188,7 +188,7 @@ const DB_giaingan_card = ({ user }) => {
           )}
         </div>
       </div>
-      <div className="flex-1 mt-4 min-w-[500px]">
+      <div className="flex-1 mt-4">
         {loading ? (
           <div className="text-center flex flex-col gap-2 text-sm text-gray-400 pt-24">
             <Spin size="large" />

@@ -71,6 +71,7 @@ const Homepage_layout = () => {
     }
   }, [location.pathname]);
   useEffect(() => {
+    window?.electron?.send("set-minsize", { width: 1280, height: 780 });
     const token = cookies.newversion_token;
     if (token) {
       console.log("Có token:", token);

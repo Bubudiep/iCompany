@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import api from "../components/api";
 import { Button, message } from "antd";
 import { GoAlertFill } from "react-icons/go";
@@ -57,9 +57,17 @@ const LoginModal = ({ onClose }) => {
         }, 1000);
       });
   };
+  useEffect(() => {
+    if (window?.electron) {
+      window?.electron.send("size", {
+        width: 450,
+        height: 600,
+      });
+    }
+  }, []);
   return (
     <div className="login-modal">
-      <div className="form mb-5">
+      <div className="form mb-5 select-none drag">
         <div className="flex justify-center">
           <img src={hldjc} className="!w-[120px]" />
         </div>
@@ -73,6 +81,7 @@ const LoginModal = ({ onClose }) => {
           <input
             type="text"
             placeholder="Tên đăng nhập"
+            className="no-drag"
             autoComplete="off"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
@@ -87,6 +96,7 @@ const LoginModal = ({ onClose }) => {
             placeholder="Mật khẩu"
             autoComplete="off"
             value={password}
+            className="no-drag"
             onChange={(e) => setPassword(e.target.value)}
             onKeyDown={(e) => {
               if (e.key == "Enter") {
@@ -101,7 +111,7 @@ const LoginModal = ({ onClose }) => {
         </div>
         <Button
           loading={loging}
-          className="button-submit"
+          className="button-submit no-drag"
           onClick={handleLogin}
         >
           Đăng nhập

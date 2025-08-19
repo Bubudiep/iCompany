@@ -32,7 +32,7 @@ const Db_op_card = ({ user }) => {
     },
   ];
   return (
-    <div className="flex whitebox flex-col h-[186px] w-full !min-w-[300px]">
+    <div className="flex whitebox flex-col h-[186px] w-full !min-w-[200px]">
       <div className="text-[15px] text-[#666] font-[500] flex justify-between">
         Nhân lực
         <Tooltip

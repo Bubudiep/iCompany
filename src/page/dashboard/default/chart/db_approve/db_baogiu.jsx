@@ -27,19 +27,19 @@ const Db_baogiu_card = ({ rawData, loading }) => {
     },
   ];
   return (
-    <div className="flex whitebox flex-col h-[200px] w-full !min-w-[300px]">
+    <div className="flex whitebox flex-col h-[200px] w-full !min-w-[150px]">
       {loading ? (
         <div className="flex flex-1 items-center justify-center">
           <Spin size="large" />
         </div>
       ) : (
-        <div className="flex flex-col fadeIn flex-1">
-          <div className="text-[15px] text-[#666] font-[500] flex justify-between">
+        <div className="flex flex-col fadeIn flex-1  sm:text-[12px]">
+          <div className="text-[13px] text-[#666] font-[500] flex justify-between">
             Báo giữ lương
             <Tooltip
               color="white"
               title={
-                <div className="text-[#636363] max-w-[200px] p-1">
+                <div className="text-[#636363] p-1 max-w-[200px]">
                   Dữ liệu lấy từ danh sách báo giữ lương của công ty từ trước
                   đến nay.
                 </div>
@@ -72,7 +72,7 @@ const Db_baogiu_card = ({ rawData, loading }) => {
                   return (
                     <div
                       key={index}
-                      className="flex flex-col rounded-[4px] p-1 px-2 text-[13px] font-[500] leading-4.5"
+                      className="flex flex-col rounded-[4px] p-1 px-2 text-[13px] sm:text-[12px] font-[500] leading-4.5"
                       style={{ backgroundColor: bg, color: textColor }}
                     >
                       <div className="flex justify-between">

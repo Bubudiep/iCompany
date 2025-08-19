@@ -43,14 +43,14 @@ const Db_baoung_card = ({ rawData, loading }) => {
     },
   ];
   return (
-    <div className="flex whitebox flex-col h-[340px] w-full !min-w-[300px]">
+    <div className="flex whitebox flex-col h-[340px] sm:text-[12px] w-full !min-w-[200px]">
       {loading ? (
         <div className="flex flex-1 items-center justify-center">
           <Spin size="large" />
         </div>
       ) : (
         <div className="fadeIn flex flex-col flex-1">
-          <div className="text-[15px] text-[#666] font-[500] flex justify-between ml-0.5 ">
+          <div className="text-[13px]  text-[#666] font-[500] flex justify-between ml-0.5 ">
             Báo ứng
             <Tooltip
               color="white"

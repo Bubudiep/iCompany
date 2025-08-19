@@ -46,7 +46,7 @@ const Dashboard_index = () => {
   return (
     <div className="flex flex-1 overflow-hidden dashboard">
       <div className="flex flex-1 fadeInTop">
-        <div className="flex flex-col gap-4 flex-1 overflow-y-auto p-2">
+        <div className="flex flex-col gap-4 flex-1 overflow-auto p-2">
           {user?.company?.Dashboard && (
             <>
               <div className="flex gap-4">
@@ -66,8 +66,8 @@ const Dashboard_index = () => {
                     <Db_op_today user={user} />
                   </div>
                 </div>
-                <div className="flex flex-1">
-                  <div className="flex whitebox flex-1/10">
+                <div className="flex flex-1 ">
+                  <div className="flex  flex-1 whitebox">
                     <Db_dilam_card user={user} />
                   </div>
                 </div>

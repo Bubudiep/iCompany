@@ -4,7 +4,7 @@ import { FaChartSimple } from "react-icons/fa6";
 
 const Db_top_staff = ({ user }) => {
   return (
-    <div className="flex whitebox flex-col w-full !min-w-[300px]">
+    <div className="flex whitebox flex-col w-full">
       <div className="text-[15px] text-[#666] font-[500] flex justify-between">
         Top tuyển dụng
       </div>

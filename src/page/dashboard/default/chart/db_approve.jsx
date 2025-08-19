@@ -79,8 +79,8 @@ const Db_approve = ({ user }) => {
     <div className="flex flex-col gap-4 flex-1">
       <div className="flex gap-4">
         <div className="flex bg-white p-2 flex-col rounded-[8px] shadow flex-1">
-          <div className="text-[15px] font-[500]">Báo ứng chưa giải ngân</div>
-          <div className="text-[30px] p-4 pt-2 font-bold text-nowrap">
+          <div className="text-[12px] ">Báo ứng chưa giải ngân</div>
+          <div className="text-[20px] p-4 pl-0 pt-2 font-[500] text-nowrap">
             {rawData
               .filter(
                 (i) =>
@@ -94,8 +94,8 @@ const Db_approve = ({ user }) => {
           </div>
         </div>
         <div className="flex bg-white p-2 flex-col rounded-[8px] shadow flex-1">
-          <div className="text-[15px] font-[500]">Báo ứng đã giải ngân</div>
-          <div className="text-[30px] p-4 pt-2 font-bold text-nowrap">
+          <div className="text-[12px] ">Báo ứng đã giải ngân</div>
+          <div className="text-[20px] p-4 pl-0 pt-2 font-[500] text-nowrap">
             {rawData
               .filter(
                 (i) =>
@@ -107,8 +107,8 @@ const Db_approve = ({ user }) => {
           </div>
         </div>
         <div className="flex bg-white p-2 flex-col rounded-[8px] shadow flex-1">
-          <div className="text-[15px] font-[500]">Đang giữ lương</div>
-          <div className="text-[30px] p-4 pt-2 font-bold text-nowrap">
+          <div className="text-[12px] ">Đang giữ lương</div>
+          <div className="text-[20px] p-4 pl-0 pt-2 font-[500] text-nowrap">
             {rawData
               .filter(
                 (i) =>

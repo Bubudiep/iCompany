@@ -120,7 +120,7 @@ const Db_dilam_card = ({ user }) => {
         </Tooltip>
       </div>
 
-      <div className="flex-1 mt-4 min-w-[500px]">
+      <div className="flex-1 mt-4">
         <ReactApexChart
           options={chartOptions}
           series={chartData}
