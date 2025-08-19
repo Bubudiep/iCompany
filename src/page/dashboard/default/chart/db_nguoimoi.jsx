@@ -165,10 +165,8 @@ const DB_nguoimoi_card = ({ user }) => {
             setVisible(true);
           }}
         >
-          <div className="text-[15px] font-[500] text-nowrap">
-            Người mới hôm nay
-          </div>
-          <div className="text-[30px] p-4 pt-2 font-bold text-nowrap">
+          <div className="text-[12px] text-nowrap">Người mới hôm nay</div>
+          <div className="text-[20px] p-4 pl-0 pt-2 font-[500] text-nowrap">
             {
               rawData.filter(
                 (i) =>
@@ -180,10 +178,8 @@ const DB_nguoimoi_card = ({ user }) => {
           </div>
         </div>
         <div className="flex bg-white p-2 flex-col rounded-[8px] shadow pr-8 flex-1">
-          <div className="text-[15px] font-[500] text-nowrap">
-            Vẫn đang đi làm
-          </div>
-          <div className="text-[30px] p-4 pt-2 font-bold text-nowrap">
+          <div className="text-[12px] text-nowrap">Vẫn đang đi làm</div>
+          <div className="text-[20px] p-4 pl-0 pt-2 font-[500] text-nowrap">
             {
               user?.company?.Operator.filter(
                 (i) => i.congty_danglam && !i.vendor
@@ -193,10 +189,8 @@ const DB_nguoimoi_card = ({ user }) => {
           </div>
         </div>
         <div className="flex bg-white p-2 flex-col rounded-[8px] shadow pr-8 flex-1">
-          <div className="text-[15px] font-[500] text-nowrap">
-            Vẫn đi làm (Vendor)
-          </div>
-          <div className="text-[30px] p-4 pt-2 font-bold text-nowrap">
+          <div className="text-[12px] text-nowrap">Vẫn đi làm (Vendor)</div>
+          <div className="text-[20px] p-4 pl-0 pt-2 font-[500] text-nowrap">
             {
               user?.company?.Operator.filter(
                 (i) => i.congty_danglam && i.vendor

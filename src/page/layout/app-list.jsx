@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/icon/icon.png";
 import { FaGear, FaUser } from "react-icons/fa6";
 import chat_icon from "../../assets/icon/chat_app.png";

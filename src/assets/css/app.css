@@ -1251,11 +1251,11 @@ body,
   .logo {
     @apply flex items-center justify-center py-2;
     .box {
-      @apply border border-white rounded-full flex items-center justify-center px-2;
+      @apply border border-white rounded-full flex items-center justify-center px-2.5;
       -webkit-app-region: no-drag;
     }
     img {
-      @apply w-[90%] h-[90%] p-1;
+      @apply w-[80%] h-[80%] p-1;
     }
   }
   .app-lists {
@@ -1271,7 +1271,7 @@ body,
       @apply no-underline;
     }
     .item {
-      @apply text-[#0064ac] w-[55px] h-[55px] flex flex-col items-center justify-center rounded-md overflow-hidden cursor-pointer opacity-90 transition-all duration-300 gap-1 select-none hover:opacity-100 hover:bg-blue-50;
+      @apply text-[#0064ac] w-[50px] h-[50px] flex flex-col items-center justify-center rounded-md overflow-hidden cursor-pointer opacity-90 transition-all duration-300 gap-1 select-none hover:opacity-100 hover:bg-blue-50;
       -webkit-app-region: no-drag;
       position: relative;
       &.active {
@@ -1281,7 +1281,7 @@ body,
       .icon {
         @apply mt-1 flex items-center justify-center;
         img {
-          @apply w-5;
+          @apply w-4;
         }
       }
       .unread {
@@ -1301,7 +1301,7 @@ body,
         border: 2px solid #fff;
       }
       .name {
-        @apply text-[10px] font-medium;
+        @apply text-[9px] font-[500];
       }
     }
   }
