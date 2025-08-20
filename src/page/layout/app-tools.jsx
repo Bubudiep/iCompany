@@ -3,6 +3,7 @@ import React, { useRef, useState } from "react";
 import { FaDotCircle, FaUser, FaUserAlt } from "react-icons/fa";
 import { IoReloadCircleOutline, IoReloadCircleSharp } from "react-icons/io5";
 import app from "../../components/app";
+import New_chats from "../../components/chat/new_chat";
 
 const App_tools = ({ user }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -30,18 +31,20 @@ const App_tools = ({ user }) => {
             />
           </div>
         </Tooltip>
-        <Tooltip
-          title={(user?.onlines?.length ?? 0) + " người đang online"}
-          className="flex items-center flex-col relative cursor-pointer mr-2"
-        >
-          <FaUserAlt size={17} className="text-[#4096ff]" />
-          <div
-            className="text-[8px] absolute text-nowrap -right-1.5 -bottom-1.5 text-white border-1 border-[#fff]
-          bg-[#005dcf] w-3.5 h-3.5 flex items-center justify-center rounded-full shadow-lg font-bold"
+        <New_chats clicktochat={false}>
+          <Tooltip
+            title={(user?.onlines?.length ?? 0) + " người đang online"}
+            className="flex items-center flex-col relative cursor-pointer mr-2"
           >
-            {user?.onlines?.length || 0}
-          </div>
-        </Tooltip>
+            <FaUserAlt size={17} className="text-[#4096ff]" />
+            <div
+              className="text-[8px] absolute text-nowrap -right-1.5 -bottom-1.5 text-white border-1 border-[#fff]
+          bg-[#005dcf] w-3.5 h-3.5 flex items-center justify-center rounded-full shadow-lg font-bold"
+            >
+              {user?.onlines?.length || 0}
+            </div>
+          </Tooltip>
+        </New_chats>
         {window?.electron ? (
           <>
             <div
