@@ -92,7 +92,6 @@ const List_operators = () => {
   }, [debouncedSetFilterText]);
 
   const filteredData = useMemo(() => {
-    console.log(data);
     return data.filter((item) => {
       const all_name = item?.work?.reduce((sum, a) => sum + a?.ho_ten, "");
       const textMatch = `${item?.ho_ten}${item?.ma_nhanvien}${all_name}`
@@ -103,6 +102,8 @@ const List_operators = () => {
           ? true
           : filterOption.working === "working"
           ? item?.congty_danglam !== null
+          : filterOption.working === "vendor"
+          ? item?.vendor !== null
           : filterOption.working === "notworking"
           ? item?.congty_danglam === null
           : filterOption.working === "isMe"
@@ -341,6 +342,9 @@ const List_operators = () => {
             <Select.Option value="notworking">
               Chưa đi làm (
               {data.filter((d) => d.congty_danglam === null).length})
+            </Select.Option>
+            <Select.Option value="vendor">
+              Của Vendor ({data.filter((d) => d.vendor !== null).length})
             </Select.Option>
             <Select.Option value="isMe">
               Người của tôi (
