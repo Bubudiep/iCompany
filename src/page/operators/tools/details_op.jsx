@@ -175,15 +175,30 @@ const Details_op = () => {
                           <FaUser />
                         </div>
                       )}
-                      <div className="text-center mt-2">
+                      <div className="text-center mt-2 flex flex-col w-full">
                         <p className="text-sm text-[#0477b9] text-[17px] font-[600] mb-1">
                           {op.ho_ten || "Chưa có tên"}
                         </p>
                         <p className="text-sm text-[#00407c] text-[13px] font-[600]">
                           ID: {op.ma_nhanvien || "Chưa có mã NV"}
                         </p>
+                        <div className="flex mt-2 justify-between bg-[#ffffff] text-[13px]">
+                          Người tuyển
+                          <Staff_view id={op.nguoituyen} />
+                        </div>
+                        <div className="flex justify-between bg-[#ffffff] text-[13px]">
+                          Quản lý
+                          <Staff_view id={op.nguoibaocao} />
+                        </div>
+
+                        {op?.vendor && (
+                          <div className="flex justify-between bg-[#ffffff] text-[13px]">
+                            Vendor
+                            <Vendor_view className="ml-1" id={op?.vendor} />
+                          </div>
+                        )}
                         {op?.nhachinh && (
-                          <div className="flex justify-center bg-[#ffffff] rounded-sm">
+                          <div className="flex justify-between bg-[#ffffff] text-[13px]">
                             Nhà chính
                             <Vendor_view className="ml-1" id={op?.nhachinh} />
                           </div>

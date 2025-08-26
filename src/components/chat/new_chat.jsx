@@ -5,7 +5,7 @@ import { FaAddressBook, FaUser } from "react-icons/fa";
 import api from "../api";
 import { useNavigate } from "react-router-dom";
 
-const New_chats = ({ children }) => {
+const New_chats = ({ children, clicktochat = true }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user, setUser } = useUser();
   const [contacts, setContacts] = useState([]);
@@ -43,7 +43,7 @@ const New_chats = ({ children }) => {
         onCancel={handleCancel}
         footer={null}
       >
-        <div className="flex flex-col gap-1 list-one max-h-[400px] overflow-y-auto">
+        <div className="flex flex-col gap-1 list-one max-h-[400px] overflow-y-auto pr-1">
           {contacts
             .filter((staff) => staff.id !== user?.info?.id)
             .map((staff) => (
@@ -51,13 +51,13 @@ const New_chats = ({ children }) => {
                 key={staff.id}
                 className="item select-none"
                 onClick={() => {
-                  handleChat(staff.id);
+                  if (clicktochat) handleChat(staff.id);
                 }}
               >
                 <div className="relative">
                   <div className="avatar">
-                    {staff?.avatar_base64 ? (
-                      <img src={staff.avatar_base64} />
+                    {staff?.profile?.avatar_preview ? (
+                      <img src={staff.profile?.avatar_preview} />
                     ) : (
                       <FaUser />
                     )}
