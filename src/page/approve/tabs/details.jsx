@@ -2,15 +2,24 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import api from "../../../components/api";
 import { useUser } from "../../../components/context/userContext";
-import { Button, Descriptions, Input, message, Spin, Tooltip } from "antd";
+import {
+  Button,
+  Descriptions,
+  Input,
+  message,
+  Modal,
+  Spin,
+  Tooltip,
+} from "antd";
 import dayjs from "dayjs";
 import Card_bank_user from "../../../components/cards/user-bank-card";
 import { FaCircleCheck, FaXmark } from "react-icons/fa6";
-import { FaArrowLeft, FaCheck, FaCheckDouble } from "react-icons/fa";
+import { FaArrowLeft, FaCheck, FaCheckDouble, FaEdit } from "react-icons/fa";
 import { PiMoneyDuotone } from "react-icons/pi";
 import { RiBankCard2Line } from "react-icons/ri";
 import { MdPayments, MdSettingsBackupRestore } from "react-icons/md";
 import Staff_view from "../../../components/by_id/staff_view";
+import Update_amount from "./update_amount";
 
 const Approve_details = () => {
   const { approve_id, type } = useParams();
@@ -21,7 +30,6 @@ const Approve_details = () => {
   const [loading, setLoading] = useState(false);
   const [approving, setApproving] = useState(false);
   const [showBank, setShowBank] = useState(false);
-  const [amountPay, setAmoutPay] = useState(0);
   const { list, callback } = useOutletContext();
   const navigate = useNavigate();
   const handleThuhoi = () => {
@@ -64,6 +72,7 @@ const Approve_details = () => {
         setApproving(false);
       });
   };
+  const [newMount, setnewMount] = useState(0);
   const handleCancel = () => {
     setApproving(true);
     api
@@ -109,7 +118,7 @@ const Approve_details = () => {
     api
       .post(
         `approve/${approve_id}/payout/`,
-        { comment: approveComment, amountPay: amountPay },
+        { comment: approveComment },
         user?.token
       )
       .then((res) => {
@@ -129,7 +138,7 @@ const Approve_details = () => {
     api
       .post(
         `approve/${approve_id}/apply_pay/`,
-        { comment: approveComment, amountPay: amountPay },
+        { comment: approveComment },
         user?.token
       )
       .then((res) => {
@@ -150,7 +159,7 @@ const Approve_details = () => {
       .get(`approve/${approve_id}/`, user?.token)
       .then((res) => {
         setApprove(res);
-        setAmoutPay(res?.amountPay || res?.amount);
+        setnewMount(res?.amount || 0);
         setComment(
           localStorage.getItem(
             (res?.requesttype?.typecode || "_approve") + "_comment"
@@ -179,7 +188,7 @@ const Approve_details = () => {
       api
         .post(
           `approve/${approve_id}/apply_pay/`,
-          { comment: approveComment, amountPay: amountPay },
+          { comment: approveComment },
           user?.token
         )
         .then((res) => {
@@ -242,8 +251,24 @@ const Approve_details = () => {
               }
             >
               <Descriptions.Item label="Số tiền">
-                <div className="text-[18px] font-[600] flex justify-center p-2 text-[#e75500]">
-                  {parseInt(approve?.amount || 0).toLocaleString()} VNĐ
+                <div className="flex flex-1 w-full relative">
+                  <div className="text-[18px] font-[600] flex justify-center p-2 text-[#e75500]">
+                    {parseInt(approve?.amount || 0).toLocaleString()} VNĐ
+                  </div>
+                  {(user?.info?.isAdmin || user?.info?.isSuperAdmin) && (
+                    <Update_amount
+                      approve={approve}
+                      user={user}
+                      setApprove={setApprove}
+                    >
+                      <button
+                        className="absolute cursor-pointer transition-all duration-300
+                     p-2 text-[#999] hover:text-[#0066ff] top-0 right-0"
+                      >
+                        <FaEdit />
+                      </button>
+                    </Update_amount>
+                  )}
                 </div>
               </Descriptions.Item>
               <Descriptions.Item label="Tình trạng">
@@ -449,21 +474,6 @@ const Approve_details = () => {
                 <></>
               ) : (
                 <>
-                  <div className="flex justify-end items-center !text-[30px] !text-[#5e5e5e] font-[600]">
-                    Số tiền giải ngân:
-                    <Input
-                      disabled={approve?.payment_status === "done"}
-                      placeholder="Số tiền giải ngân"
-                      value={parseInt(amountPay).toLocaleString()}
-                      onChange={(e) =>
-                        setAmoutPay(
-                          parseInt(e.target.value.replaceAll(".", ""))
-                        )
-                      }
-                      className="text-right !w-[220px] !text-[30px] !border-none !text-[#ff5b0e] font-[600]"
-                    />
-                    VNĐ
-                  </div>
                   <div className="flex text-[#999] text-[13px] flex-row-reverse">
                     (*) Bấm phím cách: Phê duyệt và giải ngân và qua phê duyệt
                     tiếp
