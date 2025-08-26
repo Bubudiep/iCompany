@@ -392,7 +392,11 @@ const Approve_details = () => {
                                 className="font-[500] text-[#00a716] cursor-pointer"
                                 onClick={() => setShowBank(!showBank)}
                               >
-                                Đã giải ngân vào tài khoản
+                                Đã giải ngân{" "}
+                                {parseInt(
+                                  approve?.payout_amount
+                                )?.toLocaleString()}
+                                đ vào tài khoản
                               </div>
                             </Tooltip>
                           </div>
