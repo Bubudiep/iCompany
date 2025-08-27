@@ -6,7 +6,7 @@ import { useUser } from "../context/userContext";
 import dayjs from "dayjs";
 import app from "../app";
 
-const Export_op_history = ({ children }) => {
+const Export_op_history = ({ children, className }) => {
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -105,7 +105,7 @@ const Export_op_history = ({ children }) => {
                 );
                 result[fieldMap[key]] = cust?.name || "";
               } else if (key === "ho_ten") {
-                result[fieldMap[key]] = app.beautifyName(item[key]);
+                result[fieldMap[key]] = app?.beautifyName(item[key]);
               } else if (key === "nganhang") {
                 result[fieldMap[key]] = user?.banks?.data?.find(
                   (b) => b.bin == item[key]
@@ -174,7 +174,11 @@ const Export_op_history = ({ children }) => {
 
   return (
     <>
-      <div onClick={handleExportHistory} style={{ cursor: "pointer" }}>
+      <div
+        onClick={handleExportHistory}
+        style={{ cursor: "pointer" }}
+        className={className}
+      >
         {children}
       </div>
 
@@ -204,7 +208,7 @@ const Export_op_history = ({ children }) => {
             };
             return column;
           })}
-          rowKey={(record, idx) => idx}
+          rowKey={(record, idx) => record?.id || idx}
           pagination={{ pageSize: 15 }}
           scroll={{ x: "max-content" }}
           className="ant-mini"

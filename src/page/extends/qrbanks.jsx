@@ -51,6 +51,7 @@ const QR_banks = () => {
       {
         "Chủ tài khoản": "Nguyen Van A",
         "Số tài khoản": "0123456789",
+        "Ngân hàng (CODE)": "ICB",
         "Ngân hàng (shortName)": "VietinBank",
         "Số tiền": 500000,
         "Nội dung": "Thanh toan hoa don",
@@ -155,11 +156,17 @@ const QR_banks = () => {
         <div className="flex flex-1 gap-2">
           <div className="flex flex-col bg-white border-r-1 border-[#0003] min-w-[400px] w-[400px] relative">
             {multipleQR.map((b) => {
-              const bank = user?.banks?.data?.find(
-                (i) =>
-                  i.shortName.toLowerCase() ==
-                  b?.["Ngân hàng (shortName)"]?.toLowerCase()
-              );
+              const bank =
+                user?.banks?.data?.find(
+                  (i) =>
+                    i.code.toLowerCase() ==
+                    b?.["Ngân hàng (CODE)"]?.toLowerCase()
+                ) ||
+                user?.banks?.data?.find(
+                  (i) =>
+                    i.shortName.toLowerCase() ==
+                    b?.["Ngân hàng (shortName)"]?.toLowerCase()
+                );
               return (
                 <div
                   className={`flex items-center p-1 py-3 

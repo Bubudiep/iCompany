@@ -169,14 +169,6 @@ const OP_History_card = ({ work, onDelete, callback, op }) => {
             <Form.Item name="reason" label="Lý do nghỉ" className="!mb-2">
               <Input />
             </Form.Item>
-            <Form.Item
-              name="isnew"
-              label="Đi làm mới"
-              className="!mb-2"
-              valuePropName="checked"
-            >
-              <Checkbox />
-            </Form.Item>
           </Form>
         </Modal>
       </div>

@@ -374,42 +374,12 @@ const List_operators = () => {
               })),
             ]}
           />
-          <Tooltip
-            title={
-              <div className="flex items-start flex-col gap-1.5 min-w-[120px] p-2">
-                <div className="text-[#000] mb-2">Chọn kiểu dữ liệu</div>
-                <div className="flex flex-col gap-1.5 ml-2">
-                  <Button
-                    icon={
-                      <PiMicrosoftExcelLogoFill size={20} className="mt-1" />
-                    }
-                    type="primary"
-                    className="!h-[40px]"
-                    onClick={handleExport}
-                  >
-                    Danh sách hiện tại
-                  </Button>
-                  <Export_op_history>
-                    <Button
-                      icon={
-                        <PiMicrosoftExcelLogoFill size={20} className="mt-1" />
-                      }
-                      type="primary"
-                      className="!h-[40px]"
-                    >
-                      Kèm lịch sử làm việc
-                    </Button>
-                  </Export_op_history>
-                </div>
-              </div>
-            }
-            color="white"
-          >
+          <Export_op_history className="ml-auto">
             <div className="flex ml-auto items-center p-2 bg-[#007add] text-[white] px-4 rounded-[8px] gap-2 cursor-pointer select-none">
               <PiMicrosoftExcelLogoFill size={20} />
               Xuất Excel
             </div>
-          </Tooltip>
+          </Export_op_history>
         </div>
       </div>
       <Table

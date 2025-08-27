@@ -50,26 +50,12 @@ const Details_op = () => {
   const [op, setOp] = useState({});
   const { op_id } = useParams();
   const navigate = useNavigate();
-  const [modalData, setModalData] = useState();
-  const [modalBaoung, setmodalBaoung] = useState(false);
   const Info = ({ label, value }) => (
     <div>
       <p className="text-gray-600 text-sm">{label}</p>
       <p className="text-[#000102] font-[400]">{value || "—"}</p>
     </div>
   );
-  const handleDilammoi = () => {
-    api
-      .patch(`/ops/${op_id}/`, { created_at: new Date() }, user.token)
-      .then((res) => {
-        setOp(res);
-        message.success("Thành công!");
-      })
-      .catch((e) => {
-        api.error(e);
-      })
-      .finally(() => setLoading(false));
-  };
   const formatNote = (text) => {
     if (!text) return ["..."];
     const parts = [];
@@ -186,23 +172,6 @@ const Details_op = () => {
                           Người tuyển
                           <Staff_view id={op.nguoituyen} />
                         </div>
-                        <div className="flex justify-between bg-[#ffffff] text-[13px]">
-                          Quản lý
-                          <Staff_view id={op.nguoibaocao} />
-                        </div>
-
-                        {op?.vendor && (
-                          <div className="flex justify-between bg-[#ffffff] text-[13px]">
-                            Vendor
-                            <Vendor_view className="ml-1" id={op?.vendor} />
-                          </div>
-                        )}
-                        {op?.nhachinh && (
-                          <div className="flex justify-between bg-[#ffffff] text-[13px]">
-                            Nhà chính
-                            <Vendor_view className="ml-1" id={op?.nhachinh} />
-                          </div>
-                        )}
                       </div>
                     </div>
                   </div>
@@ -271,15 +240,6 @@ const Details_op = () => {
                       </div>
                       Thêm lịch sử đi làm
                     </OP_dilamroi>
-                    <div
-                      onClick={handleDilammoi}
-                      className="item hover:!text-[#006fd6] hover:!bg-[#e8f8ff]"
-                    >
-                      <div className="icon">
-                        <SiSpinrilla />
-                      </div>
-                      Người mới hôm nay
-                    </div>
                     <div
                       onClick={handleDelete}
                       className="item text-[#ff5151] hover:!text-[#d60000] hover:!bg-[#ffe8e8]"

@@ -152,7 +152,7 @@ const Export_approve_all = ({ children, option = "all" }) => {
               };
               return column;
             })}
-            rowKey={(record, idx) => idx}
+            rowKey={(record, idx) => record?.id || idx}
             pagination={{ pageSize: 15 }}
             scroll={{ x: "max-content" }}
             className="ant-mini"
