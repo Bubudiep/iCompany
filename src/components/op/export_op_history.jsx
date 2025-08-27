@@ -17,9 +17,9 @@ const Export_op_history = ({ children, className }) => {
     gioi_tinh: "Giới tính",
     so_cccd: "Số CCCD",
     ngaysinh: "Ngày sinh",
+    nganhang: "Ngân hàng",
     so_taikhoan: "Số tài khoản",
     chu_taikhoan: "Chủ tài khoản",
-    nganhang: "Ngân hàng",
     nhachinh: "Nhà chính",
     h_customer: "Công ty",
     h_ho_ten: "Tên đi làm",
@@ -107,9 +107,8 @@ const Export_op_history = ({ children, className }) => {
               } else if (key === "ho_ten") {
                 result[fieldMap[key]] = app?.beautifyName(item[key]);
               } else if (key === "nganhang") {
-                result[fieldMap[key]] = user?.banks?.data?.find(
-                  (b) => b.bin == item[key]
-                )?.shortName;
+                const bank = user?.banks?.data?.find((b) => b.bin == item[key]);
+                result[fieldMap[key]] = bank?.code;
               } else if (key == "tinhtrang") {
                 const cust = user?.company?.Customer?.find(
                   (cp) => cp.id == item.congty_danglam
@@ -117,6 +116,8 @@ const Export_op_history = ({ children, className }) => {
                 result[fieldMap[key]] = cust?.name || "-";
               } else if (key == "thamnien") {
                 result[fieldMap[key]] = totalDays || 0;
+              } else if (key == "chu_taikhoan") {
+                result[fieldMap[key]] = item[key]?.toUpperCase();
               } else if (key == "thamniencu") {
                 result[fieldMap[key]] = thisDiff || 0;
               } else {
@@ -208,7 +209,7 @@ const Export_op_history = ({ children, className }) => {
             };
             return column;
           })}
-          rowKey={(record, idx) => record?.id || idx}
+          rowKey="id"
           pagination={{ pageSize: 15 }}
           scroll={{ x: "max-content" }}
           className="ant-mini"
