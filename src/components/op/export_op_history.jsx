@@ -40,7 +40,7 @@ const Export_op_history = ({ children, className }) => {
     setData([]);
     setLoading(true);
     api
-      .get("/ops/export_history/", user?.token)
+      .gets("/ops/export_history/", user?.token)
       .then((res) => {
         const merged = res
           .map((item) => {
@@ -209,7 +209,7 @@ const Export_op_history = ({ children, className }) => {
             };
             return column;
           })}
-          rowKey="id"
+          rowKey={(record) => record.h_id}
           pagination={{ pageSize: 15 }}
           scroll={{ x: "max-content" }}
           className="ant-mini"
