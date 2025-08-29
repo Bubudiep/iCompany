@@ -35,101 +35,189 @@ const Export_op_history = ({ children, className }) => {
     thamnien: "Tổng thâm niên cũ",
     thamniencu: "Thâm niên hiện tại",
   };
-  const handleExportHistory = () => {
+  const handleExportHistory = async () => {
     setVisible(true);
     setData([]);
     setLoading(true);
-    api
-      .gets("/ops/export_history/", user?.token)
-      .then((res) => {
-        const merged = res
-          .map((item) => {
-            const otherFields = { ...item };
-            delete otherFields.work;
-            return (item.work || []).map((workItem) => {
-              const newWork = {};
-              Object.entries(workItem).forEach(([key, value]) => {
-                newWork[`h_${key}`] = value;
-              });
-              return {
-                ...otherFields,
-                ...newWork,
-              };
-            });
-          })
-          .flat();
-        console.log(
-          merged.sort((a, b) => a.ma_nhanvien.localeCompare(b.ma_nhanvien))
-        );
-        const cleaned = merged.map((item) => {
-          const result = {};
-          const old_hist = merged.filter(
-            (op) =>
-              op.id === item.id &&
-              new Date(op.h_start_date) < new Date(item.h_start_date) &&
-              op.h_end_date !== null
-          );
-          const thisDiff = dayjs(item.h_end_date || dayjs()).diff(
-            dayjs(item.h_start_date),
-            "day"
-          );
-          const totalDays = old_hist.reduce((sum, entry) => {
-            const start = dayjs(entry.h_start_date);
-            const end = dayjs(entry.h_end_date);
-            const diffDays = end.diff(start, "day"); // tính số ngày
-            return sum + diffDays;
-          }, 0);
-          item.tinhtrang = "-";
-          item.thamnien = 0;
-          item.thamniencu = 0;
-          Object.keys(fieldMap).forEach((key) => {
-            if (key in item) {
-              if (key === "h_nguoituyen") {
-                const staff = user?.company?.Staff?.find(
-                  (cp) => cp.id == (item[key] || item.nguoituyen)
-                );
-                result[fieldMap[key]] = staff?.profile?.full_name || "";
-              } else if (key === "nhachinh") {
-                const cust = user?.company?.Vendor?.find(
-                  (cp) => cp.id == item[key]
-                );
-                result[fieldMap[key]] = cust?.name || "";
-              } else if (key === "vendor") {
-                const cust = user?.company?.Vendor?.find(
-                  (cp) => cp.id == item[key]
-                );
-                result[fieldMap[key]] = cust?.fullname || "";
-              } else if (key === "h_customer") {
-                const cust = user?.company?.Customer?.find(
-                  (cp) => cp.id == item[key]
-                );
-                result[fieldMap[key]] = cust?.name || "";
-              } else if (key === "ho_ten") {
-                result[fieldMap[key]] = app?.beautifyName(item[key]);
-              } else if (key === "nganhang") {
-                const bank = user?.banks?.data?.find((b) => b.bin == item[key]);
-                result[fieldMap[key]] = bank?.code;
-              } else if (key == "tinhtrang") {
-                const cust = user?.company?.Customer?.find(
-                  (cp) => cp.id == item.congty_danglam
-                );
-                result[fieldMap[key]] = cust?.name || "-";
-              } else if (key == "thamnien") {
-                result[fieldMap[key]] = totalDays || 0;
-              } else if (key == "chu_taikhoan") {
-                result[fieldMap[key]] = item[key]?.toUpperCase();
-              } else if (key == "thamniencu") {
-                result[fieldMap[key]] = thisDiff || 0;
-              } else {
-                result[fieldMap[key]] = item[key];
-              }
-            }
-          });
-          return result;
-        });
-        setData(cleaned || []);
-      })
-      .finally(() => setLoading(false));
+    const [operator, histories] = await Promise.all([
+      api.get("/oplist/?page_size=99999", user?.token),
+      api.get("/ophistlite/?page_size=99999", user?.token),
+    ]);
+    const op_all = histories?.results?.map((his) => {
+      const newWork = {};
+      const op = operator?.results?.find((o) => o?.id === his?.operator);
+      Object.entries(his).forEach(([key, value]) => {
+        newWork[`h_${key}`] = value;
+      });
+      const working = histories?.results?.find(
+        (w) => w?.end_date === null && w.operator === his?.operator
+      );
+      const cust = user?.company?.Customer?.find(
+        (cp) => cp.id == working?.customer
+      );
+      return {
+        ...newWork,
+        ...op,
+        tinhtrang: `${cust?.name || "--"}${
+          cust?.name ? ` (${working?.ma_nhanvien || "--"})` : ""
+        }`,
+      };
+    });
+    const cleaned = op_all.map((item) => {
+      const result = {};
+      const old_hist = op_all.filter(
+        (op) =>
+          op.id === item.id &&
+          new Date(op.h_start_date) < new Date(item.h_start_date) &&
+          op.h_end_date !== null
+      );
+      const thisDiff = dayjs(item.h_end_date || dayjs()).diff(
+        dayjs(item.h_start_date),
+        "day"
+      );
+      const totalDays = old_hist.reduce((sum, entry) => {
+        const start = dayjs(entry.h_start_date);
+        const end = dayjs(entry.h_end_date);
+        const diffDays = end.diff(start, "day"); // tính số ngày
+        return sum + diffDays;
+      }, 0);
+      item.thamnien = 0;
+      item.thamniencu = 0;
+      Object.keys(fieldMap).forEach((key) => {
+        if (key in item) {
+          if (key === "h_nguoituyen") {
+            const staff = user?.company?.Staff?.find(
+              (cp) => cp.id == (item[key] || item.nguoituyen)
+            );
+            result[fieldMap[key]] = staff?.profile?.full_name || "";
+          } else if (key === "nhachinh") {
+            const cust = user?.company?.Vendor?.find(
+              (cp) => cp.id == item[key]
+            );
+            result[fieldMap[key]] = cust?.name || "";
+          } else if (key === "vendor") {
+            const cust = user?.company?.Vendor?.find(
+              (cp) => cp.id == item[key]
+            );
+            result[fieldMap[key]] = cust?.fullname || "";
+          } else if (key === "h_customer") {
+            const cust = user?.company?.Customer?.find(
+              (cp) => cp.id == item[key]
+            );
+            result[fieldMap[key]] = cust?.name || "";
+          } else if (key === "ho_ten") {
+            result[fieldMap[key]] = app?.beautifyName(item[key]);
+          } else if (key === "nganhang") {
+            const bank = user?.banks?.data?.find((b) => b.bin == item[key]);
+            result[fieldMap[key]] = bank?.code;
+          } else if (key == "thamnien") {
+            result[fieldMap[key]] = totalDays || 0;
+          } else if (key == "chu_taikhoan") {
+            result[fieldMap[key]] = item[key]?.toUpperCase();
+          } else if (key == "thamniencu") {
+            result[fieldMap[key]] = thisDiff || 0;
+          } else {
+            result[fieldMap[key]] = item[key];
+          }
+        }
+      });
+      return result;
+    });
+    setLoading(false);
+    setData(cleaned || []);
+    console.log(op_all);
+    // api
+    //   .get("/ops/export_history/", user?.token)
+    //   .then((res) => {
+    //     const merged = res
+    //       .map((item) => {
+    //         const otherFields = { ...item };
+    //         delete otherFields.work;
+    //         return (item.work || []).map((workItem) => {
+    //           const newWork = {};
+    //           Object.entries(workItem).forEach(([key, value]) => {
+    //             newWork[`h_${key}`] = value;
+    //           });
+    //           const working = item?.work?.find((w) => w?.end_date === null);
+    //           const cust = user?.company?.Customer?.find(
+    //             (cp) => cp.id == working?.customer
+    //           );
+    //           return {
+    //             ...otherFields,
+    //             ...newWork,
+    //             tinhtrang: `${cust?.name || "--"}${
+    //               cust?.name ? ` (${working?.ma_nhanvien || "--"})` : ""
+    //             }`,
+    //           };
+    //         });
+    //       })
+    //       .flat();
+    //     console.log(
+    //       merged.sort((a, b) => a.ma_nhanvien.localeCompare(b.ma_nhanvien))
+    //     );
+    //     const cleaned = merged.map((item) => {
+    //       const result = {};
+    //       const old_hist = merged.filter(
+    //         (op) =>
+    //           op.id === item.id &&
+    //           new Date(op.h_start_date) < new Date(item.h_start_date) &&
+    //           op.h_end_date !== null
+    //       );
+    //       const thisDiff = dayjs(item.h_end_date || dayjs()).diff(
+    //         dayjs(item.h_start_date),
+    //         "day"
+    //       );
+    //       const totalDays = old_hist.reduce((sum, entry) => {
+    //         const start = dayjs(entry.h_start_date);
+    //         const end = dayjs(entry.h_end_date);
+    //         const diffDays = end.diff(start, "day"); // tính số ngày
+    //         return sum + diffDays;
+    //       }, 0);
+    //       item.thamnien = 0;
+    //       item.thamniencu = 0;
+    //       Object.keys(fieldMap).forEach((key) => {
+    //         if (key in item) {
+    //           if (key === "h_nguoituyen") {
+    //             const staff = user?.company?.Staff?.find(
+    //               (cp) => cp.id == (item[key] || item.nguoituyen)
+    //             );
+    //             result[fieldMap[key]] = staff?.profile?.full_name || "";
+    //           } else if (key === "nhachinh") {
+    //             const cust = user?.company?.Vendor?.find(
+    //               (cp) => cp.id == item[key]
+    //             );
+    //             result[fieldMap[key]] = cust?.name || "";
+    //           } else if (key === "vendor") {
+    //             const cust = user?.company?.Vendor?.find(
+    //               (cp) => cp.id == item[key]
+    //             );
+    //             result[fieldMap[key]] = cust?.fullname || "";
+    //           } else if (key === "h_customer") {
+    //             const cust = user?.company?.Customer?.find(
+    //               (cp) => cp.id == item[key]
+    //             );
+    //             result[fieldMap[key]] = cust?.name || "";
+    //           } else if (key === "ho_ten") {
+    //             result[fieldMap[key]] = app?.beautifyName(item[key]);
+    //           } else if (key === "nganhang") {
+    //             const bank = user?.banks?.data?.find((b) => b.bin == item[key]);
+    //             result[fieldMap[key]] = bank?.code;
+    //           } else if (key == "thamnien") {
+    //             result[fieldMap[key]] = totalDays || 0;
+    //           } else if (key == "chu_taikhoan") {
+    //             result[fieldMap[key]] = item[key]?.toUpperCase();
+    //           } else if (key == "thamniencu") {
+    //             result[fieldMap[key]] = thisDiff || 0;
+    //           } else {
+    //             result[fieldMap[key]] = item[key];
+    //           }
+    //         }
+    //       });
+    //       return result;
+    //     });
+    //     setData(cleaned || []);
+    //   })
+    //   .finally(() => setLoading(false));
   };
 
   const handleDownload = () => {
@@ -209,7 +297,7 @@ const Export_op_history = ({ children, className }) => {
             };
             return column;
           })}
-          rowKey={(record) => record.h_id}
+          rowKey="h_id"
           pagination={{ pageSize: 15 }}
           scroll={{ x: "max-content" }}
           className="ant-mini"

@@ -10,7 +10,7 @@ const debugMode = import.meta.env.VITE_DEBUGMODE === "development";
 
 const api = axios.create({
   baseURL: host + "/api",
-  timeout: 25000,
+  timeout: 22000,
   headers: {
     "Content-Type": "application/json",
   },
@@ -321,7 +321,6 @@ function numberToVietnameseText(number) {
 }
 
 export default {
-  buildHeaders,
   numberToVietnameseText,
   mapBreadcrumb,
   error,
