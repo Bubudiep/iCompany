@@ -44,7 +44,7 @@ const Update_amount = ({ approve, user, setApprove, children }) => {
           placeholder="Nhập số tiền mới"
           value={amount.toLocaleString()}
           onChange={(e) =>
-            setAmount(Number(e.target.value?.replaceAll(".", "")) || 0)
+            setAmount(Number(e.target.value?.replace(/[.,]/g, "")) || 0)
           }
         />
       </Modal>
