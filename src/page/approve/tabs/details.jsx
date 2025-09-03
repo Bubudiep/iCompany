@@ -382,7 +382,7 @@ const Approve_details = () => {
                             "{ten}",
                             `${approve?.operator?.ho_ten ?? "No name"}`
                           )}
-                          sotien={approve?.amount?.replace(/[.,]/g, "")}
+                          sotien={parseInt(approve?.amount)}
                         />
                       ) : (
                         <div className="flex flex-col gap-1">
@@ -415,7 +415,7 @@ const Approve_details = () => {
                                 "{ten}",
                                 `${approve?.operator?.ho_ten ?? "No name"}`
                               )}
-                              sotien={approve?.amount?.replace(/[.,]/g, "")}
+                              sotien={parseInt(approve?.amount)}
                             />
                           )}
                         </div>
@@ -438,7 +438,7 @@ const Approve_details = () => {
                             "{ten}",
                             `${approve?.operator?.ho_ten ?? "No name"}`
                           )}
-                          sotien={approve?.amount?.replace(/[.,]/g, "")}
+                          sotien={parseInt(approve?.amount)}
                         />
                       ) : (
                         <div className="flex flex-col gap-1">
@@ -463,7 +463,7 @@ const Approve_details = () => {
                                 "{ten}",
                                 `${approve?.operator?.ho_ten ?? "No name"}`
                               )}
-                              sotien={approve?.amount?.replace(/[.,]/g, "")}
+                              sotien={parseInt(approve?.amount)}
                             />
                           )}
                         </div>

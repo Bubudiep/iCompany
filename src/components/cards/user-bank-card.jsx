@@ -72,7 +72,7 @@ const Card_bank_user = ({
       const banktoQR = qrcode.BankQR(
         user_id?.khacStk,
         user_id?.khacNganhang,
-        sotien?.replace(/[.,]/g, ""),
+        sotien,
         comment
       );
       setBankCode(banktoQR);
