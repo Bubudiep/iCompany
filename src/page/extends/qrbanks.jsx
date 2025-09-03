@@ -73,6 +73,7 @@ const QR_banks = () => {
   };
   useEffect(() => {
     const handleKeyDown = (e) => {
+      if (seletedQR?.done) return;
       if (e.code === "Space" || e.key === " ") {
         e.preventDefault(); // Ngăn cuộn trang
 
@@ -226,6 +227,11 @@ const QR_banks = () => {
                   comment={seletedQR["Nội dung"]}
                   className="flex flex-1 mr-2"
                 />
+                {!seletedQR?.done && (
+                  <div className="text-center mt-2 text-[18px] text-[#929cb4] italic">
+                    Bấm dấu cách để đánh dấu là đã xong!
+                  </div>
+                )}
               </div>
             ) : (
               <Empty description="Chọn một" />
@@ -233,11 +239,11 @@ const QR_banks = () => {
           </div>
         </div>
       ) : (
-        <div className="flex flex-1 p-2 justify-center items-start fadeInTop">
-          <div className="bg-white rounded-xl shadow-md p-6 w-full max-w-[800px] space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex flex-col gap-1">
-                <label className="font-medium text-gray-700">
+        <div className="flex bg-white  flex-1 gap-2 pt-2 justify-center items-start fadeInTop">
+          <div className="p-6 w-full max-w-[500px] space-y-6 ">
+            <div className="grid grid-cols-1 gap-3">
+              <div className="flex gap-1 items-center">
+                <label className="font-medium w-36 text-gray-700">
                   Chủ tài khoản
                 </label>
                 <Input
@@ -248,8 +254,8 @@ const QR_banks = () => {
                   }}
                 />
               </div>
-              <div className="flex flex-col gap-1">
-                <label className="font-medium text-gray-700">
+              <div className="flex gap-1 items-center">
+                <label className="font-medium w-36 text-gray-700">
                   Số tài khoản
                 </label>
                 <Input
@@ -258,8 +264,10 @@ const QR_banks = () => {
                   onChange={(e) => setAccountNumber(e.target.value)}
                 />
               </div>
-              <div className="flex flex-col gap-1">
-                <label className="font-medium text-gray-700">Số tiền</label>
+              <div className="flex gap-1 items-center">
+                <label className="!font-[500] text-gray-700 w-36">
+                  Số tiền
+                </label>
                 <InputNumber
                   placeholder="Nhập số tiền"
                   suffix="VNĐ"
@@ -274,20 +282,23 @@ const QR_banks = () => {
                   onChange={(val) => setAmount(val)}
                 />
               </div>
-              <div className="flex flex-col gap-1">
-                <label className="font-medium text-gray-700">Ngân hàng</label>
+              <div className="flex gap-1 items-center">
+                <label className="font-medium w-36 text-gray-700">
+                  Ngân hàng
+                </label>
                 <Select
                   placeholder="Chọn ngân hàng"
                   options={user?.banks?.data?.map((i) => ({
                     value: i.bin,
                     label: (
-                      <div className="flex items-center gap-2 py-0.5">
+                      <div className="flex items-center gap-2 py-0.5 overflow-ellipsis overflow-hidden">
                         <img src={i.logo} className="h-4" />[{i.code}]{" "}
                         {i.shortName} - {i.name}
                       </div>
                     ),
                     search: `${i.code} ${i.shortName} ${i.name}`,
                   }))}
+                  className="max-w-[320px] w-full"
                   showSearch
                   value={bankCode}
                   onChange={(val) => setBankCode(val)}
@@ -299,9 +310,9 @@ const QR_banks = () => {
                 />
               </div>
             </div>
-            <div className="flex flex-col gap-1">
-              <label className="font-medium text-gray-700">
-                Nội dung chuyển khoản
+            <div className="flex gap-1 items-center">
+              <label className="font-medium text-gray-700 w-36">
+                Nội dung CK
               </label>
               <Input
                 placeholder="Nhập nội dung chuyển khoản"
@@ -309,7 +320,9 @@ const QR_banks = () => {
                 onChange={(e) => setComment(app.removeSpecial(e.target.value))}
               />
             </div>
-            <div className="flex flex-col items-center justify-center">
+          </div>
+          <div className="flex w-[300px] p-4 h-full border-l border-l-[#0001] items-baseline">
+            <div className="flex flex-col flex-1 items-center justify-center">
               {accountNumber && amount && bankCode && comment ? (
                 <>
                   <div className="text-[#5f5f5f]">
@@ -342,7 +355,20 @@ const QR_banks = () => {
                   </div>
                 </>
               ) : (
-                <Empty description="Chưa nhập đủ thông tin" />
+                <div className="flex flex-col mt-12">
+                  <QrCodeComponent
+                    width={180}
+                    height={180}
+                    color="#0003"
+                    data={
+                      location.href +
+                      "/?share=true&data=true&from=qr_bank_function&blankk=false&data=null&user=1"
+                    }
+                  />
+                  <div className="text-center text-[#0003] font-[500]">
+                    Chưa có tông tin!
+                  </div>
+                </div>
               )}
             </div>
           </div>
