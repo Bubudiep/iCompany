@@ -27,6 +27,7 @@ const Card_bank_user = ({
   const [ghichu, setGhichu] = useState("");
 
   useEffect(() => {
+    console.log(user_type);
     if (user_type === "new") {
       setIsModalOpen(true);
     }
@@ -69,8 +70,8 @@ const Card_bank_user = ({
       setBanknumber(user_id?.khacStk);
       setBankname(user_id?.khacNganhang);
       const banktoQR = qrcode.BankQR(
-        user?.info?.profile?.so_taikhoan,
-        user?.info?.profile?.nganhang,
+        user_id?.khacStk,
+        user_id?.khacNganhang,
         sotien?.replace(/[.,]/g, ""),
         comment
       );
@@ -272,16 +273,18 @@ const Card_bank_user = ({
             !user?.info?.isSuperAdmin ? (
               <></>
             ) : (
-              <Tooltip title="Sửa">
-                <Button
-                  onClick={() => setIsModalOpen(true)}
-                  variant="text"
-                  color="primary"
-                  className=" text-sm !absolute top-0 right-0 cursor-pointer !px-2.5"
-                >
-                  <FaEdit />
-                </Button>
-              </Tooltip>
+              user_type !== "other" && (
+                <Tooltip title="Sửa">
+                  <Button
+                    onClick={() => setIsModalOpen(true)}
+                    variant="text"
+                    color="primary"
+                    className=" text-sm !absolute top-0 right-0 cursor-pointer !px-2.5"
+                  >
+                    <FaEdit />
+                  </Button>
+                </Tooltip>
+              )
             )}
           </div>
         </div>

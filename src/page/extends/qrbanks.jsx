@@ -73,6 +73,9 @@ const QR_banks = () => {
   };
   useEffect(() => {
     const handleKeyDown = (e) => {
+      const tag = e.target.tagName.toLowerCase();
+      const isEditable = e.target.isContentEditable;
+      if (tag === "input" || tag === "textarea" || isEditable) return;
       if (seletedQR?.done) return;
       if (e.code === "Space" || e.key === " ") {
         e.preventDefault(); // Ngăn cuộn trang
