@@ -1,20 +1,25 @@
 import React, { useEffect, useRef, useState } from "react";
 import JoditEditor from "jodit-react";
-import { Button } from "antd";
+import { Button, Input, Modal } from "antd";
 import { FaNoteSticky, FaQrcode } from "react-icons/fa6";
 import api from "../../components/api";
 import { useUser } from "../../components/context/userContext";
 import Staff_view from "../../components/by_id/staff_view";
 import dayjs from "dayjs";
+import { FaPlus } from "react-icons/fa";
+import { FiPlus } from "react-icons/fi";
 
 const Notes_records = () => {
   const editor = useRef(null);
   const { user } = useUser();
+  const [editnote, setEditnote] = useState(false);
   const [loading, setLoading] = useState(false);
   const [note, setNote] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [tempNote, setTempNote] = useState(note);
   const [noteList, setNoteList] = useState([]);
+  const [showadd, setshowadd] = useState(false);
+  const [newGhichu, setNewGhichu] = useState("");
   const handleSave = () => {
     setNote(tempNote);
     setIsEditing(false);
@@ -52,14 +57,78 @@ const Notes_records = () => {
         <div className="flex flex-col h-full bg-[white] w-[240px] shadow">
           {noteList?.map((n) => (
             <div
-              className="p-2 border-b border-[#d6d6d6] text-[#999] cursor-pointer"
+              className="p-2 border-b border-[#d6d6d6] select-none text-[#999] cursor-pointer"
               key={n?.id}
               onClick={() => setNote(n)}
+              onDoubleClick={() => setEditnote(n)}
             >
               {n?.title}
             </div>
           ))}
+          <div
+            onClick={() => setshowadd(true)}
+            className="p-2 items-center flex text-[#999] hover:text-[#06f] cursor-pointer transition-all duration-300"
+          >
+            <FiPlus /> Thêm mới
+          </div>
         </div>
+        <Modal
+          open={editnote !== false}
+          title="Sửa ghi chú"
+          onCancel={() => setEditnote(false)}
+          onOk={() => {
+            api
+              ?.patch(
+                `/note/${editnote?.id}/`,
+                {
+                  title: editnote?.title,
+                },
+                user?.token
+              )
+              .then((res) =>
+                setNoteList((o) => o?.map((i) => (i?.id === res?.id ? res : i)))
+              )
+              .catch((e) => api.error(e));
+          }}
+        >
+          <div className="flex flex-col gap-2 mt-4 mb-4">
+            <div>Tên ghi chú</div>
+            <Input
+              value={editnote?.title}
+              onChange={(e) =>
+                setEditnote((o) => ({ ...o, title: e?.target?.value }))
+              }
+              placeholder="nhập tên ghi chú..."
+            />
+          </div>
+        </Modal>
+        <Modal
+          open={showadd}
+          title="Thêm ghi chú"
+          onCancel={() => setshowadd(false)}
+          onOk={() => {
+            api
+              ?.post(
+                "/note/",
+                {
+                  title: newGhichu,
+                  content: "",
+                },
+                user?.token
+              )
+              .then((res) => setNoteList((o) => [res, ...o]))
+              .catch((e) => api.error(e));
+          }}
+        >
+          <div className="flex flex-col gap-2 mt-4 mb-4">
+            <div>Tên ghi chú</div>
+            <Input
+              value={newGhichu}
+              onChange={(e) => setNewGhichu(e?.target?.value)}
+              placeholder="nhập tên ghi chú..."
+            />
+          </div>
+        </Modal>
         {note ? (
           <>
             <div className="relative flex flex-1 overflow-hidden">
@@ -119,15 +188,19 @@ const Notes_records = () => {
               ) : (
                 <div className="flex flex-1 p-2 fadeInTop">
                   <div className="flex flex-1 bg-[white] p-1 px-2 rounded-[8px] shadow text-[13px]">
-                    <div
-                      dangerouslySetInnerHTML={{ __html: note?.content }}
-                    ></div>
+                    {note?.content ? (
+                      <div
+                        dangerouslySetInnerHTML={{ __html: note?.content }}
+                      ></div>
+                    ) : (
+                      <div className="text-[#999]">Chưa có gì!</div>
+                    )}
                   </div>
                 </div>
               )}
             </div>
             <div className="flex flex-col gap-1 w-[240px] pr-2 py-2">
-              {note?.history ? (
+              {note?.history?.length > 0 ? (
                 <>
                   {note?.history?.map((his) => (
                     <div

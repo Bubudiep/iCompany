@@ -245,6 +245,35 @@ const QR_banks = () => {
         <div className="flex bg-white  flex-1 gap-2 pt-2 justify-center items-start fadeInTop">
           <div className="p-6 w-full max-w-[500px] space-y-6 ">
             <div className="grid grid-cols-1 gap-3">
+              <div className="flex gap-1 items-center relative">
+                <label className="font-medium w-36 text-gray-700">
+                  Ngân hàng
+                </label>
+                <div className="flex w-[calc(100%_-_110px)]">
+                  <Select
+                    placeholder="Chọn ngân hàng"
+                    options={user?.banks?.data?.map((i) => ({
+                      value: i.bin,
+                      label: (
+                        <div className="flex items-center gap-2">
+                          <img src={i.logo} className="h-4" />[{i.code}]{" "}
+                          {i.shortName} - {i.name}
+                        </div>
+                      ),
+                      search: `${i.code} ${i.shortName} ${i.name}`,
+                    }))}
+                    className="!w-full"
+                    showSearch
+                    value={bankCode}
+                    onChange={(val) => setBankCode(val)}
+                    filterOption={(input, option) =>
+                      (option?.search ?? "")
+                        .toLowerCase()
+                        .includes(input.toLowerCase())
+                    }
+                  />
+                </div>
+              </div>
               <div className="flex gap-1 items-center">
                 <label className="font-medium w-36 text-gray-700">
                   Chủ tài khoản
@@ -283,33 +312,6 @@ const QR_banks = () => {
                     `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                   }
                   onChange={(val) => setAmount(val)}
-                />
-              </div>
-              <div className="flex gap-1 items-center">
-                <label className="font-medium w-36 text-gray-700">
-                  Ngân hàng
-                </label>
-                <Select
-                  placeholder="Chọn ngân hàng"
-                  options={user?.banks?.data?.map((i) => ({
-                    value: i.bin,
-                    label: (
-                      <div className="flex items-center gap-2 py-0.5 overflow-ellipsis overflow-hidden">
-                        <img src={i.logo} className="h-4" />[{i.code}]{" "}
-                        {i.shortName} - {i.name}
-                      </div>
-                    ),
-                    search: `${i.code} ${i.shortName} ${i.name}`,
-                  }))}
-                  className="max-w-[320px] w-full"
-                  showSearch
-                  value={bankCode}
-                  onChange={(val) => setBankCode(val)}
-                  filterOption={(input, option) =>
-                    (option?.search ?? "")
-                      .toLowerCase()
-                      .includes(input.toLowerCase())
-                  }
                 />
               </div>
             </div>

@@ -3,6 +3,7 @@ import LeftNav from "../../components/layout/LeftNav";
 import { FaQrcode } from "react-icons/fa";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { FaNoteSticky } from "react-icons/fa6";
+import { BsFillChatTextFill } from "react-icons/bs";
 const menus = [
   {
     id: 1,
@@ -15,6 +16,12 @@ const menus = [
     icon: <FaNoteSticky />,
     label: "Notes",
     link: "/app/extends/notes",
+  },
+  {
+    id: 3,
+    icon: <BsFillChatTextFill />,
+    label: "Tiền sang chữ",
+    link: "/app/extends/num2text",
   },
 ];
 const Extends_index = () => {
