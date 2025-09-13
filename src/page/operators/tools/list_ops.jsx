@@ -6,7 +6,7 @@ import Customer_view from "../../../components/by_id/customer_view";
 import app from "../../../components/app";
 import { IoSearchOutline } from "react-icons/io5";
 import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import * as XLSX from "xlsx";
 import Staff_view from "../../../components/by_id/staff_view";
@@ -14,8 +14,11 @@ import Export_op_history from "../../../components/op/export_op_history";
 import Vendor_view from "../../../components/by_id/vendor_view";
 import { debounce } from "lodash";
 import OP_Avatar from "./op_avatar";
+import Details_operator from "./details_operator.";
 
 const List_operators = () => {
+  const { op_id } = useParams();
+  const nav = useNavigate();
   const [filterText, setFilterText] = useState("");
   const [loading, setLoading] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
@@ -382,18 +385,24 @@ const List_operators = () => {
           </Export_op_history>
         </div>
       </div>
-      <Table
-        showHeader={false}
-        className="full-table items"
-        columns={columns}
-        rowKey={(record) => record.id}
-        rowClassName="user-item"
-        dataSource={filteredData}
-        loading={showLoading}
-        scroll={{ y: 600 }}
-        onRow={onRowClick}
-        pagination={{ pageSize: 20, showSizeChanger: false }}
-      />
+      {op_id ? (
+        <>
+          <Details_operator op_id={op_id} />
+        </>
+      ) : (
+        <Table
+          showHeader={false}
+          className="full-table items"
+          columns={columns}
+          rowKey={(record) => record.id}
+          rowClassName="user-item"
+          dataSource={filteredData}
+          loading={showLoading}
+          scroll={{ y: 600 }}
+          onRow={onRowClick}
+          pagination={{ pageSize: 20, showSizeChanger: false }}
+        />
+      )}
     </div>
   );
 };

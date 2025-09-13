@@ -12,12 +12,6 @@ const menus = [
     link: "/app/extends/qrbanks",
   },
   {
-    id: 2,
-    icon: <FaNoteSticky />,
-    label: "Notes",
-    link: "/app/extends/notes",
-  },
-  {
     id: 3,
     icon: <BsFillChatTextFill />,
     label: "Tiền sang chữ",

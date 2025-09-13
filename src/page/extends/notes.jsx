@@ -57,7 +57,7 @@ const Notes_records = () => {
         <div className="flex flex-col h-full bg-[white] w-[240px] shadow">
           {noteList?.map((n) => (
             <div
-              className="p-2 border-b border-[#d6d6d6] select-none text-[#999] cursor-pointer"
+              className="p-2 px-3 border-b border-[#d6d6d6] font-[500] select-none text-[#0f0f0f] cursor-pointer"
               key={n?.id}
               onClick={() => setNote(n)}
               onDoubleClick={() => setEditnote(n)}
