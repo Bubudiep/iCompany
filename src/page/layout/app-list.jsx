@@ -53,7 +53,7 @@ const menuItems = [
     link: "/app/companys",
   },
   {
-    id: 6,
+    id: 7,
     show: true,
     name: "Tài liệu",
     icon: user_pers,

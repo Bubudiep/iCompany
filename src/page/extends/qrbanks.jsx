@@ -122,39 +122,6 @@ const QR_banks = () => {
           </div>
           Tạo QR ngân hàng
         </div>
-        <div className="flex gap-2 ml-auto items-center">
-          <Tooltip
-            color="white"
-            title={
-              <div className="flex flex-col gap-1 text-[#000]">
-                <Button
-                  icon={<DownloadOutlined />}
-                  onClick={downloadSampleExcel}
-                  type="primary"
-                >
-                  Tải file mẫu
-                </Button>
-                <Upload
-                  beforeUpload={handleUpload}
-                  accept=".xlsx,.xls"
-                  className="flex gap-1"
-                  showUploadList={false}
-                >
-                  <Button icon={<UploadOutlined />}>Tải lên file Excel</Button>
-                </Upload>
-              </div>
-            }
-            trigger="click"
-          >
-            <div
-              className="text-[13px] border-1 p-2 border-[#999] rounded-[6px] px-3
-            text-[#999] cursor-pointer transition-all duration-300
-              hover:text-[#007dd1] hover:border-[#007dd1]"
-            >
-              Tạo hàng loạt
-            </div>
-          </Tooltip>
-        </div>
       </div>
       {multipleQR.length > 0 ? (
         <div className="flex flex-1 gap-2">
@@ -242,7 +209,7 @@ const QR_banks = () => {
           </div>
         </div>
       ) : (
-        <div className="flex bg-white  flex-1 gap-2 pt-2 justify-center items-start fadeInTop">
+        <div className="flex bg-white  flex-1 gap-2 pt-2 items-start fadeInTop">
           <div className="p-6 w-full max-w-[500px] space-y-6 ">
             <div className="grid grid-cols-1 gap-3">
               <div className="flex gap-1 items-center relative">
@@ -325,8 +292,44 @@ const QR_banks = () => {
                 onChange={(e) => setComment(app.removeSpecial(e.target.value))}
               />
             </div>
+            <div className="border-b border-[#0003]"></div>
+            <div className="flex gap-2 ml-auto items-center">
+              <Tooltip
+                color="white"
+                title={
+                  <div className="flex flex-col gap-1 text-[#000]">
+                    <Button
+                      icon={<DownloadOutlined />}
+                      onClick={downloadSampleExcel}
+                      type="primary"
+                    >
+                      Tải file mẫu
+                    </Button>
+                    <Upload
+                      beforeUpload={handleUpload}
+                      accept=".xlsx,.xls"
+                      className="flex gap-1"
+                      showUploadList={false}
+                    >
+                      <Button icon={<UploadOutlined />}>
+                        Tải lên file Excel
+                      </Button>
+                    </Upload>
+                  </div>
+                }
+                trigger="click"
+              >
+                <div
+                  className="text-[13px] border-1 p-2 border-[#007dd1] rounded-[6px] px-3
+                text-[#fff] bg-[#007dd1] cursor-pointer transition-all duration-300
+                hover:text-[#fff] hover:border-[#0066aa] hover:bg-[#0066aa]"
+                >
+                  Tạo hàng loạt
+                </div>
+              </Tooltip>
+            </div>
           </div>
-          <div className="flex w-[300px] p-4 h-full border-l border-l-[#0001] items-baseline">
+          <div className="flex pl-20 p-4 h-full border-l border-l-[#0001] items-baseline">
             <div className="flex flex-col flex-1 items-center justify-center">
               {accountNumber && amount && bankCode && comment ? (
                 <>
