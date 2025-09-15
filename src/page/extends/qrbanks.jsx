@@ -73,6 +73,10 @@ const QR_banks = () => {
   };
   useEffect(() => {
     const handleKeyDown = (e) => {
+      const tag = e.target.tagName.toLowerCase();
+      const isEditable = e.target.isContentEditable;
+      if (tag === "input" || tag === "textarea" || isEditable) return;
+      if (seletedQR?.done) return;
       if (e.code === "Space" || e.key === " ") {
         e.preventDefault(); // Ngăn cuộn trang
 
@@ -117,39 +121,6 @@ const QR_banks = () => {
             <FaQrcode />
           </div>
           Tạo QR ngân hàng
-        </div>
-        <div className="flex gap-2 ml-auto items-center">
-          <Tooltip
-            color="white"
-            title={
-              <div className="flex flex-col gap-1 text-[#000]">
-                <Button
-                  icon={<DownloadOutlined />}
-                  onClick={downloadSampleExcel}
-                  type="primary"
-                >
-                  Tải file mẫu
-                </Button>
-                <Upload
-                  beforeUpload={handleUpload}
-                  accept=".xlsx,.xls"
-                  className="flex gap-1"
-                  showUploadList={false}
-                >
-                  <Button icon={<UploadOutlined />}>Tải lên file Excel</Button>
-                </Upload>
-              </div>
-            }
-            trigger="click"
-          >
-            <div
-              className="text-[13px] border-1 p-2 border-[#999] rounded-[6px] px-3
-            text-[#999] cursor-pointer transition-all duration-300
-              hover:text-[#007dd1] hover:border-[#007dd1]"
-            >
-              Tạo hàng loạt
-            </div>
-          </Tooltip>
         </div>
       </div>
       {multipleQR.length > 0 ? (
@@ -226,6 +197,11 @@ const QR_banks = () => {
                   comment={seletedQR["Nội dung"]}
                   className="flex flex-1 mr-2"
                 />
+                {!seletedQR?.done && (
+                  <div className="text-center mt-2 text-[18px] text-[#929cb4] italic">
+                    Bấm dấu cách để đánh dấu là đã xong!
+                  </div>
+                )}
               </div>
             ) : (
               <Empty description="Chọn một" />
@@ -233,11 +209,40 @@ const QR_banks = () => {
           </div>
         </div>
       ) : (
-        <div className="flex flex-1 p-2 justify-center items-start fadeInTop">
-          <div className="bg-white rounded-xl shadow-md p-6 w-full max-w-[800px] space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex flex-col gap-1">
-                <label className="font-medium text-gray-700">
+        <div className="flex bg-white  flex-1 gap-2 pt-2 items-start fadeInTop">
+          <div className="p-6 w-full max-w-[500px] space-y-6 ">
+            <div className="grid grid-cols-1 gap-3">
+              <div className="flex gap-1 items-center relative">
+                <label className="font-medium w-36 text-gray-700">
+                  Ngân hàng
+                </label>
+                <div className="flex w-[calc(100%_-_110px)]">
+                  <Select
+                    placeholder="Chọn ngân hàng"
+                    options={user?.banks?.data?.map((i) => ({
+                      value: i.bin,
+                      label: (
+                        <div className="flex items-center gap-2">
+                          <img src={i.logo} className="h-4" />[{i.code}]{" "}
+                          {i.shortName} - {i.name}
+                        </div>
+                      ),
+                      search: `${i.code} ${i.shortName} ${i.name}`,
+                    }))}
+                    className="!w-full"
+                    showSearch
+                    value={bankCode}
+                    onChange={(val) => setBankCode(val)}
+                    filterOption={(input, option) =>
+                      (option?.search ?? "")
+                        .toLowerCase()
+                        .includes(input.toLowerCase())
+                    }
+                  />
+                </div>
+              </div>
+              <div className="flex gap-1 items-center">
+                <label className="font-medium w-36 text-gray-700">
                   Chủ tài khoản
                 </label>
                 <Input
@@ -248,8 +253,8 @@ const QR_banks = () => {
                   }}
                 />
               </div>
-              <div className="flex flex-col gap-1">
-                <label className="font-medium text-gray-700">
+              <div className="flex gap-1 items-center">
+                <label className="font-medium w-36 text-gray-700">
                   Số tài khoản
                 </label>
                 <Input
@@ -258,8 +263,10 @@ const QR_banks = () => {
                   onChange={(e) => setAccountNumber(e.target.value)}
                 />
               </div>
-              <div className="flex flex-col gap-1">
-                <label className="font-medium text-gray-700">Số tiền</label>
+              <div className="flex gap-1 items-center">
+                <label className="!font-[500] text-gray-700 w-36">
+                  Số tiền
+                </label>
                 <InputNumber
                   placeholder="Nhập số tiền"
                   suffix="VNĐ"
@@ -274,34 +281,10 @@ const QR_banks = () => {
                   onChange={(val) => setAmount(val)}
                 />
               </div>
-              <div className="flex flex-col gap-1">
-                <label className="font-medium text-gray-700">Ngân hàng</label>
-                <Select
-                  placeholder="Chọn ngân hàng"
-                  options={user?.banks?.data?.map((i) => ({
-                    value: i.bin,
-                    label: (
-                      <div className="flex items-center gap-2 py-0.5">
-                        <img src={i.logo} className="h-4" />[{i.code}]{" "}
-                        {i.shortName} - {i.name}
-                      </div>
-                    ),
-                    search: `${i.code} ${i.shortName} ${i.name}`,
-                  }))}
-                  showSearch
-                  value={bankCode}
-                  onChange={(val) => setBankCode(val)}
-                  filterOption={(input, option) =>
-                    (option?.search ?? "")
-                      .toLowerCase()
-                      .includes(input.toLowerCase())
-                  }
-                />
-              </div>
             </div>
-            <div className="flex flex-col gap-1">
-              <label className="font-medium text-gray-700">
-                Nội dung chuyển khoản
+            <div className="flex gap-1 items-center">
+              <label className="font-medium text-gray-700 w-36">
+                Nội dung CK
               </label>
               <Input
                 placeholder="Nhập nội dung chuyển khoản"
@@ -309,7 +292,45 @@ const QR_banks = () => {
                 onChange={(e) => setComment(app.removeSpecial(e.target.value))}
               />
             </div>
-            <div className="flex flex-col items-center justify-center">
+            <div className="border-b border-[#0003]"></div>
+            <div className="flex gap-2 ml-auto items-center">
+              <Tooltip
+                color="white"
+                title={
+                  <div className="flex flex-col gap-1 text-[#000]">
+                    <Button
+                      icon={<DownloadOutlined />}
+                      onClick={downloadSampleExcel}
+                      type="primary"
+                    >
+                      Tải file mẫu
+                    </Button>
+                    <Upload
+                      beforeUpload={handleUpload}
+                      accept=".xlsx,.xls"
+                      className="flex gap-1"
+                      showUploadList={false}
+                    >
+                      <Button icon={<UploadOutlined />}>
+                        Tải lên file Excel
+                      </Button>
+                    </Upload>
+                  </div>
+                }
+                trigger="click"
+              >
+                <div
+                  className="text-[13px] border-1 p-2 border-[#007dd1] rounded-[6px] px-3
+                text-[#fff] bg-[#007dd1] cursor-pointer transition-all duration-300
+                hover:text-[#fff] hover:border-[#0066aa] hover:bg-[#0066aa]"
+                >
+                  Tạo hàng loạt
+                </div>
+              </Tooltip>
+            </div>
+          </div>
+          <div className="flex pl-20 p-4 h-full border-l border-l-[#0001] items-baseline">
+            <div className="flex flex-col flex-1 items-center justify-center">
               {accountNumber && amount && bankCode && comment ? (
                 <>
                   <div className="text-[#5f5f5f]">
@@ -342,7 +363,20 @@ const QR_banks = () => {
                   </div>
                 </>
               ) : (
-                <Empty description="Chưa nhập đủ thông tin" />
+                <div className="flex flex-col mt-12">
+                  <QrCodeComponent
+                    width={180}
+                    height={180}
+                    color="#0003"
+                    data={
+                      location.href +
+                      "/?share=true&data=true&from=qr_bank_function&blankk=false&data=null&user=1"
+                    }
+                  />
+                  <div className="text-center text-[#0003] font-[500]">
+                    Chưa có tông tin!
+                  </div>
+                </div>
               )}
             </div>
           </div>

@@ -20,34 +20,10 @@ const Operators_layout = () => {
       link: "/app/operators/all",
     },
     {
-      id: "hour",
-      label: "Báo cáo giờ làm việc",
-      icon: <RiHourglass2Fill />,
-      link: "/app/operators/work_hour",
-    },
-    {
       id: "add",
       label: "Thêm người lao động",
       icon: <BsPersonFillAdd />,
       link: "/app/operators/add",
-    },
-    {
-      id: "his",
-      label: "Cập nhập lịch sử đi làm",
-      icon: <FaUserClock />,
-      link: "/app/operators/work_history",
-    },
-    {
-      id: "work",
-      label: "Báo cáo đi làm",
-      icon: <FaUserCheck />,
-      link: "/app/operators/work_report",
-    },
-    {
-      id: "off",
-      label: "Báo cáo nghỉ làm",
-      icon: <FaUserTimes />,
-      link: "/app/operators/work_off",
     },
   ];
   const location = useLocation();
