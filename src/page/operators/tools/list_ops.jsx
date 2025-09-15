@@ -100,10 +100,17 @@ const List_operators = () => {
       const all_name = item?.work?.reduce((sum, a) => sum + a?.ho_ten, "");
       const textMatch = api
         .removeVietnameseTones(
-          `${item?.so_cccd}${item?.ho_ten}${item?.ma_nhanvien}${all_name}`
+          `${item?.so_cccd}${item?.ho_ten}${item?.ma_nhanvien}${all_name}`.replaceAll(
+            " ",
+            ""
+          )
         )
         .toLowerCase()
-        .includes(api.removeVietnameseTones(filterText.toLowerCase()));
+        .includes(
+          api
+            .removeVietnameseTones(filterText.toLowerCase())
+            .replaceAll(" ", "")
+        );
       const workingFilter =
         filterOption.working === 0
           ? true
