@@ -319,8 +319,15 @@ function numberToVietnameseText(number) {
 
   return result;
 }
-
+const removeVietnameseTones = (str) => {
+  return str
+    .normalize("NFD") // tách dấu ra
+    .replace(/[\u0300-\u036f]/g, "") // xóa dấu
+    .replace(/đ/g, "d")
+    .replace(/Đ/g, "D");
+};
 export default {
+  removeVietnameseTones,
   numberToVietnameseText,
   mapBreadcrumb,
   error,

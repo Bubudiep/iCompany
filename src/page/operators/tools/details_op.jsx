@@ -7,7 +7,7 @@ import {
   FaTrash,
   FaUser,
 } from "react-icons/fa";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import api from "../../../components/api";
 import { useUser } from "../../../components/context/userContext";
 import {
@@ -45,6 +45,7 @@ import Vendor_view from "../../../components/by_id/vendor_view";
 import { SiSpinrilla } from "react-icons/si";
 
 const Details_op = () => {
+  const location = useLocation();
   const [loading, setLoading] = useState(true);
   const { user } = useUser();
   const [op, setOp] = useState({});
@@ -139,7 +140,11 @@ const Details_op = () => {
               <div className="flex gap-2 flex-1 items-start overflow-hidden">
                 <div className="flex flex-col w-[240px] min-w-[240px] gap-2">
                   <div
-                    onClick={() => navigate(-1)}
+                    onClick={() =>
+                      navigate("/app/operators/all", {
+                        state: location.state,
+                      })
+                    }
                     className="whitebox back-btn"
                   >
                     <FaArrowLeft />

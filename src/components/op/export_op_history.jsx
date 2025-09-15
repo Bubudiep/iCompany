@@ -270,7 +270,6 @@ const Export_op_history = ({ children, className }) => {
       >
         {children}
       </div>
-
       <Modal
         open={visible}
         onCancel={() => setVisible(false)}

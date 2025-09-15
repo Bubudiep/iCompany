@@ -1,5 +1,5 @@
 import { Button, Select, Table, Tooltip, message } from "antd";
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useMemo, useCallback, memo } from "react";
 import api from "../../../components/api";
 import { useUser } from "../../../components/context/userContext";
 import Customer_view from "../../../components/by_id/customer_view";
@@ -14,6 +14,7 @@ import Export_op_history from "../../../components/op/export_op_history";
 import Vendor_view from "../../../components/by_id/vendor_view";
 import { debounce } from "lodash";
 import OP_Avatar from "./op_avatar";
+import { FaTrash } from "react-icons/fa";
 
 const List_operators = () => {
   const [filterText, setFilterText] = useState("");
@@ -94,9 +95,12 @@ const List_operators = () => {
   const filteredData = useMemo(() => {
     return data.filter((item) => {
       const all_name = item?.work?.reduce((sum, a) => sum + a?.ho_ten, "");
-      const textMatch = `${item?.ho_ten}${item?.ma_nhanvien}${all_name}`
+      const textMatch = api
+        .removeVietnameseTones(
+          `${item?.so_cccd}${item?.ho_ten}${item?.ma_nhanvien}${all_name}`
+        )
         .toLowerCase()
-        .includes(filterText.toLowerCase());
+        .includes(api.removeVietnameseTones(filterText.toLowerCase()));
       const workingFilter =
         filterOption.working === 0
           ? true
@@ -212,6 +216,15 @@ const List_operators = () => {
                 </div>
               ) : (
                 record.ma_nhanvien
+              )}
+              {record.is_deleted && (
+                <div
+                  className="flex gap-1 items-center absolute text-[13px] bg-[red] px-2 p-1 text-[#fff] 
+                  font-[500] rounded-[8px] right-0"
+                >
+                  <FaTrash />
+                  Đã bị xóa
+                </div>
               )}
             </div>
             <div className="flex text-[13px] text-[#5f5f5f]">
@@ -398,4 +411,4 @@ const List_operators = () => {
   );
 };
 
-export default List_operators;
+export default memo(List_operators);
