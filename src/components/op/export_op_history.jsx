@@ -257,7 +257,7 @@ const Export_op_history = ({ children, className }) => {
     }
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "History");
-    XLSX.writeFile(wb, "op_history.xlsx");
+    XLSX.writeFile(wb, `op_history_${dayjs().format("MM_DD_HHmm")}.xlsx`);
     setVisible(false);
   };
 
