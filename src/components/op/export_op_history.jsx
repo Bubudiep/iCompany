@@ -34,6 +34,7 @@ const Export_op_history = ({ children, className }) => {
     tinhtrang: "Tình trạng",
     thamnien: "Tổng thâm niên cũ",
     thamniencu: "Thâm niên hiện tại",
+    ghichu: "Ghi chú",
   };
   const handleExportHistory = async () => {
     setVisible(true);
