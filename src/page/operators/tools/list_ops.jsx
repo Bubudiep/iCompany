@@ -1,4 +1,4 @@
-import { Button, Select, Table, Tooltip, message } from "antd";
+import { Button, Modal, Select, Table, Tooltip, message } from "antd";
 import React, { useEffect, useState, useMemo, useCallback, memo } from "react";
 import api from "../../../components/api";
 import { useUser } from "../../../components/context/userContext";
@@ -424,6 +424,23 @@ const List_operators = () => {
               })),
             ]}
           />
+          <div
+            className="flex items-center border p-2 rounded-[4px] border-[#d3d3d3] text-[#999]
+            hover:text-[#000] transition-all duration-300 cursor-pointer"
+            onClick={() => {
+              Modal.confirm({
+                title:
+                  "Quá trình này sẽ đồng bộ lại toàn bộ dữ liệu người lại động, sẽ mất 1-2 phút thời gian",
+                okText: "Xác nhận",
+                cancelText: "Đóng",
+                onOk: () => {
+                  fetchData({}, null, true);
+                },
+              });
+            }}
+          >
+            Tái đồng bộ
+          </div>
           <Export_op_history className="ml-auto">
             <div className="flex ml-auto items-center p-2 bg-[#007add] text-[white] px-4 rounded-[8px] gap-2 cursor-pointer select-none">
               <PiMicrosoftExcelLogoFill size={20} />
