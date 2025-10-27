@@ -71,7 +71,7 @@ const List_operators = () => {
     let timer = setTimeout(() => setShowLoading(true), 500);
     api
       .get(
-        `/ops/?page_size=10${
+        `/ops/?page_size=100${
           max_update?.updated_at ? `&max_update=${max_update.id}` : ""
         }`,
         user.token
