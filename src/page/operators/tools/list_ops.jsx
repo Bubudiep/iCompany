@@ -41,11 +41,37 @@ const List_operators = () => {
   );
   const navigate = useNavigate();
   // Giữ nguyên api.get đệ quy như bạn yêu cầu
+  const checknext = (link) => {
+    if (link) {
+      api
+        .get(link, user?.token)
+        .then((res) => {
+          setData((old) => {
+            const oldMap = new Map(old.map((item) => [item.id, item]));
+            res.results.forEach((newItem) => {
+              oldMap.set(newItem.id, newItem); // nếu đã có thì ghi đè (update), nếu chưa thì thêm mới
+            });
+            const maped = Array.from(oldMap.values());
+            localStorage.setItem("list_operator_id", JSON.stringify(user?.id));
+            localStorage.setItem("list_operator", JSON.stringify(maped));
+            return maped;
+          });
+          checknext(res?.next);
+        })
+        .catch(() => {
+          message.error("Lỗi tải dữ liệu");
+        })
+        .finally(() => {
+          setLoading(false);
+          setShowLoading(false);
+        });
+    }
+  };
   const fetchData = (params = {}, max_update, replace = true) => {
     let timer = setTimeout(() => setShowLoading(true), 500);
     api
       .get(
-        `/ops/?page_size=99999${
+        `/ops/?page_size=10${
           max_update?.updated_at ? `&max_update=${max_update.id}` : ""
         }`,
         user.token
@@ -61,6 +87,7 @@ const List_operators = () => {
           localStorage.setItem("list_operator", JSON.stringify(maped));
           return maped;
         });
+        checknext(res?.next);
       })
       .catch(() => {
         message.error("Lỗi tải dữ liệu");
