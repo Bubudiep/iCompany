@@ -27,6 +27,7 @@ const operatorStore = localforage.createInstance({
 const List_operators = () => {
   const { op_id } = useParams();
   const nav = useNavigate();
+  const { user } = useUser();
   const [filterText, setFilterText] = useState("");
   const [loading, setLoading] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
@@ -91,7 +92,7 @@ const List_operators = () => {
     api
       .get(
         `/ops/?page_size=100${
-          max_update?.updated_at ? `&max_update=${max_update.updated_at}` : "" // Giả định API dùng updated_at
+          max_update?.updated_at ? `&max_update=${max_update.id}` : "" // Giả định API dùng updated_at
         }`,
         user.token
       )
@@ -134,12 +135,9 @@ const List_operators = () => {
         if (storedUserId === user?.id && Array.isArray(storedData)) {
           initialData = storedData;
           setData(initialData); // Cập nhật state với dữ liệu đã lưu
-
           if (initialData.length > 0) {
             maxUpdateItem = initialData.reduce((max, item) => {
-              return new Date(item.updated_at) > new Date(max.updated_at)
-                ? item
-                : max;
+              return item.updated_at ? item : max;
             });
           }
         } else {
@@ -151,7 +149,6 @@ const List_operators = () => {
         console.error("Lỗi khi tải dữ liệu từ IndexedDB:", error);
         message.warning("Không thể tải dữ liệu cũ, đang tải dữ liệu mới.");
       }
-
       // Luôn gọi fetchData để cập nhật dữ liệu mới nhất
       fetchData({}, maxUpdateItem);
     };
