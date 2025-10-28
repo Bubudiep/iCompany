@@ -16,6 +16,13 @@ import { debounce } from "lodash";
 import OP_Avatar from "./op_avatar";
 import { FaTrash } from "react-icons/fa";
 import Details_operator from "./details_operator.";
+import localforage from "localforage"; // 👈 Thêm localforage
+
+// Khởi tạo IndexedDB instance cho danh sách nhân viên
+const operatorStore = localforage.createInstance({
+  name: "OperatorDatabase",
+  storeName: "operatorListStore",
+});
 
 const List_operators = () => {
   const { op_id } = useParams();
@@ -28,32 +35,43 @@ const List_operators = () => {
     company: 0,
     nguoituyen: 0,
   });
-  const [pagination, setPagination] = useState({
-    total: 0,
-  });
-  const { user } = useUser();
-  const [data, setData] = useState(
-    localStorage.getItem("list_operator_id") == user?.id
-      ? localStorage.getItem("list_operator")?.includes("[")
-        ? JSON.parse(localStorage.getItem("list_operator"))
-        : []
-      : []
-  );
+  const [data, setData] = useState([]); // Bắt đầu với mảng rỗng
   const navigate = useNavigate();
-  // Giữ nguyên api.get đệ quy như bạn yêu cầu
+
+  /**
+   * Hàm lưu dữ liệu vào IndexedDB
+   * @param {Array} dataToSave Dữ liệu mảng nhân viên
+   * @param {number} userId ID người dùng hiện tại
+   */
+  const updateIndexedDB = async (dataToSave, userId) => {
+    try {
+      await operatorStore.setItem("list_operator_id", userId);
+      await operatorStore.setItem("list_operator", dataToSave);
+    } catch (e) {
+      console.error("Lỗi khi lưu vào IndexedDB:", e);
+      message.error(
+        "Lỗi lưu trữ cục bộ. Vui lòng kiểm tra dung lượng trình duyệt."
+      );
+    }
+  };
+
+  // Giữ nguyên api.get đệ quy, nhưng sử dụng async/await và localforage
   const checknext = (link) => {
     if (link) {
       api
         .get(link?.replace("http:", "https:"), user?.token)
-        .then((res) => {
+        .then(async (res) => {
+          // 👈 Thêm async
           setData((old) => {
             const oldMap = new Map(old.map((item) => [item.id, item]));
             res.results.forEach((newItem) => {
               oldMap.set(newItem.id, newItem); // nếu đã có thì ghi đè (update), nếu chưa thì thêm mới
             });
             const maped = Array.from(oldMap.values());
-            localStorage.setItem("list_operator_id", JSON.stringify(user?.id));
-            localStorage.setItem("list_operator", JSON.stringify(maped));
+
+            // 👈 Thay thế localStorage.setItem
+            updateIndexedDB(maped, user?.id);
+
             return maped;
           });
           checknext(res?.next);
@@ -67,24 +85,28 @@ const List_operators = () => {
         });
     }
   };
+
   const fetchData = (params = {}, max_update, replace = true) => {
     let timer = setTimeout(() => setShowLoading(true), 500);
     api
       .get(
         `/ops/?page_size=100${
-          max_update?.updated_at ? `&max_update=${max_update.id}` : ""
+          max_update?.updated_at ? `&max_update=${max_update.updated_at}` : "" // Giả định API dùng updated_at
         }`,
         user.token
       )
-      .then((res) => {
+      .then(async (res) => {
+        // 👈 Thêm async
         setData((old) => {
           const oldMap = new Map(old.map((item) => [item.id, item]));
           res.results.forEach((newItem) => {
             oldMap.set(newItem.id, newItem); // nếu đã có thì ghi đè (update), nếu chưa thì thêm mới
           });
           const maped = Array.from(oldMap.values());
-          localStorage.setItem("list_operator_id", JSON.stringify(user?.id));
-          localStorage.setItem("list_operator", JSON.stringify(maped));
+
+          // 👈 Thay thế localStorage.setItem
+          updateIndexedDB(maped, user?.id);
+
           return maped;
         });
         checknext(res?.next);
@@ -99,17 +121,43 @@ const List_operators = () => {
       });
   };
 
+  // 👈 LOGIC TẢI DỮ LIỆU BAN ĐẦU VỚI IndexedDB
   useEffect(() => {
-    fetchData(
-      {},
-      data?.length > 0 &&
-        data?.reduce((max, item) => {
-          return new Date(item.updated_at) > new Date(max.updated_at)
-            ? item
-            : max;
-        })
-    );
-  }, []);
+    const loadInitialDataAndFetch = async () => {
+      let initialData = [];
+      let maxUpdateItem = null;
+
+      try {
+        const storedUserId = await operatorStore.getItem("list_operator_id");
+        const storedData = await operatorStore.getItem("list_operator");
+
+        if (storedUserId === user?.id && Array.isArray(storedData)) {
+          initialData = storedData;
+          setData(initialData); // Cập nhật state với dữ liệu đã lưu
+
+          if (initialData.length > 0) {
+            maxUpdateItem = initialData.reduce((max, item) => {
+              return new Date(item.updated_at) > new Date(max.updated_at)
+                ? item
+                : max;
+            });
+          }
+        } else {
+          // Nếu user khác hoặc không có data, xóa data cũ
+          await operatorStore.removeItem("list_operator_id");
+          await operatorStore.removeItem("list_operator");
+        }
+      } catch (error) {
+        console.error("Lỗi khi tải dữ liệu từ IndexedDB:", error);
+        message.warning("Không thể tải dữ liệu cũ, đang tải dữ liệu mới.");
+      }
+
+      // Luôn gọi fetchData để cập nhật dữ liệu mới nhất
+      fetchData({}, maxUpdateItem);
+    };
+
+    loadInitialDataAndFetch();
+  }, []); // Chỉ chạy 1 lần khi mount
 
   // Debounce input tìm kiếm
   const debouncedSetFilterText = useMemo(
@@ -426,14 +474,18 @@ const List_operators = () => {
           />
           <div
             className="flex items-center border p-2 rounded-[4px] border-[#d3d3d3] text-[#999]
-            hover:text-[#000] transition-all duration-300 cursor-pointer"
+              hover:text-[#000] transition-all duration-300 cursor-pointer"
             onClick={() => {
               Modal.confirm({
                 title:
                   "Quá trình này sẽ đồng bộ lại toàn bộ dữ liệu người lại động, sẽ mất 1-2 phút thời gian",
                 okText: "Xác nhận",
                 cancelText: "Đóng",
-                onOk: () => {
+                onOk: async () => {
+                  // 👈 Thêm async và dùng localforage
+                  await operatorStore.removeItem("list_operator_id");
+                  await operatorStore.removeItem("list_operator");
+                  setData([]); // Xóa dữ liệu cũ trên giao diện
                   fetchData({}, null, true);
                 },
               });

@@ -20,6 +20,7 @@
     "emoji-picker-react": "^4.12.2",
     "jodit-react": "^5.2.19",
     "jsqr": "^1.4.0",
+    "localforage": "^1.10.0",
     "lodash": "^4.17.21",
     "qr-code-styling": "^1.9.2",
     "react": "^18.3.1",
