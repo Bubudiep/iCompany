@@ -44,7 +44,7 @@ const List_operators = () => {
   const checknext = (link) => {
     if (link) {
       api
-        .get(link, user?.token)
+        .get(link?.replace("http:", "https:"), user?.token)
         .then((res) => {
           setData((old) => {
             const oldMap = new Map(old.map((item) => [item.id, item]));

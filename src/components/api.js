@@ -82,7 +82,7 @@ export const debounceGet = (url, token, delay = DEFAULT_DELAY) => {
       const controller = new AbortController();
       abortControllers[url] = controller;
       try {
-        const response = await api.get(url?.replace("http:", "https:"), {
+        const response = await api.get(url, {
           signal: controller.signal,
           headers: buildHeaders(token),
         });
