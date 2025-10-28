@@ -1,4 +1,4 @@
-import { Button, Modal, Select, Table, Tooltip, message } from "antd";
+import { Button, Modal, Select, Spin, Table, Tooltip, message } from "antd";
 import React, { useEffect, useState, useMemo, useCallback, memo } from "react";
 import api from "../../../components/api";
 import { useUser } from "../../../components/context/userContext";
@@ -28,6 +28,7 @@ const List_operators = () => {
   const { op_id } = useParams();
   const nav = useNavigate();
   const { user } = useUser();
+  const [initting, setInitting] = useState(false);
   const [filterText, setFilterText] = useState("");
   const [loading, setLoading] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
@@ -84,6 +85,8 @@ const List_operators = () => {
           setLoading(false);
           setShowLoading(false);
         });
+    } else {
+      setInitting(false);
     }
   };
 
@@ -405,7 +408,16 @@ const List_operators = () => {
   ];
 
   return (
-    <div className="fadeInTop flex flex-col flex-1 overflow-hidden min-w-[800px]">
+    <div className="fadeInTop flex flex-col flex-1 overflow-hidden min-w-[800px] relative">
+      {initting && (
+        <div className="fixed w-full top-0 left-0 h-full bg-[#fff2] backdrop-blur-[3px] z-[2000]">
+          <div className="flex flex-1 h-full items-center flex-col justify-center">
+            <div className="flex flex-col items-center justify-center bg-[white] p-12 shadow rounded-[8px]">
+              <Spin size="large" /> Đang tái đồng bộ, vui lòng không thoát!
+            </div>
+          </div>
+        </div>
+      )}
       <div className="flex gap-2 items-center min-h-[54px] bg-white overflow-hidden border-b-1 border-[#0003]">
         <div className="search !p-1">
           <div className="searchbox">
@@ -482,6 +494,7 @@ const List_operators = () => {
                   // 👈 Thêm async và dùng localforage
                   await operatorStore.removeItem("list_operator_id");
                   await operatorStore.removeItem("list_operator");
+                  setInitting(true);
                   setData([]); // Xóa dữ liệu cũ trên giao diện
                   fetchData({}, null, true);
                 },
