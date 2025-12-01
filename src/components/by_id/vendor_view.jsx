@@ -26,7 +26,7 @@ const Vendor_view = ({ id, working, className, children }) => {
               )}
             </div>
             <div className="mt-1">{customer?.name || "Chưa cập nhập"}</div>
-            <div>{customer?.fullname || "Chưa cập nhập"}</div>
+            <div>{customer?.name || "Chưa cập nhập"}</div>
           </div>
           <Descriptions column={1} className="card-format">
             {working?.ma_nhanvien && (
