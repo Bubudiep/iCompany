@@ -105,48 +105,52 @@ const Operator_news = () => {
             .filter(
               (row) => row["Họ tên"] !== "" && row["Họ tên"] !== "Hướng dẫn"
             )
-            .map((row) => ({
-              avatar: null,
-              cccd_img: null,
-              fullname: row["Họ tên"] || null,
-              phone: row["Số điện thoại"] || null,
-              sex: row["Giới tính"] || null,
-              cardid: row["Số CCCD"] || null,
-              birthday:
-                dayjs(
-                  row["Ngày sinh"].includes("-")
-                    ? row["Ngày sinh"]
-                    : app.excelDateToJSDate(row["Ngày sinh"])
-                ).format("YYYY-MM-DD") || null,
-              address: row["Địa chỉ"] || null,
-              bank_code: row["Mã ngân hàng"] || null,
-              bank_number: row["Số tài khoản"] || null,
-              bank_name: row["Chủ tài khoản"] || null,
-              staff:
-                user?.company?.Staff?.find(
-                  (staff) => staff.cardID === row["Người tuyển"]
-                )?.id || null,
-              vendor:
-                user?.company?.Vendor?.find((cpm) => cpm.name === row["Vendor"])
-                  ?.id || null,
-              nhachinh:
-                user?.company?.Vendor?.find(
-                  (cpm) => cpm.name === row["Nhà chính"]
-                )?.id || null,
-              work_date:
-                dayjs(
-                  row["Ngày vào làm"].includes("-")
-                    ? row["Ngày vào làm"]
-                    : app.excelDateToJSDate(row["Ngày vào làm"])
-                ).format("YYYY-MM-DD") || null,
-              customer:
-                user?.company?.Customer?.find(
-                  (cpm) =>
-                    cpm.name.toLowerCase() ===
-                    row["Công ty vào làm"].toLowerCase()
-                )?.id || null,
-              work_code: row["Mã nhân viên"] || null,
-            }));
+            .map((row) => {
+              console.log(row);
+              return {
+                avatar: null,
+                cccd_img: null,
+                fullname: row["Họ tên"] || null,
+                phone: row["Số điện thoại"] || null,
+                sex: row["Giới tính"] || null,
+                cardid: row["Số CCCD"] || null,
+                birthday:
+                  dayjs(
+                    `${row?.["Ngày sinh"]}`?.includes("-")
+                      ? row?.["Ngày sinh"]
+                      : app.excelDateToJSDate(row["Ngày sinh"])
+                  ).format("YYYY-MM-DD") || null,
+                address: row["Địa chỉ"] || null,
+                bank_code: row["Mã ngân hàng"] || null,
+                bank_number: row["Số tài khoản"] || null,
+                bank_name: row["Chủ tài khoản"] || null,
+                staff:
+                  user?.company?.Staff?.find(
+                    (staff) => staff.cardID === row["Người tuyển"]
+                  )?.id || null,
+                vendor:
+                  user?.company?.Vendor?.find(
+                    (cpm) => cpm.name === row["Vendor"]
+                  )?.id || null,
+                nhachinh:
+                  user?.company?.Vendor?.find(
+                    (cpm) => cpm.name === row["Nhà chính"]
+                  )?.id || null,
+                work_date:
+                  dayjs(
+                    row["Ngày vào làm"].includes("-")
+                      ? row["Ngày vào làm"]
+                      : app.excelDateToJSDate(row["Ngày vào làm"])
+                  ).format("YYYY-MM-DD") || null,
+                customer:
+                  user?.company?.Customer?.find(
+                    (cpm) =>
+                      cpm.name.toLowerCase() ===
+                      row["Công ty vào làm"].toLowerCase()
+                  )?.id || null,
+                work_code: row["Mã nhân viên"] || null,
+              };
+            });
           setListUser((prev) => [...prev, ...newUsers]);
           e.target.value = "";
         } else {
