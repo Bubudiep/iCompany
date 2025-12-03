@@ -69,15 +69,15 @@ const LoginModal = ({ onClose }) => {
   return (
     <div className="login-modal">
       <div className="form mb-5 select-none drag">
-        {/* <div className="flex justify-center">
+        <div className="flex justify-center">
           <img src={hldjc} className="!w-[120px]" />
         </div>
         <div className="hint leading-4 mb-5 text-center font-[700] text-[24px] text-[#007e26]">
           HOÀNG LONG 2 DJC
-        </div> */}
-        <div className="flex justify-center">
-          <img src={hrpro} className="!w-[400px] -my-20" />
         </div>
+        {/* <div className="flex justify-center">
+          <img src={hrpro} className="!w-[400px] -my-20" />
+        </div> */}
         <div className="flex-column">
           <label>Tài khoản </label>
         </div>
