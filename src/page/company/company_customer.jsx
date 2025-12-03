@@ -1,6 +1,6 @@
 import { Button, Input, Modal, Form, message, Upload, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
-import { FaEdit, FaPlus } from "react-icons/fa";
+import { FaEdit, FaFileExcel, FaPlus } from "react-icons/fa";
 import { useOutletContext } from "react-router-dom";
 import api from "../../components/api";
 import { useUser } from "../../components/context/userContext";
@@ -59,6 +59,23 @@ const Company_customer = () => {
       .catch((e) => {
         console.log(e);
       });
+  };
+  const handleExport = () => {
+    const headers = [
+      ["name", "fullname", "email", "hotline", "address", "website"],
+      ...customers?.map((c) => [
+        c.name,
+        c.fullname,
+        c.email,
+        c.hotline,
+        c.address,
+        c.website,
+      ]),
+    ];
+    const worksheet = XLSX.utils.aoa_to_sheet(headers);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Customers");
+    XLSX.writeFile(workbook, "congty_khach_hang.xlsx");
   };
   const handleDownloadTemplate = () => {
     const headers = [
@@ -185,6 +202,13 @@ const Company_customer = () => {
               >
                 <Button icon={<UploadOutlined />}>Tải lên Excel</Button>
               </Upload>
+              <Button
+                type="primary"
+                onClick={handleExport}
+                icon={<FaFileExcel />}
+              >
+                Xuất dữ liệu
+              </Button>
               <Button
                 type="primary"
                 icon={<FaPlus />}

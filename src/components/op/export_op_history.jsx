@@ -100,7 +100,7 @@ const Export_op_history = ({ children, className }) => {
             const cust = user?.company?.Vendor?.find(
               (cp) => cp.id == item[key]
             );
-            result[fieldMap[key]] = cust?.fullname || "";
+            result[fieldMap[key]] = cust?.name || "";
           } else if (key === "h_customer") {
             const cust = user?.company?.Customer?.find(
               (cp) => cp.id == item[key]
