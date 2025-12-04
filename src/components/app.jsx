@@ -79,6 +79,58 @@ function resizeImage(img, maxSize, outputFormat = "image/jpeg", quality = 0.8) {
   ctx.drawImage(img, 0, 0, width, height);
   return canvas.toDataURL(outputFormat, quality);
 }
+function resizeImage2(
+  img,
+  maxSize,
+  outputFormat = "image/jpeg",
+  quality = 0.8
+) {
+  return new Promise((resolve, reject) => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    let width = img.width;
+    let height = img.height;
+
+    // Tính toán kích thước mới để đảm bảo cạnh dài nhất <= maxSize
+    if (width > maxSize || height > maxSize) {
+      if (width > height) {
+        height *= maxSize / width;
+        width = maxSize;
+      } else {
+        width *= maxSize / height;
+        height = maxSize;
+      }
+    }
+
+    // Đảm bảo kích thước là số nguyên (quan trọng cho canvas)
+    width = Math.round(width);
+    height = Math.round(height);
+
+    canvas.width = width;
+    canvas.height = height;
+
+    // Vẽ ảnh đã được thay đổi kích thước lên canvas
+    ctx.drawImage(img, 0, 0, width, height);
+
+    // Sử dụng toBlob để trả về Blob bất đồng bộ
+    canvas.toBlob(
+      (blob) => {
+        if (blob) {
+          resolve(blob);
+        } else {
+          // Xử lý lỗi nếu việc tạo Blob thất bại
+          reject(
+            new Error(
+              "Lỗi khi tạo Blob từ Canvas. Định dạng tệp có thể không được hỗ trợ."
+            )
+          );
+        }
+      },
+      outputFormat,
+      quality
+    );
+  });
+}
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
@@ -375,6 +427,7 @@ function excelDateToJSDate(serial) {
 }
 
 export default {
+  resizeImage2,
   beautifyName,
   excelDateToJSDate,
   TimeSinceText,

@@ -14,7 +14,7 @@ import Export_op_history from "../../../components/op/export_op_history";
 import Vendor_view from "../../../components/by_id/vendor_view";
 import { debounce } from "lodash";
 import OP_Avatar from "./op_avatar";
-import { FaTrash } from "react-icons/fa";
+import { FaTrash, FaUpload } from "react-icons/fa";
 import Details_operator from "./details_operator.";
 import localforage from "localforage"; // 👈 Thêm localforage
 
@@ -210,7 +210,12 @@ const List_operators = () => {
 
   const onRowClick = useCallback(
     (record) => ({
-      onClick: () => navigate(`/app/operators/all/${record.id}`),
+      onClick: (e) => {
+        if (e.target.className.includes("nonclick")) {
+          return;
+        }
+        navigate(`/app/operators/all/${record.id}`);
+      },
     }),
     [navigate]
   );
@@ -277,7 +282,21 @@ const List_operators = () => {
       `Danhsach_nguoilaodong_${dayjs().format("YYMMDDHHmmss")}.xlsx`
     );
   };
-
+  const handleUploadCCCD = async (e, t) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      const originalDataURL = event.target.result;
+      const img = new Image();
+      img.onload = async function () {
+        const newIMG = await app.resizeImage2(img, 720);
+        console.log(newIMG);
+      };
+      img.src = originalDataURL;
+    };
+    reader.readAsDataURL(file);
+    e.target.value = null;
+  };
   const columns = [
     {
       title: "Họ tên",
@@ -287,6 +306,41 @@ const List_operators = () => {
       render: (text, record) => (
         <div className="flex items-center">
           <OP_Avatar name={record.ho_ten} avatar={record.avatar} app={app} />
+          <div className="flex flex-col h-[64px] gap-1 ml-1">
+            <Tooltip title="Ảnh CCCD mặt trước">
+              <label className="nonclick flex flex-1 w-[60px] bg-[#dadada] rounded overflow-hidden">
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden nonclick"
+                />
+              </label>
+            </Tooltip>
+            <Tooltip
+              color="white"
+              title={
+                <div className="flex flex-col text-[#000]">
+                  <label>
+                    <div
+                      type="primary"
+                      className="nonclick cursor-pointer flex items-center justify-center gap-1"
+                    >
+                      <FaUpload />
+                      Thêm CCCD mặt sau
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleUploadCCCD(e, "sau")}
+                      className="hidden nonclick"
+                    />
+                  </label>
+                </div>
+              }
+            >
+              <div className="nonclick flex flex-1 w-[60px] bg-[#dadada] rounded overflow-hidden"></div>
+            </Tooltip>
+          </div>
           <div className="flex flex-col flex-1 w-[180px] ml-3">
             <div className="flex font-[500] text-[14px]">
               {record.ho_ten ? app.beautifyName(record.ho_ten) : "Chưa đặt tên"}
