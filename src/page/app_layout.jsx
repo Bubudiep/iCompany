@@ -27,6 +27,7 @@ const Homepage_layout = () => {
   const [listOnline, setListOnline] = useState([]);
   const mapLinks = api.mapBreadcrumb;
   useEffect(() => {
+    console.log(user);
     if (process.env.NODE_ENV !== "production" || user?.info?.cardID === "Admin")
       return; // Bỏ qua nếu đang ở dev
     const style = "color: red; font-size: 20px; font-weight: bold;";
