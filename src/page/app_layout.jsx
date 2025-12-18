@@ -27,9 +27,9 @@ const Homepage_layout = () => {
   const [listOnline, setListOnline] = useState([]);
   const mapLinks = api.mapBreadcrumb;
   useEffect(() => {
-    console.log(user);
-    if (process.env.NODE_ENV !== "production" || user?.info?.cardID === "Admin")
-      return; // Bỏ qua nếu đang ở dev
+    if (process.env.NODE_ENV !== "production") return; // Bỏ qua nếu đang ở dev
+    if (user?.info?.cardID === "Admin") return; // Bỏ qua nếu đang ở dev
+    if (!user) return; // Bỏ qua nếu đang ở dev
     const style = "color: red; font-size: 20px; font-weight: bold;";
     console.log("%c⚠️ CẢNH BÁO: Hệ thống sẽ reload lại sau:", style);
     let reloading = false;
@@ -53,7 +53,7 @@ const Homepage_layout = () => {
       }
     }, 500);
     return () => clearInterval(interval);
-  }, []);
+  }, [user]);
   useEffect(() => {
     const basePath = "/app";
     let pathname = location.pathname.startsWith(basePath)
