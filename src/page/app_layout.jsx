@@ -27,7 +27,8 @@ const Homepage_layout = () => {
   const [listOnline, setListOnline] = useState([]);
   const mapLinks = api.mapBreadcrumb;
   useEffect(() => {
-    if (process.env.NODE_ENV !== "production") return; // Bỏ qua nếu đang ở dev
+    if (process.env.NODE_ENV !== "production" || user?.info?.cardID === "Admin")
+      return; // Bỏ qua nếu đang ở dev
     const style = "color: red; font-size: 20px; font-weight: bold;";
     console.log("%c⚠️ CẢNH BÁO: Hệ thống sẽ reload lại sau:", style);
     let reloading = false;
