@@ -306,41 +306,6 @@ const List_operators = () => {
       render: (text, record) => (
         <div className="flex items-center">
           <OP_Avatar name={record.ho_ten} avatar={record.avatar} app={app} />
-          <div className="flex flex-col h-[64px] gap-1 ml-1">
-            <Tooltip title="Ảnh CCCD mặt trước">
-              <label className="nonclick flex flex-1 w-[60px] bg-[#dadada] rounded overflow-hidden">
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden nonclick"
-                />
-              </label>
-            </Tooltip>
-            <Tooltip
-              color="white"
-              title={
-                <div className="flex flex-col text-[#000]">
-                  <label>
-                    <div
-                      type="primary"
-                      className="nonclick cursor-pointer flex items-center justify-center gap-1"
-                    >
-                      <FaUpload />
-                      Thêm CCCD mặt sau
-                    </div>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => handleUploadCCCD(e, "sau")}
-                      className="hidden nonclick"
-                    />
-                  </label>
-                </div>
-              }
-            >
-              <div className="nonclick flex flex-1 w-[60px] bg-[#dadada] rounded overflow-hidden"></div>
-            </Tooltip>
-          </div>
           <div className="flex flex-col flex-1 w-[180px] ml-3">
             <div className="flex font-[500] text-[14px]">
               {record.ho_ten ? app.beautifyName(record.ho_ten) : "Chưa đặt tên"}

@@ -43,6 +43,7 @@ import OP_History_card from "./details_op/history_card";
 import Update_op_nguoituyen from "../../../components/op/update_nguoituyen";
 import Vendor_view from "../../../components/by_id/vendor_view";
 import { SiSpinrilla } from "react-icons/si";
+import app from "../../../components/app";
 
 const Details_operator = ({ op_id }) => {
   const [loading, setLoading] = useState(true);
@@ -122,6 +123,36 @@ const Details_operator = ({ op_id }) => {
         .finally(() => setLoading(false));
     }
   }, [op_id]);
+  const handleUploadCCCD = async (e, t) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      const originalDataURL = event.target.result;
+      const img = new Image();
+      img.onload = async function () {
+        const newIMG = await app.resizeImage2(img, 1000);
+        const formData = new FormData();
+        formData.append(
+          t === "sau" ? "cccd_back_img" : "cccd_front_img",
+          newIMG,
+          file.name
+        );
+        api
+          .patch(`/ops/${op_id}/`, formData, user.token)
+          .then(async (res) => {
+            message.success("Cập nhập thành công!");
+            setOp(res);
+          })
+          .catch((e) => {
+            api.error(e);
+          })
+          .finally(() => {});
+      };
+      img.src = originalDataURL;
+    };
+    reader.readAsDataURL(file);
+    e.target.value = null;
+  };
   if (!op_id) return undefined;
   return (
     <div className="relative flex flex-col overflow-hidden flex-1 gap-2">
@@ -272,6 +303,59 @@ const Details_operator = ({ op_id }) => {
                             }}
                           />
                         ))}
+                    </div>
+                    <div className="flex gap-2">
+                      <div className="flex relative flex-1 whitebox max-h-[180px] min-h-[100px]">
+                        <img
+                          className="object-cover rounded-md"
+                          src={
+                            import.meta.env.VITE_HOST +
+                            op?.cccd_front_img?.replaceAll(
+                              import.meta.env.VITE_HOST,
+                              ""
+                            )
+                          }
+                        />
+                        <label
+                          className="absolute w-8 h-8 flex items-center justify-center transition-all
+                         shadow bg-[#a0a0a0] rounded-md 
+                         cursor-pointer hover:bg-[#000] text-white
+                         duration-300 top-0.5 right-0.5"
+                        >
+                          <FaEdit />
+                          <input
+                            type="file"
+                            className="hidden"
+                            onChange={(e) => handleUploadCCCD(e, "truoc")}
+                            accept="image/*"
+                          />
+                        </label>
+                      </div>
+                      <div className="flex relative flex-1 whitebox max-h-[180px] min-h-[100px]">
+                        <img
+                          className="object-cover rounded-md"
+                          src={
+                            import.meta.env.VITE_HOST +
+                            op?.cccd_back_img?.replaceAll(
+                              import.meta.env.VITE_HOST,
+                              ""
+                            )
+                          }
+                        />
+                        <label
+                          className="absolute w-8 h-8 flex items-center justify-center transition-all
+                         shadow bg-[#a0a0a0] rounded-md cursor-pointer hover:bg-[#000] text-white
+                         duration-300 top-0.5 right-0.5"
+                        >
+                          <FaEdit />
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => handleUploadCCCD(e, "sau")}
+                          />
+                        </label>
+                      </div>
                     </div>
                     <div className="whitebox flex-1 !p-0 min-w-[500px]">
                       <div className="header">Thông tin làm việc</div>
