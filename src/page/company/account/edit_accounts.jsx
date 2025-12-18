@@ -53,7 +53,11 @@ const Edit_accounts = ({
           editForm.resetFields();
         })
         .catch((e) => {
-          message.error(e?.response?.data?.detail || "Lỗi khi cập nhật!");
+          console.log(e);
+          message.error(
+            e?.response?.data?.detail ||
+              "Lỗi khi cập nhật: " + e?.response?.toString()
+          );
         })
         .finally(() => {
           setUpdating(false);
