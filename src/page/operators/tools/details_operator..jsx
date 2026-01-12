@@ -180,7 +180,7 @@ const Details_operator = ({ op_id }) => {
                   <div className="whitebox !p-3">
                     <div className="flex flex-col justify-center flex-1 items-center">
                       {op.avatar ? (
-                        <img
+                        <Image
                           src={op.avatar ? `${op.avatar}` : "/no-avatar.png"}
                           alt="Avatar"
                           className="w-32 h-32 rounded-[16px] object-cover border-3 border-[#fff] shadow-md"
