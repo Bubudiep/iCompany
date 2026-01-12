@@ -306,7 +306,7 @@ const Details_operator = ({ op_id }) => {
                         ))}
                     </div>
                     <div className="flex gap-2">
-                      <div className="flex overflow-hidde relative flex-1 whitebox max-h-[180px] min-h-[100px]">
+                      <div className="flex overflow-hidden relative flex-1 items-center whitebox max-h-[180px] min-h-[100px]">
                         <Image
                           className="object-cover rounded-md"
                           src={
@@ -332,7 +332,7 @@ const Details_operator = ({ op_id }) => {
                           />
                         </label>
                       </div>
-                      <div className="flex relative flex-1 overflow-hidden whitebox max-h-[180px] min-h-[100px]">
+                      <div className="flex relative flex-1 items-center overflow-hidden whitebox max-h-[180px] min-h-[100px]">
                         <Image
                           className="object-cover rounded-md"
                           src={
