@@ -307,7 +307,7 @@ const Details_operator = ({ op_id }) => {
                     </div>
                     <div className="flex gap-2">
                       <div className="flex relative flex-1 whitebox max-h-[180px] min-h-[100px]">
-                        <img
+                        <Image
                           className="object-cover rounded-md"
                           src={
                             import.meta.env.VITE_HOST +
@@ -333,7 +333,7 @@ const Details_operator = ({ op_id }) => {
                         </label>
                       </div>
                       <div className="flex relative flex-1 whitebox max-h-[180px] min-h-[100px]">
-                        <img
+                        <Image
                           className="object-cover rounded-md"
                           src={
                             import.meta.env.VITE_HOST +
