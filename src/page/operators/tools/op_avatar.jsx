@@ -10,7 +10,7 @@ const OP_Avatar = ({ name, avatar, app }) => {
   return (
     <div className="avatar" style={{ backgroundColor: bgColor }}>
       {avatar ? (
-        <image
+        <img
           src={avatar}
           alt={name}
           className="w-full h-full object-cover rounded-[8px]"
