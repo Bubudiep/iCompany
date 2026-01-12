@@ -1,3 +1,4 @@
+import { Image } from "antd";
 import React from "react";
 
 const OP_Avatar = ({ name, avatar, app }) => {
@@ -7,12 +8,12 @@ const OP_Avatar = ({ name, avatar, app }) => {
   const firstChar = name?.split(" ").pop()?.[0] || "?";
 
   return (
-    <div className="avatar" style={{ backgroundColor: bgColor }}>
+    <div className="avatar nonclick" style={{ backgroundColor: bgColor }}>
       {avatar ? (
-        <img
+        <Image
           src={avatar}
           alt={name}
-          className="w-full h-full object-cover rounded-[8px]"
+          className="w-full h-full object-cover rounded-[8px] nonclick"
         />
       ) : (
         firstChar
