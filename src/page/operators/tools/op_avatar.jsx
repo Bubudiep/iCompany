@@ -8,12 +8,12 @@ const OP_Avatar = ({ name, avatar, app }) => {
   const firstChar = name?.split(" ").pop()?.[0] || "?";
 
   return (
-    <div className="avatar nonclick" style={{ backgroundColor: bgColor }}>
+    <div className="avatar" style={{ backgroundColor: bgColor }}>
       {avatar ? (
-        <Image
+        <image
           src={avatar}
           alt={name}
-          className="w-full h-full object-cover rounded-[8px] nonclick"
+          className="w-full h-full object-cover rounded-[8px]"
         />
       ) : (
         firstChar
