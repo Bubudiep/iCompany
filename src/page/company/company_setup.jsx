@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import { Button, Modal, Select } from "antd";
+import { Button, Input, message, Modal, Select } from "antd";
 import { FaSave } from "react-icons/fa";
 import { useUser } from "../../components/context/userContext";
 import api from "../../components/api";
@@ -23,6 +23,7 @@ const CompanySetup = () => {
   const { menu } = useOutletContext();
   const [config, setConfig] = useState({});
   const [loading, setLoading] = useState(false);
+  const [opPrefix, setOpPrefix] = useState("");
   const handleSave = () => {
     Modal.confirm({
       title: "Xác nhận!",
@@ -44,10 +45,14 @@ const CompanySetup = () => {
   };
   useEffect(() => {
     if (user?.company?.Config) setConfig(user.company.Config);
+    setOpPrefix(user?.company?.operatorCode || "NLD");
   }, [user?.company?.Config]);
   const handleToggle = (key) => {
-    if (user?.info?.isSuperAdmin)
+    if (user?.info?.isSuperAdmin) {
       setConfig((prev) => ({ ...prev, [key]: !prev[key] }));
+    } else {
+      message.error("Bạn không có quyền!");
+    }
   };
   return (
     <div className="flex flex-1 overflow-hidden flex-col contacts-page">
@@ -90,6 +95,63 @@ const CompanySetup = () => {
               value={config?.editopwork_active}
               onChange={() => handleToggle("editopwork_active")}
             />
+            <div className="item enable !gap-6 !px-6">
+              <label className="checkbox_container">
+                <input type="checkbox" checked />
+                <div className="checkmark"></div>
+              </label>
+              <div className="c">
+                <div className="n">Mã nhân viên</div>
+                <div className="m">
+                  Ký tự đặt phía trước mã nhân viên (VD: {opPrefix || "NLD"}
+                  -000001)
+                </div>
+              </div>
+              <div className="flex">
+                <Input
+                  placeholder="Nhập ký tự bất kỳ...."
+                  value={opPrefix || "NLD"}
+                  onChange={(e) => setOpPrefix(e?.target?.value)}
+                />
+              </div>
+              <div className="flex ml-auto">
+                {opPrefix !== (user?.company?.operatorCode || "NLD") && (
+                  <Button
+                    loading={loading}
+                    type="primary"
+                    onClick={() => {
+                      Modal.confirm({
+                        title: "Cảnh báo",
+                        content:
+                          "Toàn bộ mã nhân viên sẽ được cập nhập, xác nhận?",
+                        cancelText: "Đóng",
+                        okText: "Xác nhận",
+                        onOk: () => {
+                          if (!opPrefix)
+                            message.error("Vui lòng nhập thông tin!");
+                          api
+                            .post(
+                              `com/${user?.company?.id}/opCode/`,
+                              {
+                                operatorCode: opPrefix,
+                              },
+                              user?.token
+                            )
+                            .then((res) => {
+                              setUser((pre) => ({ ...pre, company: res }));
+                              message.success("Cập nhập thành công!");
+                            })
+                            .catch(api.error)
+                            .finally(() => setLoading(false));
+                        },
+                      });
+                    }}
+                  >
+                    Áp dụng
+                  </Button>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* --- Nhóm 2: Báo ứng --- */}

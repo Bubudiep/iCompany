@@ -307,16 +307,22 @@ const Details_operator = ({ op_id }) => {
                     </div>
                     <div className="flex gap-2">
                       <div className="flex overflow-hidden relative flex-1 items-center whitebox max-h-[180px] min-h-[100px]">
-                        <Image
-                          className="object-cover rounded-md"
-                          src={
-                            import.meta.env.VITE_HOST +
-                            op?.cccd_front_img?.replaceAll(
-                              import.meta.env.VITE_HOST,
-                              ""
-                            )
-                          }
-                        />
+                        {op?.cccd_front_img ? (
+                          <Image
+                            className="object-cover rounded-md"
+                            src={
+                              import.meta.env.VITE_HOST +
+                              op?.cccd_front_img?.replaceAll(
+                                import.meta.env.VITE_HOST,
+                                ""
+                              )
+                            }
+                          />
+                        ) : (
+                          <div className="flex text-[#999] italic px-2 text-[13px]">
+                            Click vào icon bút để thêm ảnh CCCD mặt trước
+                          </div>
+                        )}
                         <label
                           className="absolute w-8 h-8 flex items-center justify-center transition-all
                          shadow bg-[#a0a0a0] rounded-md 
@@ -333,16 +339,22 @@ const Details_operator = ({ op_id }) => {
                         </label>
                       </div>
                       <div className="flex relative flex-1 items-center overflow-hidden whitebox max-h-[180px] min-h-[100px]">
-                        <Image
-                          className="object-cover rounded-md"
-                          src={
-                            import.meta.env.VITE_HOST +
-                            op?.cccd_back_img?.replaceAll(
-                              import.meta.env.VITE_HOST,
-                              ""
-                            )
-                          }
-                        />
+                        {op?.cccd_back_img ? (
+                          <Image
+                            className="object-cover rounded-md"
+                            src={
+                              import.meta.env.VITE_HOST +
+                              op?.cccd_back_img?.replaceAll(
+                                import.meta.env.VITE_HOST,
+                                ""
+                              )
+                            }
+                          />
+                        ) : (
+                          <div className="flex text-[#999] italic px-2 text-[13px]">
+                            Click vào icon bút để thêm ảnh CCCD mặt trước
+                          </div>
+                        )}
                         <label
                           className="absolute w-8 h-8 flex items-center justify-center transition-all
                          shadow bg-[#a0a0a0] rounded-md cursor-pointer hover:bg-[#000] text-white
