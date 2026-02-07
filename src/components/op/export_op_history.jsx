@@ -14,6 +14,7 @@ const Export_op_history = ({ children, className }) => {
   const fieldMap = {
     ma_nhanvien: "ID",
     ho_ten: "Họ tên",
+    sdt: "SĐT",
     gioi_tinh: "Giới tính",
     so_cccd: "Số CCCD",
     ngaysinh: "Ngày sinh",
@@ -52,10 +53,10 @@ const Export_op_history = ({ children, className }) => {
         newWork[`h_${key}`] = value;
       });
       const working = histories?.results?.find(
-        (w) => w?.end_date === null && w.operator === his?.operator
+        (w) => w?.end_date === null && w.operator === his?.operator,
       );
       const cust = user?.company?.Customer?.find(
-        (cp) => cp.id == working?.customer
+        (cp) => cp.id == working?.customer,
       );
       return {
         ...newWork,
@@ -71,11 +72,11 @@ const Export_op_history = ({ children, className }) => {
         (op) =>
           op.id === item.id &&
           new Date(op.h_start_date) < new Date(item.h_start_date) &&
-          op.h_end_date !== null
+          op.h_end_date !== null,
       );
       const thisDiff = dayjs(item.h_end_date || dayjs()).diff(
         dayjs(item.h_start_date),
-        "day"
+        "day",
       );
       const totalDays = old_hist.reduce((sum, entry) => {
         const start = dayjs(entry.h_start_date);
@@ -89,22 +90,22 @@ const Export_op_history = ({ children, className }) => {
         if (key in item) {
           if (key === "h_nguoituyen") {
             const staff = user?.company?.Staff?.find(
-              (cp) => cp.id == (item[key] || item.nguoituyen)
+              (cp) => cp.id == (item[key] || item.nguoituyen),
             );
             result[fieldMap[key]] = staff?.profile?.full_name || "";
           } else if (key === "nhachinh") {
             const cust = user?.company?.Vendor?.find(
-              (cp) => cp.id == item[key]
+              (cp) => cp.id == item[key],
             );
             result[fieldMap[key]] = cust?.name || "";
           } else if (key === "vendor") {
             const cust = user?.company?.Vendor?.find(
-              (cp) => cp.id == item[key]
+              (cp) => cp.id == item[key],
             );
             result[fieldMap[key]] = cust?.name || "";
           } else if (key === "h_customer") {
             const cust = user?.company?.Customer?.find(
-              (cp) => cp.id == item[key]
+              (cp) => cp.id == item[key],
             );
             result[fieldMap[key]] = cust?.name || "";
           } else if (key === "ho_ten") {

@@ -52,7 +52,7 @@ const List_operators = () => {
     } catch (e) {
       console.error("Lỗi khi lưu vào IndexedDB:", e);
       message.error(
-        "Lỗi lưu trữ cục bộ. Vui lòng kiểm tra dung lượng trình duyệt."
+        "Lỗi lưu trữ cục bộ. Vui lòng kiểm tra dung lượng trình duyệt.",
       );
     }
   };
@@ -95,22 +95,20 @@ const List_operators = () => {
     api
       .get(
         `/ops/?page_size=100${
-          max_update?.updated_at ? `&max_update=${max_update.id}` : "" // Giả định API dùng updated_at
+          max_update?.updated_at
+            ? `&max_update_time=${max_update?.updated_at}`
+            : "" // Giả định API dùng updated_at
         }`,
-        user.token
+        user.token,
       )
       .then(async (res) => {
-        // 👈 Thêm async
         setData((old) => {
           const oldMap = new Map(old.map((item) => [item.id, item]));
           res.results.forEach((newItem) => {
-            oldMap.set(newItem.id, newItem); // nếu đã có thì ghi đè (update), nếu chưa thì thêm mới
+            oldMap.set(newItem.id, newItem);
           });
           const maped = Array.from(oldMap.values());
-
-          // 👈 Thay thế localStorage.setItem
           updateIndexedDB(maped, user?.id);
-
           return maped;
         });
         checknext(res?.next);
@@ -124,13 +122,10 @@ const List_operators = () => {
         setShowLoading(false);
       });
   };
-
-  // 👈 LOGIC TẢI DỮ LIỆU BAN ĐẦU VỚI IndexedDB
   useEffect(() => {
     const loadInitialDataAndFetch = async () => {
       let initialData = [];
       let maxUpdateItem = null;
-
       try {
         const storedUserId = await operatorStore.getItem("list_operator_id");
         const storedData = await operatorStore.getItem("list_operator");
@@ -162,7 +157,7 @@ const List_operators = () => {
   // Debounce input tìm kiếm
   const debouncedSetFilterText = useMemo(
     () => debounce(setFilterText, 300),
-    []
+    [],
   );
   useEffect(() => {
     return () => {
@@ -177,27 +172,27 @@ const List_operators = () => {
         .removeVietnameseTones(
           `${item?.so_cccd}${item?.ho_ten}${item?.ma_nhanvien}${all_name}`.replaceAll(
             " ",
-            ""
-          )
+            "",
+          ),
         )
         .toLowerCase()
         .includes(
           api
             .removeVietnameseTones(filterText.toLowerCase())
-            .replaceAll(" ", "")
+            .replaceAll(" ", ""),
         );
       const workingFilter =
         filterOption.working === 0
           ? true
           : filterOption.working === "working"
-          ? item?.congty_danglam !== null
-          : filterOption.working === "vendor"
-          ? item?.vendor !== null
-          : filterOption.working === "notworking"
-          ? item?.congty_danglam === null
-          : filterOption.working === "isMe"
-          ? item?.nguoituyen === user?.id
-          : false;
+            ? item?.congty_danglam !== null
+            : filterOption.working === "vendor"
+              ? item?.vendor !== null
+              : filterOption.working === "notworking"
+                ? item?.congty_danglam === null
+                : filterOption.working === "isMe"
+                  ? item?.nguoituyen === user?.id
+                  : false;
 
       const companyFilter =
         filterOption.company === 0
@@ -217,7 +212,7 @@ const List_operators = () => {
         navigate(`/app/operators/all/${record.id}`);
       },
     }),
-    [navigate]
+    [navigate],
   );
 
   const getStaffName = (id) =>
@@ -279,7 +274,7 @@ const List_operators = () => {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Total");
     XLSX.writeFile(
       workbook,
-      `Danhsach_nguoilaodong_${dayjs().format("YYMMDDHHmmss")}.xlsx`
+      `Danhsach_nguoilaodong_${dayjs().format("YYMMDDHHmmss")}.xlsx`,
     );
   };
   const handleUploadCCCD = async (e, t) => {
@@ -510,7 +505,6 @@ const List_operators = () => {
                 okText: "Xác nhận",
                 cancelText: "Đóng",
                 onOk: async () => {
-                  // 👈 Thêm async và dùng localforage
                   await operatorStore.removeItem("list_operator_id");
                   await operatorStore.removeItem("list_operator");
                   setInitting(true);
