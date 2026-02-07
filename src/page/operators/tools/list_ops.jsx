@@ -96,7 +96,7 @@ const List_operators = () => {
       .get(
         `/ops/?page_size=100${
           max_update?.updated_at
-            ? `&max_update_time=${dayjs(max_update?.updated_at).format("YYYY-MM-DD HH:mm:ss")}`
+            ? `&max_update_time=${max_update?.updated_at}`
             : "" // Giả định API dùng updated_at
         }`,
         user.token,
@@ -132,18 +132,23 @@ const List_operators = () => {
     const loadInitialDataAndFetch = async () => {
       let initialData = [];
       let maxUpdateItem = null;
-
       try {
         const storedUserId = await operatorStore.getItem("list_operator_id");
         const storedData = await operatorStore.getItem("list_operator");
-
         if (storedUserId === user?.id && Array.isArray(storedData)) {
           initialData = storedData;
           setData(initialData); // Cập nhật state với dữ liệu đã lưu
           if (initialData.length > 0) {
             maxUpdateItem = initialData.reduce((max, item) => {
-              return item.updated_at ? item : max;
-            });
+              if (!item.updated_at) return max;
+              if (
+                !max ||
+                new Date(item.updated_at) > new Date(max.updated_at)
+              ) {
+                return item;
+              }
+              return max;
+            }, null);
           }
         } else {
           // Nếu user khác hoặc không có data, xóa data cũ
@@ -154,7 +159,6 @@ const List_operators = () => {
         console.error("Lỗi khi tải dữ liệu từ IndexedDB:", error);
         message.warning("Không thể tải dữ liệu cũ, đang tải dữ liệu mới.");
       }
-      // Luôn gọi fetchData để cập nhật dữ liệu mới nhất
       fetchData({}, maxUpdateItem);
     };
 
