@@ -96,19 +96,23 @@ const List_operators = () => {
       .get(
         `/ops/?page_size=100${
           max_update?.updated_at
-            ? `&max_update_time=${max_update?.updated_at}`
+            ? `&max_update_time=${dayjs(max_update?.updated_at).format("YYYY-MM-DD HH:mm:ss")}`
             : "" // Giả định API dùng updated_at
         }`,
         user.token,
       )
       .then(async (res) => {
+        // 👈 Thêm async
         setData((old) => {
           const oldMap = new Map(old.map((item) => [item.id, item]));
           res.results.forEach((newItem) => {
-            oldMap.set(newItem.id, newItem);
+            oldMap.set(newItem.id, newItem); // nếu đã có thì ghi đè (update), nếu chưa thì thêm mới
           });
           const maped = Array.from(oldMap.values());
+
+          // 👈 Thay thế localStorage.setItem
           updateIndexedDB(maped, user?.id);
+
           return maped;
         });
         checknext(res?.next);
@@ -122,10 +126,13 @@ const List_operators = () => {
         setShowLoading(false);
       });
   };
+
+  // 👈 LOGIC TẢI DỮ LIỆU BAN ĐẦU VỚI IndexedDB
   useEffect(() => {
     const loadInitialDataAndFetch = async () => {
       let initialData = [];
       let maxUpdateItem = null;
+
       try {
         const storedUserId = await operatorStore.getItem("list_operator_id");
         const storedData = await operatorStore.getItem("list_operator");
@@ -505,6 +512,7 @@ const List_operators = () => {
                 okText: "Xác nhận",
                 cancelText: "Đóng",
                 onOk: async () => {
+                  // 👈 Thêm async và dùng localforage
                   await operatorStore.removeItem("list_operator_id");
                   await operatorStore.removeItem("list_operator");
                   setInitting(true);
