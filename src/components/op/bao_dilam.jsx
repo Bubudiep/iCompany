@@ -42,7 +42,6 @@ const OP_dilam = ({ children, op, user, callback, className }) => {
         });
     });
   };
-
   return (
     <>
       <Tooltip
@@ -50,7 +49,7 @@ const OP_dilam = ({ children, op, user, callback, className }) => {
           op?.congty_danglam
             ? `Đang làm việc tại ${
                 user?.company?.Customer?.find(
-                  (cpn) => cpn.id === op?.congty_danglam
+                  (cpn) => cpn.id === op?.congty_danglam,
                 )?.name
               }`
             : false
@@ -83,7 +82,12 @@ const OP_dilam = ({ children, op, user, callback, className }) => {
           <Form.Item
             label="Công ty"
             name="congty"
-            rules={[{ required: true, message: "Chọn công ty" }]}
+            rules={[
+              {
+                required: true,
+                message: "Chọn công ty",
+              },
+            ]}
           >
             <Select
               showSearch
@@ -100,10 +104,16 @@ const OP_dilam = ({ children, op, user, callback, className }) => {
           <Form.Item
             label="Người tuyển"
             name="nguoituyen"
-            rules={[{ required: true, message: "Chọn người tuyển" }]}
+            rules={[
+              {
+                required: op?.vendor === null ? true : false,
+                message: "Chọn người tuyển",
+              },
+            ]}
           >
             <Select
               showSearch
+              disabled={op?.vendor !== null}
               placeholder="Chọn người tuyển"
               options={user?.company?.Staff?.map((staff) => ({
                 value: staff.id,
