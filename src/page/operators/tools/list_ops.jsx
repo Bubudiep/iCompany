@@ -70,10 +70,8 @@ const List_operators = () => {
               oldMap.set(newItem.id, newItem); // nếu đã có thì ghi đè (update), nếu chưa thì thêm mới
             });
             const maped = Array.from(oldMap.values());
-
             // 👈 Thay thế localStorage.setItem
             updateIndexedDB(maped, user?.id);
-
             return maped;
           });
           checknext(res?.next);
@@ -177,6 +175,7 @@ const List_operators = () => {
   }, [debouncedSetFilterText]);
 
   const filteredData = useMemo(() => {
+    console.log(data);
     return data.filter((item) => {
       const all_name = item?.work?.reduce((sum, a) => sum + a?.ho_ten, "");
       const textMatch = api
@@ -364,7 +363,10 @@ const List_operators = () => {
               ? new Date(record.ngaysinh).toLocaleDateString()
               : "-"}
           </div>
-          <div title={record.quequan} className="text-[13px] text-[#5f5f5f]">
+          <div
+            title={record.quequan}
+            className="overflow-hidden text-[13px] text-[#5f5f5f]"
+          >
             {record.quequan || "-"}
           </div>
         </div>
@@ -547,7 +549,20 @@ const List_operators = () => {
           columns={columns}
           rowKey={(record) => record.id}
           rowClassName="user-item"
-          dataSource={filteredData}
+          dataSource={filteredData?.sort((a, b) => {
+            const getLatestTime = (item) => {
+              if (item?.work?.length > 0) {
+                const timestamps = item.work.map((w) =>
+                  new Date(w.start_date).getTime(),
+                );
+                return Math.max(...timestamps);
+              }
+              return new Date(item.updated_at).getTime();
+            };
+            const aTime = getLatestTime(a);
+            const bTime = getLatestTime(b);
+            return bTime - aTime;
+          })}
           loading={showLoading}
           scroll={{ y: 600 }}
           onRow={onRowClick}
