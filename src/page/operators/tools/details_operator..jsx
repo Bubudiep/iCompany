@@ -14,7 +14,7 @@ import {
   Button,
   Descriptions,
   Empty,
-  Image,
+  Image as AntdImage,
   message,
   Modal,
   Spin,
@@ -76,7 +76,7 @@ const Details_operator = ({ op_id }) => {
           className="text-blue-600 hover:underline"
         >
           {code}
-        </Link>
+        </Link>,
       );
       lastIndex = index + fullMatch.length;
     }
@@ -118,7 +118,7 @@ const Details_operator = ({ op_id }) => {
           console.log(e);
           message.error(
             e?.response?.data?.details ||
-              "Phát sinh lỗi khi tải dữ liệu người lao động!"
+              "Phát sinh lỗi khi tải dữ liệu người lao động!",
           );
         })
         .finally(() => setLoading(false));
@@ -136,7 +136,7 @@ const Details_operator = ({ op_id }) => {
         formData.append(
           t === "sau" ? "cccd_back_img" : "cccd_front_img",
           newIMG,
-          file.name
+          file.name,
         );
         api
           .patch(`/ops/${op_id}/`, formData, user.token)
@@ -289,7 +289,7 @@ const Details_operator = ({ op_id }) => {
                       {[...op?.work]
                         ?.sort(
                           (a, b) =>
-                            new Date(b?.start_date) - new Date(a?.start_date)
+                            new Date(b?.start_date) - new Date(a?.start_date),
                         )
                         ?.map((work) => (
                           <OP_History_card
@@ -308,13 +308,13 @@ const Details_operator = ({ op_id }) => {
                     <div className="flex gap-2">
                       <div className="flex overflow-hidden relative flex-1 items-center whitebox max-h-[180px] min-h-[100px]">
                         {op?.cccd_front_img ? (
-                          <Image
+                          <AntdImage
                             className="object-cover rounded-md"
                             src={
                               import.meta.env.VITE_HOST +
                               op?.cccd_front_img?.replaceAll(
                                 import.meta.env.VITE_HOST,
-                                ""
+                                "",
                               )
                             }
                           />
@@ -340,13 +340,13 @@ const Details_operator = ({ op_id }) => {
                       </div>
                       <div className="flex relative flex-1 items-center overflow-hidden whitebox max-h-[180px] min-h-[100px]">
                         {op?.cccd_back_img ? (
-                          <Image
+                          <AntdImage
                             className="object-cover rounded-md"
                             src={
                               import.meta.env.VITE_HOST +
                               op?.cccd_back_img?.replaceAll(
                                 import.meta.env.VITE_HOST,
-                                ""
+                                "",
                               )
                             }
                           />
@@ -451,7 +451,7 @@ const Details_operator = ({ op_id }) => {
                                       ?.filter(
                                         (item) =>
                                           item.payment_status === "done" &&
-                                          item.retrieve_status === "not"
+                                          item.retrieve_status === "not",
                                       )
                                       .map((item) => (
                                         <tr key={item?.id}>
@@ -469,13 +469,13 @@ const Details_operator = ({ op_id }) => {
                                           </td>
                                           <td className="text-center">
                                             {parseInt(
-                                              item.amount
+                                              item.amount,
                                             ).toLocaleString()}
                                             vnđ
                                           </td>
                                           <td className="text-center">
                                             {parseInt(
-                                              item.payout_amount
+                                              item.payout_amount,
                                             ).toLocaleString()}
                                             vnđ
                                           </td>
@@ -632,13 +632,13 @@ const Details_operator = ({ op_id }) => {
                           <Info
                             label="Ngày cập nhập"
                             value={dayjs(op.updated_date).format(
-                              "HH:mm DD/MM/YYYY"
+                              "HH:mm DD/MM/YYYY",
                             )}
                           />
                           <Info
                             label="Ngày khởi tạo"
                             value={dayjs(op.created_at).format(
-                              "HH:mm DD/MM/YYYY"
+                              "HH:mm DD/MM/YYYY",
                             )}
                           />
                         </div>
