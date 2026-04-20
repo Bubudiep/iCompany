@@ -103,7 +103,7 @@ const Operator_news = () => {
         if (data[0]?.["Họ tên"]) {
           const newUsers = data
             .filter(
-              (row) => row["Họ tên"] !== "" && row["Họ tên"] !== "Hướng dẫn"
+              (row) => row["Họ tên"] !== "" && row["Họ tên"] !== "Hướng dẫn",
             )
             .map((row) => {
               console.log(row);
@@ -118,7 +118,7 @@ const Operator_news = () => {
                   dayjs(
                     `${row?.["Ngày sinh"]}`?.includes("-")
                       ? row?.["Ngày sinh"]
-                      : app.excelDateToJSDate(row["Ngày sinh"])
+                      : app.excelDateToJSDate(row["Ngày sinh"]),
                   ).format("YYYY-MM-DD") || null,
                 address: row["Địa chỉ"] || null,
                 bank_code: row["Mã ngân hàng"] || null,
@@ -126,27 +126,27 @@ const Operator_news = () => {
                 bank_name: row["Chủ tài khoản"] || null,
                 staff:
                   user?.company?.Staff?.find(
-                    (staff) => staff.cardID === row["Người tuyển"]
+                    (staff) => staff.cardID === row["Người tuyển"],
                   )?.id || null,
                 vendor:
                   user?.company?.Vendor?.find(
-                    (cpm) => cpm.name === row["Vendor"]
+                    (cpm) => cpm.name === row["Vendor"],
                   )?.id || null,
                 nhachinh:
                   user?.company?.Vendor?.find(
-                    (cpm) => cpm.name === row["Nhà chính"]
+                    (cpm) => cpm.name === row["Nhà chính"],
                   )?.id || null,
                 work_date:
                   dayjs(
                     row["Ngày vào làm"].includes("-")
                       ? row["Ngày vào làm"]
-                      : app.excelDateToJSDate(row["Ngày vào làm"])
+                      : app.excelDateToJSDate(row["Ngày vào làm"]),
                   ).format("YYYY-MM-DD") || null,
                 customer:
                   user?.company?.Customer?.find(
                     (cpm) =>
                       cpm.name.toLowerCase() ===
-                      row["Công ty vào làm"].toLowerCase()
+                      row["Công ty vào làm"].toLowerCase(),
                   )?.id || null,
                 work_code: row["Mã nhân viên"] || null,
               };
@@ -225,14 +225,15 @@ const Operator_news = () => {
       });
   };
 
-  const handleImageCCCD = async (index, file, e) => {
+  const handleImageCCCD = async (index, file, e, face) => {
     const reader = new FileReader();
     reader.onloadend = () => {
       const img = new Image();
       img.onload = () => {
         const newsize = app.resizeImage(img, 800, "image/png");
         const updatedUsers = [...listUser];
-        updatedUsers[index].cccd_img = newsize;
+        if (face === "sau") updatedUsers[index].cccd_img_back = newsize;
+        else updatedUsers[index].cccd_img = newsize;
         setListUser(updatedUsers);
         e.target.value = null;
       };
@@ -342,31 +343,7 @@ const Operator_news = () => {
                 not-first:border-[#6a80ad33] relative hover:bg-[#f4f7fd] transition-all"
               >
                 <Tooltip
-                  title="Ảnh đại diện"
-                  className="min-w-26 w-26 h-26 relative"
-                >
-                  {op.avatar ? (
-                    <img
-                      src={op.avatar}
-                      alt="Avatar"
-                      className="w-full h-full object-cover rounded"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gray-200 rounded flex items-center justify-center text-sm text-gray-500">
-                      Ảnh
-                    </div>
-                  )}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) =>
-                      handleImageChange(index, e.target.files[0], e)
-                    }
-                    className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
-                  />
-                </Tooltip>
-                <Tooltip
-                  title="Mặt trước của căn cước công dân"
+                  title="Mặt sau của căn cước công dân"
                   className={`${
                     op.cardid ? "min-w-0 !w-0 " : "min-w-26 w-26 "
                   }h-26 flex items-center justify-center relative bg-gray-200 overflow-hidden
@@ -379,13 +356,38 @@ const Operator_news = () => {
                       className="w-full h-full object-cover rounded"
                     />
                   ) : (
-                    <>CCCD</>
+                    <>CCCD trước</>
                   )}
                   <input
                     type="file"
                     accept="image/*"
                     onChange={(e) =>
-                      handleImageCCCD(index, e.target.files[0], e)
+                      handleImageCCCD(index, e.target.files[0], e, "truoc")
+                    }
+                    className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                </Tooltip>
+                <Tooltip
+                  title="Mặt sau của căn cước công dân"
+                  className={`${
+                    op.cardid ? "min-w-0 !w-0 " : "min-w-26 w-26 "
+                  }h-26 flex items-center justify-center relative bg-gray-200 overflow-hidden
+                  rounded text-gray-500 transition-all duration-300`}
+                >
+                  {op.cccd_img ? (
+                    <img
+                      src={op.cccd_img}
+                      alt="Avatar"
+                      className="w-full h-full object-cover rounded"
+                    />
+                  ) : (
+                    <>CCCD sau</>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) =>
+                      handleImageCCCD(index, e.target.files[0], e, "sau")
                     }
                     className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
                   />

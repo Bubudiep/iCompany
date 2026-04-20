@@ -28,10 +28,12 @@ const Request_card = ({ approve }) => {
         <div className="flex gap-1 items-center">
           <div
             className={`type t${app.removeSpecial(
-              approve?.requesttype?.replaceAll(" ", "")?.toLowerCase()
+              (approve?.requesttype?.typecode || approve?.requesttype)
+                ?.replaceAll(" ", "")
+                ?.toLowerCase(),
             )} text-nowrap`}
           >
-            {approve?.requesttype}
+            {approve?.requesttype?.typecode || approve?.requesttype}
           </div>
           <div className="text-[11px] text-[#474747]  text-nowrap">
             {approve?.created_at && (
@@ -75,7 +77,7 @@ const Request_card = ({ approve }) => {
           <div className={`status flex ${approve?.payment_status}`}>
             {!approve_id && approve?.payment_status_display}
           </div>
-        ) : approve?.requesttype?.need_retrive ? (
+        ) : approve?.need_retrive !== "False" ? (
           <div className={`status flex`}>
             {approve?.retrieve_status === "not" ? (
               <div className="text-[#ec6a00] flex items-center gap-1 font-[500]">

@@ -38,7 +38,7 @@ const Approve_details = () => {
       .post(
         `approve/${approve_id}/paytrieve/`,
         { comment: approveComment },
-        user?.token
+        user?.token,
       )
       .then((res) => {
         setApprove(res);
@@ -58,7 +58,7 @@ const Approve_details = () => {
       .post(
         `approve/${approve_id}/apply/`,
         { comment: approveComment },
-        user?.token
+        user?.token,
       )
       .then((res) => {
         setApprove(res);
@@ -79,7 +79,7 @@ const Approve_details = () => {
       .post(
         `approve/${approve_id}/cancel/`,
         { comment: approveComment },
-        user?.token
+        user?.token,
       )
       .then((res) => {
         setApprove(res);
@@ -99,7 +99,7 @@ const Approve_details = () => {
       .post(
         `approve/${approve_id}/reject/`,
         { comment: approveComment },
-        user?.token
+        user?.token,
       )
       .then((res) => {
         setApprove(res);
@@ -119,7 +119,7 @@ const Approve_details = () => {
       .post(
         `approve/${approve_id}/payout/`,
         { comment: approveComment },
-        user?.token
+        user?.token,
       )
       .then((res) => {
         setApprove(res);
@@ -139,7 +139,7 @@ const Approve_details = () => {
       .post(
         `approve/${approve_id}/apply_pay/`,
         { comment: approveComment },
-        user?.token
+        user?.token,
       )
       .then((res) => {
         setApprove(res);
@@ -162,8 +162,8 @@ const Approve_details = () => {
         setnewMount(res?.amount || 0);
         setComment(
           localStorage.getItem(
-            (res?.requesttype?.typecode || "_approve") + "_comment"
-          ) || "TT chuyển khoản"
+            (res?.requesttype?.typecode || "_approve") + "_comment",
+          ) || "TT chuyển khoản",
         );
       })
       .catch((e) => {
@@ -182,14 +182,14 @@ const Approve_details = () => {
     if (event.code === "Space" || event.key === " ") {
       event.preventDefault();
       const this_approve = list.findIndex(
-        (apv) => apv.request_code === approve_id
+        (apv) => apv.request_code === approve_id,
       );
       setLoading(true);
       api
         .post(
           `approve/${approve_id}/apply_pay/`,
           { comment: approveComment },
-          user?.token
+          user?.token,
         )
         .then((res) => {
           setApprove(res);
@@ -199,7 +199,7 @@ const Approve_details = () => {
             return;
           }
           navigate(
-            `/app/approve/${type}/${list[this_approve + 1]?.request_code}`
+            `/app/approve/${type}/${list[this_approve + 1]?.request_code}`,
           );
         })
         .catch((e) => {
@@ -210,6 +210,10 @@ const Approve_details = () => {
         });
     }
   };
+  const userRetrive =
+    approve?.retrieve_status === "done"
+      ? approve?.history?.find((h) => h?.action === "retrieve")?.user?.id
+      : null;
   useEffect(() => {
     setApprove({});
     loadApprove();
@@ -283,7 +287,7 @@ const Approve_details = () => {
                             <div className="text-[#0b8000]">Đã thu hồi</div>
                           ) : (
                             <div className="text-[#6d8000]">
-                              Hoàn tất và chờ thu hồi
+                              Đã giải ngân. Chờ thu hồi
                             </div>
                           )
                         ) : (
@@ -331,6 +335,11 @@ const Approve_details = () => {
                   {approve?.hinhthucThanhtoan_display}
                 </div>
               </Descriptions.Item>
+              {approve?.retrieve_status === "done" && (
+                <Descriptions.Item span={2} label="Người thu hồi">
+                  {userRetrive ? <Staff_view id={userRetrive} /> : "--"}
+                </Descriptions.Item>
+              )}
               {approve?.hinhthucThanhtoan === "bank" && (
                 <>
                   {approve.payment_status === "not" ? (
@@ -351,7 +360,7 @@ const Approve_details = () => {
                               localStorage.setItem(
                                 (approve?.requesttype?.typecode || "approve") +
                                   "_comment",
-                                e.target.value
+                                e.target.value,
                               );
                             }}
                           />
@@ -380,7 +389,7 @@ const Approve_details = () => {
                           showQR={true}
                           comment={comment.replaceAll(
                             "{ten}",
-                            `${approve?.operator?.ho_ten ?? "No name"}`
+                            `${approve?.operator?.ho_ten ?? "No name"}`,
                           )}
                           sotien={parseInt(approve?.amount)}
                         />
@@ -394,7 +403,7 @@ const Approve_details = () => {
                               >
                                 Đã giải ngân{" "}
                                 {parseInt(
-                                  approve?.payout_amount
+                                  approve?.payout_amount,
                                 )?.toLocaleString()}
                                 đ vào tài khoản
                               </div>
@@ -413,7 +422,7 @@ const Approve_details = () => {
                               showQR={true}
                               comment={comment.replaceAll(
                                 "{ten}",
-                                `${approve?.operator?.ho_ten ?? "No name"}`
+                                `${approve?.operator?.ho_ten ?? "No name"}`,
                               )}
                               sotien={parseInt(approve?.amount)}
                             />
@@ -436,7 +445,7 @@ const Approve_details = () => {
                           showQR={true}
                           comment={comment.replaceAll(
                             "{ten}",
-                            `${approve?.operator?.ho_ten ?? "No name"}`
+                            `${approve?.operator?.ho_ten ?? "No name"}`,
                           )}
                           sotien={parseInt(approve?.amount)}
                         />
@@ -461,7 +470,7 @@ const Approve_details = () => {
                               showQR={true}
                               comment={comment.replaceAll(
                                 "{ten}",
-                                `${approve?.operator?.ho_ten ?? "No name"}`
+                                `${approve?.operator?.ho_ten ?? "No name"}`,
                               )}
                               sotien={parseInt(approve?.amount)}
                             />
