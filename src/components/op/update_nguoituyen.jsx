@@ -19,14 +19,18 @@ const Update_op_nguoituyen = ({ op, children, className, update }) => {
         console.log("Thông tin đã cập nhật:", values);
         setUpdating(true);
         api
-          .patch(`ops/${op.id}/`, values, user?.token)
+          .patch(
+            `ops/${op.id}/`,
+            { ...values, nguoituyen: values?.nguoituyen || null },
+            user?.token,
+          )
           .then((res) => {
             update(res);
             message.success("Cập nhập thành công!");
             setVisible(false);
           })
           .catch((e) =>
-            message.error(e?.response?.data?.detail || "Lỗi khi cập nhập!")
+            message.error(e?.response?.data?.detail || "Lỗi khi cập nhập!"),
           )
           .finally(() => setUpdating(false));
       })
