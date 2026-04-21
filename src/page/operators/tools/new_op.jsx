@@ -348,9 +348,7 @@ const Operator_news = () => {
               >
                 <Tooltip
                   title="Mặt trước của căn cước công dân"
-                  className={`${
-                    op.cardid ? "min-w-0 !w-0 " : "min-w-26 w-26 "
-                  }h-26 flex items-center justify-center relative bg-gray-200 overflow-hidden
+                  className={`min-w-26 w-26 h-26 flex items-center justify-center relative bg-gray-200 overflow-hidden
                   rounded text-gray-500 transition-all duration-300`}
                 >
                   {op.cccd_img ? (
@@ -373,9 +371,7 @@ const Operator_news = () => {
                 </Tooltip>
                 <Tooltip
                   title="Mặt sau của căn cước công dân"
-                  className={`${
-                    op.cardid ? "min-w-0 !w-0 " : "min-w-26 w-26 "
-                  }h-26 flex items-center justify-center relative bg-gray-200 overflow-hidden
+                  className={`min-w-26 w-26 h-26 flex items-center justify-center relative bg-gray-200 overflow-hidden
                   rounded text-gray-500 transition-all duration-300`}
                 >
                   {op.cccd_img_back ? (
