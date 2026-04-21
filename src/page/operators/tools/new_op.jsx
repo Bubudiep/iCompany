@@ -229,28 +229,32 @@ const Operator_news = () => {
     const reader = new FileReader();
     reader.onloadend = () => {
       const img = new Image();
-      img.onload = () => {
-        const newsize = app.resizeImage(img, 800, "image/png");
+      console.log(`reading img...`);
+      img.onload = async () => {
+        const newsize = await app.resizeImage(img, 800, "image/png");
         const updatedUsers = [...listUser];
-        if (face === "sau") updatedUsers[index].cccd_img_back = newsize;
-        else updatedUsers[index].cccd_img = newsize;
+        console.log(newsize);
+        if (face === "sau") {
+          updatedUsers[index].cccd_img_back = newsize;
+        } else {
+          updatedUsers[index].cccd_img = newsize;
+        }
         setListUser(updatedUsers);
         e.target.value = null;
       };
       img.src = reader.result;
     };
     if (file) {
+      reader.readAsDataURL(file);
       const qr = await app.handleReadQR(file);
       if (qr) {
-        console.log(qr);
         handleChange(index, "fullname", qr.ho_va_ten);
         handleChange(index, "cardid", qr.so_cccd);
         handleChange(index, "address", qr.que_quan);
         handleChange(index, "sex", qr.gioi_tinh);
         handleChange(index, "birthday", qr.ngay_sinh);
-        reader.readAsDataURL(file);
       } else {
-        message.error("Không có mã QR hoặc mã QR không phải CCCD!");
+        // message.error("Không có mã QR hoặc mã QR không phải CCCD!");
       }
     }
   };
@@ -343,7 +347,7 @@ const Operator_news = () => {
                 not-first:border-[#6a80ad33] relative hover:bg-[#f4f7fd] transition-all"
               >
                 <Tooltip
-                  title="Mặt sau của căn cước công dân"
+                  title="Mặt trước của căn cước công dân"
                   className={`${
                     op.cardid ? "min-w-0 !w-0 " : "min-w-26 w-26 "
                   }h-26 flex items-center justify-center relative bg-gray-200 overflow-hidden
@@ -374,9 +378,9 @@ const Operator_news = () => {
                   }h-26 flex items-center justify-center relative bg-gray-200 overflow-hidden
                   rounded text-gray-500 transition-all duration-300`}
                 >
-                  {op.cccd_img ? (
+                  {op.cccd_img_back ? (
                     <img
-                      src={op.cccd_img}
+                      src={op.cccd_img_back}
                       alt="Avatar"
                       className="w-full h-full object-cover rounded"
                     />
