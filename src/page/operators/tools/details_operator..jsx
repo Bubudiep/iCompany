@@ -318,6 +318,11 @@ const Details_operator = ({ op_id }) => {
                               )
                             }
                           />
+                        ) : op?.cccd_front ? (
+                          <AntdImage
+                            className="object-cover rounded-md"
+                            src={op?.cccd_front}
+                          />
                         ) : (
                           <div className="flex text-[#999] italic px-2 text-[13px]">
                             Click vào icon bút để thêm ảnh CCCD mặt trước
@@ -349,6 +354,11 @@ const Details_operator = ({ op_id }) => {
                                 "",
                               )
                             }
+                          />
+                        ) : op?.cccd_back ? (
+                          <AntdImage
+                            className="object-cover rounded-md"
+                            src={op?.cccd_back}
                           />
                         ) : (
                           <div className="flex text-[#999] italic px-2 text-[13px]">
