@@ -53,12 +53,12 @@ const Approve_all = () => {
               type === "baoung"
                 ? "&type=Báo ứng"
                 : type === "chitieu"
-                ? "&type=Chi tiêu"
-                : type === "giuluong"
-                ? "&type=Báo giữ lương"
-                : ""
+                  ? "&type=Chi tiêu"
+                  : type === "giuluong"
+                    ? "&type=Báo giữ lương"
+                    : ""
             }&page_size=15`,
-        user?.token
+        user?.token,
       )
       .then((res) => {
         if (res?.results) {
@@ -69,7 +69,7 @@ const Approve_all = () => {
           } else {
             setApprove((old) => [
               ...old?.filter((item) =>
-                res?.results.findIndex((i) => i.id === item.id)
+                res?.results.findIndex((i) => i.id === item.id),
               ),
               ...res?.results,
             ]);
@@ -100,7 +100,15 @@ const Approve_all = () => {
         gap-3 border-b-1 border-[#0003] fadeInBot"
       >
         <BsChatSquareQuote />
-        {type === "all" ? "Tất cả yêu cầu phê duyệt" : ""}
+        {type === "all"
+          ? "Tất cả yêu cầu phê duyệt"
+          : type === "baoung"
+            ? "Yêu cầu báo ứng"
+            : type === "chitieu"
+              ? "Yêu cầu chi tiêu khác"
+              : type === "giuluong"
+                ? "Yêu cầu báo giữ lương"
+                : ""}
       </div>
       <div className="flex flex-1 overflow-hidden fadeInTop">
         <div className="flex flex-col gap-2 flex-1 overflow-hidden">
@@ -298,7 +306,7 @@ const Approve_all = () => {
                 list: approve,
                 callback: (res) =>
                   setApprove((old) =>
-                    old.map((arv) => (arv.id === res.id ? res : arv))
+                    old.map((arv) => (arv.id === res.id ? res : arv)),
                   ),
               }}
             />

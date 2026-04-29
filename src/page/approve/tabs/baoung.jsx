@@ -35,8 +35,7 @@ const Approve_baoung = () => {
   }, [location]);
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
-      <div className="min-h-[60px] bg-white flex border-b-1 border-[#0003]"></div>
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden fadeInTop">
         <div className="flex flex-col gap-2 flex-1 overflow-hidden">
           <div className="flex gap-2 whitebox overflow-hidden fadeInTop mt-2 mx-2">
             <div className="search !p-1">
@@ -154,7 +153,7 @@ const Approve_baoung = () => {
                 list: approve,
                 callback: (res) =>
                   setApprove((old) =>
-                    old.map((arv) => (arv.id === res.id ? res : arv))
+                    old.map((arv) => (arv.id === res.id ? res : arv)),
                   ),
               }}
             />
