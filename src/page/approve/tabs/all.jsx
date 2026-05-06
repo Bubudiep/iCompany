@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import api from "../../../components/api";
 import { useUser } from "../../../components/context/userContext";
-import { Button, message, Select, Spin, Tooltip } from "antd";
+import { Button, message, Modal, Select, Spin, Tooltip } from "antd";
 import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
 import { IoSearchOutline } from "react-icons/io5";
 import Staff_view from "../../../components/by_id/staff_view";
@@ -20,7 +20,9 @@ import TimeSinceText from "../../../components/ui/timesinceText";
 import Request_card from "./request_card";
 import { BsChatSquareQuote } from "react-icons/bs";
 import Export_approve_all from "../../../components/export/export_approve_all";
-
+import { DatePicker } from "antd";
+const { RangePicker } = DatePicker;
+import dayjs from "dayjs";
 const Approve_all = () => {
   const [total, setTotal] = useState(9999);
   const { approve_id, type } = useParams();
@@ -37,7 +39,7 @@ const Approve_all = () => {
   const [loading, setLoading] = useState(false);
   const { user, setUser } = useUser();
   const scrollRef = useRef(null);
-  const loadApprove = (zt) => {
+  const loadApprove = (zt, confirm = false) => {
     setLoading(true);
     api
       .get(
@@ -50,14 +52,20 @@ const Approve_all = () => {
             }${filter?.staff !== 0 ? `&staff=${filter?.staff}` : ``}${
               filter?.status !== 0 ? `&status=${filter?.status}` : ""
             }${
-              type === "baoung"
-                ? "&type=Báo ứng"
-                : type === "chitieu"
-                  ? "&type=Chi tiêu"
-                  : type === "giuluong"
-                    ? "&type=Báo giữ lương"
-                    : ""
-            }&page_size=15`,
+              filter?.created_at?.length > 0
+                ? `&created_at_from=${dayjs(filter?.created_at[0]).format("YYYY-MM-DD")}&created_at_to=${dayjs(filter?.created_at[1]).format("YYYY-MM-DD")}`
+                : ""
+            }${
+              type === "thuhoi"
+                ? "&type=Báo ứng&payout=done&retrieve=not"
+                : type === "baoung"
+                  ? "&type=Báo ứng"
+                  : type === "chitieu"
+                    ? "&type=Chi tiêu"
+                    : type === "giuluong"
+                      ? "&type=Báo giữ lương"
+                      : ""
+            }${confirm === true ? "&confirm=true" : ""}&page_size=15`,
         user?.token,
       )
       .then((res) => {
@@ -113,157 +121,193 @@ const Approve_all = () => {
       <div className="flex flex-1 overflow-hidden fadeInTop">
         <div className="flex flex-col gap-2 flex-1 overflow-hidden">
           <div className="flex gap-2 whitebox items-center overflow-hidden fadeInTop mt-2 mx-2">
-            <div className="search !p-1">
-              <div className="searchbox">
-                <label className="icon p-2">
-                  <IoSearchOutline />
-                </label>
-                <input
-                  value={filter.code}
-                  onChange={(e) =>
-                    setFilter((old) => ({
-                      ...old,
-                      code: e.target.value.toUpperCase(),
-                    }))
-                  }
-                  className="!w-[240px]"
-                  type="text"
-                  placeholder="Tìm kiếm..."
-                />
-              </div>
-            </div>
-            <Select
-              className="w-[200px] !h-[40px]"
-              placeholder="Người lao động"
-              value={filter?.staff}
-              showSearch
-              onChange={(e) => {
-                setFilter((old) => ({ ...old, staff: e }));
-              }}
-              filterOption={(input, option) =>
-                option?.label?.toLowerCase().includes(input.toLowerCase())
-              }
-              options={[
-                { value: 0, label: "Tất cả người lao động" },
-                ...user?.company?.Operator?.map((emp) => ({
-                  label: app.beautifyName(emp?.ho_ten || ""),
-                  value: emp?.id,
-                })),
-              ]}
-            />
-            <Select
-              className="w-[200px] !h-[40px]"
-              placeholder="Người tuyển"
-              value={filter?.staff}
-              showSearch
-              onChange={(e) => {
-                setFilter((old) => ({ ...old, staff: e }));
-              }}
-              filterOption={(input, option) =>
-                option?.label?.toLowerCase().includes(input.toLowerCase())
-              }
-              options={[
-                { value: 0, label: "Tất cả nhân viên" },
-                ...user?.company?.Staff?.map((emp) => ({
-                  label: app.beautifyName(emp?.profile?.full_name || ""),
-                  value: emp?.id,
-                })),
-              ]}
-            />
-            <Select
-              className="w-[160px] !h-[40px]"
-              placeholder="Phân loại"
-              value={filter?.type || ""}
-              showSearch
-              onChange={(e) => {
-                setFilter((old) => ({ ...old, type: e }));
-              }}
-              filterOption={(input, option) =>
-                option?.label?.toLowerCase().includes(input.toLowerCase())
-              }
-              options={[
-                { value: "", label: "Tất cả" },
-                { value: "bank", label: "Chuyển khoản" },
-                { value: "money", label: "Tiền mặt" },
-              ]}
-            />
-            <div className="flex p-1 gap-2 ml-auto">
-              <Tooltip
-                title={
-                  <div className="flex items-start flex-col gap-1.5 min-w-[120px] p-2">
-                    <div className="text-[#000] mb-2">Chọn loại dữ liệu:</div>
-                    <div className="flex flex-col gap-1.5 ml-2">
-                      <Export_approve_all option="pending">
-                        <Button
-                          icon={
-                            <PiMicrosoftExcelLogoFill
-                              size={20}
-                              className="mt-1"
-                            />
-                          }
-                          type="primary"
-                          className="!h-[40px]"
-                        >
-                          Chờ giải ngân
-                        </Button>
-                      </Export_approve_all>
-                      <Export_approve_all option="complete">
-                        <Button
-                          icon={
-                            <PiMicrosoftExcelLogoFill
-                              size={20}
-                              className="mt-1"
-                            />
-                          }
-                          type="primary"
-                          className="!h-[40px]"
-                        >
-                          Đã hoàn thành
-                        </Button>
-                      </Export_approve_all>
-                      <Export_approve_all option="rejected">
-                        <Button
-                          icon={
-                            <PiMicrosoftExcelLogoFill
-                              size={20}
-                              className="mt-1"
-                            />
-                          }
-                          type="primary"
-                          className="!h-[40px]"
-                        >
-                          Đã bị rejected
-                        </Button>
-                      </Export_approve_all>
-                      <Export_approve_all>
-                        <Button
-                          icon={
-                            <PiMicrosoftExcelLogoFill
-                              size={20}
-                              className="mt-1"
-                            />
-                          }
-                          type="primary"
-                          className="!h-[40px]"
-                        >
-                          Tất cả phê duyệt
-                        </Button>
-                      </Export_approve_all>
-                    </div>
+            {type === "thuhoi" ? (
+              <>
+                <div className="flex gap-1">
+                  <RangePicker
+                    className="max-w-60"
+                    value={filter?.created_at || []}
+                    onChange={(e) =>
+                      setFilter((pre) => ({ ...pre, created_at: e }))
+                    }
+                  />
+                </div>
+                <div className="flex gap-1 ml-auto">
+                  <Button
+                    onClick={() => {
+                      Modal.warning({
+                        title: "Cảnh báo!!!",
+                        content:
+                          `Bạn sắp thu hồi toàn bộ ứng của ${total} yêu cầu. Hành động này sẽ tự động thu hồi tất cả các yêu cầu báo ứng đang chờ thu hồi và đã hoàn thành, bao gồm cả những yêu cầu chưa được hiển thị trong danh sách hiện tại. Bạn có chắc chắn muốn tiếp tục?` ||
+                          "Bạn sắp thu hồi toàn bộ ứng của các yêu cầu đang hiển thị. Hành động này sẽ tự động thu hồi tất cả các yêu cầu báo ứng đang chờ thu hồi và đã hoàn thành, bao gồm cả những yêu cầu chưa được hiển thị trong danh sách hiện tại. Bạn có chắc chắn muốn tiếp tục?",
+                        okText: "Xác nhận",
+                        cancelText: "Đóng",
+                        maskClosable: true,
+                        onOk: () => {
+                          loadApprove(1, true);
+                        },
+                      });
+                    }}
+                  >
+                    Thu hồi toàn bộ ({total})
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="search !p-1">
+                  <div className="searchbox">
+                    <label className="icon p-2">
+                      <IoSearchOutline />
+                    </label>
+                    <input
+                      value={filter.code}
+                      onChange={(e) =>
+                        setFilter((old) => ({
+                          ...old,
+                          code: e.target.value.toUpperCase(),
+                        }))
+                      }
+                      className="!w-[240px]"
+                      type="text"
+                      placeholder="Tìm kiếm..."
+                    />
                   </div>
-                }
-                color="white"
-              >
-                <div
-                  className="flex ml-auto items-center p-2 border-1 hover:border-[#007add] 
+                </div>
+                <Select
+                  className="w-[200px] !h-[40px]"
+                  placeholder="Người lao động"
+                  value={filter?.staff}
+                  showSearch
+                  onChange={(e) => {
+                    setFilter((old) => ({ ...old, staff: e }));
+                  }}
+                  filterOption={(input, option) =>
+                    option?.label?.toLowerCase().includes(input.toLowerCase())
+                  }
+                  options={[
+                    { value: 0, label: "Tất cả người lao động" },
+                    ...user?.company?.Operator?.map((emp) => ({
+                      label: app.beautifyName(emp?.ho_ten || ""),
+                      value: emp?.id,
+                    })),
+                  ]}
+                />
+                <Select
+                  className="w-[200px] !h-[40px]"
+                  placeholder="Người tuyển"
+                  value={filter?.staff}
+                  showSearch
+                  onChange={(e) => {
+                    setFilter((old) => ({ ...old, staff: e }));
+                  }}
+                  filterOption={(input, option) =>
+                    option?.label?.toLowerCase().includes(input.toLowerCase())
+                  }
+                  options={[
+                    { value: 0, label: "Tất cả nhân viên" },
+                    ...user?.company?.Staff?.map((emp) => ({
+                      label: app.beautifyName(emp?.profile?.full_name || ""),
+                      value: emp?.id,
+                    })),
+                  ]}
+                />
+                <Select
+                  className="w-[160px] !h-[40px]"
+                  placeholder="Phân loại"
+                  value={filter?.type || ""}
+                  showSearch
+                  onChange={(e) => {
+                    setFilter((old) => ({ ...old, type: e }));
+                  }}
+                  filterOption={(input, option) =>
+                    option?.label?.toLowerCase().includes(input.toLowerCase())
+                  }
+                  options={[
+                    { value: "", label: "Tất cả" },
+                    { value: "bank", label: "Chuyển khoản" },
+                    { value: "money", label: "Tiền mặt" },
+                  ]}
+                />
+                <div className="flex p-1 gap-2 ml-auto">
+                  <Tooltip
+                    title={
+                      <div className="flex items-start flex-col gap-1.5 min-w-[120px] p-2">
+                        <div className="text-[#000] mb-2">
+                          Chọn loại dữ liệu:
+                        </div>
+                        <div className="flex flex-col gap-1.5 ml-2">
+                          <Export_approve_all option="pending">
+                            <Button
+                              icon={
+                                <PiMicrosoftExcelLogoFill
+                                  size={20}
+                                  className="mt-1"
+                                />
+                              }
+                              type="primary"
+                              className="!h-[40px]"
+                            >
+                              Chờ giải ngân
+                            </Button>
+                          </Export_approve_all>
+                          <Export_approve_all option="complete">
+                            <Button
+                              icon={
+                                <PiMicrosoftExcelLogoFill
+                                  size={20}
+                                  className="mt-1"
+                                />
+                              }
+                              type="primary"
+                              className="!h-[40px]"
+                            >
+                              Đã hoàn thành
+                            </Button>
+                          </Export_approve_all>
+                          <Export_approve_all option="rejected">
+                            <Button
+                              icon={
+                                <PiMicrosoftExcelLogoFill
+                                  size={20}
+                                  className="mt-1"
+                                />
+                              }
+                              type="primary"
+                              className="!h-[40px]"
+                            >
+                              Đã bị rejected
+                            </Button>
+                          </Export_approve_all>
+                          <Export_approve_all>
+                            <Button
+                              icon={
+                                <PiMicrosoftExcelLogoFill
+                                  size={20}
+                                  className="mt-1"
+                                />
+                              }
+                              type="primary"
+                              className="!h-[40px]"
+                            >
+                              Tất cả phê duyệt
+                            </Button>
+                          </Export_approve_all>
+                        </div>
+                      </div>
+                    }
+                    color="white"
+                  >
+                    <div
+                      className="flex ml-auto items-center p-2 border-1 hover:border-[#007add] 
                   text-[#999] transition-all duration-300
                 hover:text-[#007add] px-4 rounded-[8px] gap-2 cursor-pointer border-[#999]"
-                >
-                  <PiMicrosoftExcelLogoFill size={20} />
-                  Xuất Excel
-                </div>
-              </Tooltip>
-              {/* <Select
+                    >
+                      <PiMicrosoftExcelLogoFill size={20} />
+                      Xuất Excel
+                    </div>
+                  </Tooltip>
+                  {/* <Select
                 className="w-[160px] !h-[40px]"
                 placeholder="Trạng thái"
                 allowClear={true}
@@ -275,7 +319,9 @@ const Approve_all = () => {
                   { value: "complete", label: "Hoàn thành" },
                 ]}
               /> */}
-            </div>
+                </div>
+              </>
+            )}
           </div>
           <div className="flex flex-1 gap-2 overflow-hidden pb-2 px-2">
             <div

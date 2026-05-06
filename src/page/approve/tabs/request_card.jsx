@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Staff_view from "../../../components/by_id/staff_view";
 import { Link, useParams } from "react-router-dom";
 import TimeSinceText from "../../../components/ui/timesinceText";
@@ -8,8 +8,11 @@ import app from "../../../components/app";
 import { FaXmark } from "react-icons/fa6";
 import Operator_view from "../../../components/by_id/op_view";
 import Customer_view from "../../../components/by_id/customer_view";
+import { Button, Modal } from "antd";
+import api from "../../../components/api";
 
 const Request_card = ({ approve }) => {
+  const [approving, setApproving] = useState(false);
   const { approve_id, type } = useParams();
   return (
     <Link
@@ -60,7 +63,7 @@ const Request_card = ({ approve }) => {
               <FaXmark />
               {!approve_id && "Đã hủy"}
             </div>
-          ) : approve?.status === "reject" ? (
+          ) : approve?.status === "reject" || approve?.status === "rejected" ? (
             <div className="text-[#d62b00] flex items-center gap-1">
               <FaXmark />
               {!approve_id && "Đã reject"}
@@ -71,7 +74,7 @@ const Request_card = ({ approve }) => {
             </div>
           )}
         </div>
-        {["reject", "cancel"].includes(approve?.status) ? (
+        {["reject", "cancel", "rejected"].includes(approve?.status) ? (
           ""
         ) : approve?.payment_status === "not" ? (
           <div className={`status flex ${approve?.payment_status}`}>
@@ -136,6 +139,46 @@ const Request_card = ({ approve }) => {
             <FaCaretLeft />
           </div>
         </div>
+      )}
+      {type === "thuhoi" && (
+        <Button
+          className="ml-auto text-[13px]!"
+          type="primary"
+          loading={approving}
+          onClick={(e) => {
+            Modal.confirm({
+              title: "Xác nhận thu hồi",
+              content: `Bạn có chắc chắn muốn thu hồi ứng của yêu cầu ${approve?.request_code} không?`,
+              onOk: () => {
+                setApproving(true);
+                api
+                  .post(
+                    `approve/${approve.id}/paytrieve/`,
+                    { comment: approveComment },
+                    user?.token,
+                  )
+                  .then((res) => {
+                    callback(res);
+                    message.success("Đã thu hồi thành công!");
+                  })
+                  .catch((e) => {
+                    message.error(
+                      e?.response?.data?.detail || "Lỗi không xác định!",
+                    );
+                  })
+                  .finally(() => {
+                    setApproving(false);
+                  });
+              },
+              onCancel: () => {
+                // Handle the cancel action
+              },
+            });
+            e.preventDefault();
+          }}
+        >
+          Thu hồi
+        </Button>
       )}
     </Link>
   );

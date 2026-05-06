@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { GrContactInfo } from "react-icons/gr";
 import { HiOutlineSearch, HiOutlineUserGroup } from "react-icons/hi";
-import { MdOutlineContacts, MdOutlineCopyAll } from "react-icons/md";
+import {
+  MdAssignmentReturned,
+  MdOutlineAssignmentReturned,
+  MdOutlineContacts,
+  MdOutlineCopyAll,
+} from "react-icons/md";
 import { RiContactsBook3Line } from "react-icons/ri";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import LeftNav from "../../components/layout/LeftNav";
@@ -37,6 +42,12 @@ const Approves_layout = () => {
       label: "Chi tiêu khác",
       icon: <TbBrandShopee />,
       link: "/app/approve/chitieu",
+    },
+    {
+      id: "thuhoi",
+      label: "Thu hồi ứng",
+      icon: <MdOutlineAssignmentReturned />,
+      link: "/app/approve/thuhoi",
     },
   ];
   const location = useLocation();
