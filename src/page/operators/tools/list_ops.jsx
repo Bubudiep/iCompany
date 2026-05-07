@@ -56,7 +56,6 @@ const List_operators = () => {
       );
     }
   };
-
   // Giữ nguyên api.get đệ quy, nhưng sử dụng async/await và localforage
   const checknext = (link) => {
     if (link) {
@@ -433,7 +432,22 @@ const List_operators = () => {
       ),
     },
   ];
-
+  const [localSave, setLocalSave] = useState({});
+  useEffect(() => {
+    if (navigator.storage && navigator.storage.estimate) {
+      navigator.storage.estimate().then((estimate) => {
+        const used = estimate.usage / 1024 / 1024;
+        const total = estimate.quota / 1024 / 1024;
+        const rate = {
+          used: used,
+          total: total,
+          rate: (used * 100) / total,
+        };
+        console.log(rate);
+        setLocalSave(rate);
+      });
+    }
+  }, []);
   return (
     <div className="fadeInTop flex flex-col flex-1 overflow-hidden min-w-[800px] relative">
       {initting && (
@@ -538,6 +552,22 @@ const List_operators = () => {
           </Export_op_history>
         </div>
       </div>
+      {localSave?.rate > 80 && (
+        <div className="flex flex-col border-b border-amber-600 bg-amber-100 p-4 py-2">
+          <div className="flex font-medium text-lg">
+            Dung lượng còn dưới {100 - Math.round(localSave?.rate)}%
+          </div>
+          <div className="flex">
+            Bộ nhớ đang sử dụng:{" "}
+            {localSave?.used?.toFixed(2)?.replace(".", ",")}Mb/
+            {parseInt(localSave?.total?.toFixed(0))?.toLocaleString()}Mb
+          </div>
+          <div className="flex">
+            Bộ nhớ trên ổ <b className="inline mx-1 text-red-900">C</b> thiết bị
+            của bạn sắp hết, dữ liệu người lao động có thể bị thiếu
+          </div>
+        </div>
+      )}
       {op_id ? (
         <>
           <Details_operator op_id={op_id} />
